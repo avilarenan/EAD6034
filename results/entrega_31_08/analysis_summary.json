@@ -1,0 +1,69 @@
+{
+  "config": {
+    "start_date": "2024-01-01",
+    "end_date": "2025-11-28",
+    "source_timezone": "UTC",
+    "market_timezone": "America/Sao_Paulo",
+    "session_start": "09:05",
+    "session_end": "18:25",
+    "frequency": "5min",
+    "minimum_daily_coverage": 0.95,
+    "train_end_date": "2024-12-31",
+    "test_start_date": "2025-01-01",
+    "max_lag": 30
+  },
+  "source": {
+    "source_sha256": "dc9a661df39efa85de1032d71cc2a8cca1a4a8626ac8698bb974a829337a4e23",
+    "member_name": "BTG-ATS-A26/WIN.parquet"
+  },
+  "software_versions": {
+    "python": "3.12.13",
+    "matplotlib": "3.10.8",
+    "numpy": "2.3.5",
+    "pandas": "2.2.3",
+    "pyarrow": "25.0.1",
+    "scipy": "1.17.0",
+    "statsmodels": "0.15.0"
+  },
+  "raw_audit": {
+    "raw_rows": 1284115,
+    "raw_start": "2016-01-04 11:00:00",
+    "raw_end": "2025-11-28 21:31:00",
+    "trading_days": 2403,
+    "contracts": 60,
+    "maximum_symbols_per_day": 1,
+    "duplicate_symbol_timestamps": 0,
+    "missing_values": 0,
+    "nonpositive_closes": 0,
+    "invalid_ohlc_rows": 0,
+    "local_date_mismatches": 0
+  },
+  "train_period": "2024-01-02 a 2024-12-30",
+  "train_days": 249,
+  "train_returns": 27639,
+  "test_start": "2025-01-02",
+  "test_end": "2025-11-28",
+  "test_days_reserved": 227,
+  "excluded_days": 1,
+  "excluded_train_dates": [
+    "2024-02-14"
+  ],
+  "raw_rows": 1284115,
+  "raw_contracts": 60,
+  "duplicates": 0,
+  "missing_values": 0,
+  "invalid_ohlc": 0,
+  "rolls_in_sample": 6,
+  "mean_return": -0.0003501619604935181,
+  "standard_deviation": 0.07068040986791878,
+  "minimum_return": -1.0525124698242294,
+  "maximum_return": 1.4976612668652578,
+  "zero_share": 0.029957668511885378,
+  "skewness": 0.5867431503436463,
+  "excess_kurtosis": 23.668348615555942,
+  "max_abs_acf": 0.011229586390623155,
+  "max_abs_pacf": 0.01238533085609194,
+  "acf_12": -0.0008465040905257502,
+  "pacf_12": -0.0011789054525876753,
+  "abs_acf_1": 0.21756951152973739
+}

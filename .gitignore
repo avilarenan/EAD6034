@@ -1,0 +1,14 @@
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ipynb_checkpoints/
+
+# Os dados-fonte nao sao versionados neste repositorio publico.
+data/raw/*
+!data/raw/.gitkeep
+*.parquet
+*.zip
+
+# Resumo diário com níveis exatos derivado do feed: apenas uso local.
+results/**/tables/daily_summary_in_sample.csv
