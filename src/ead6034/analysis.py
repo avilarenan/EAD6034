@@ -29,6 +29,41 @@ def _within_session_acf(
     return np.asarray(values), np.asarray(pair_counts, dtype=int)
 
 
+def _within_session_pairwise_correlation(
+    groups: list[np.ndarray], max_lag: int
+) -> tuple[np.ndarray, np.ndarray]:
+    """Correlação pooled dos pares válidos, sem atravessar sessões."""
+
+    values = [1.0]
+    pair_counts = [sum(len(group) for group in groups)]
+    for lag in range(1, max_lag + 1):
+        current_parts: list[np.ndarray] = []
+        lagged_parts: list[np.ndarray] = []
+        for group in groups:
+            if len(group) <= lag:
+                continue
+            current_parts.append(group[lag:])
+            lagged_parts.append(group[:-lag])
+        current = np.concatenate(current_parts)
+        lagged = np.concatenate(lagged_parts)
+        values.append(float(np.corrcoef(current, lagged)[0, 1]))
+        pair_counts.append(len(current))
+    return np.asarray(values), np.asarray(pair_counts, dtype=int)
+
+
+def _ordered_session_values(
+    frame: pd.DataFrame,
+    value_column: str,
+    session_column: str,
+) -> list[np.ndarray]:
+    groups: list[np.ndarray] = []
+    for _, group in frame.groupby(session_column, sort=True, observed=True):
+        if "timestamp" in group.columns:
+            group = group.sort_values("timestamp")
+        groups.append(group[value_column].astype(float).to_numpy())
+    return groups
+
+
 def chronological_split(
     bars: pd.DataFrame, train_end_date: str, test_start_date: str
 ) -> tuple[pd.DataFrame, pd.DataFrame, str, str]:
@@ -72,6 +107,7 @@ def correlogram(
     max_lag: int,
     value_column: str = "return_pct",
     session_column: str = "date",
+    acf_normalization: str = "box_jenkins",
 ) -> pd.DataFrame:
     """FAC/FACP principal sem criar defasagens artificiais entre pregoes.
 
@@ -81,17 +117,23 @@ def correlogram(
     """
 
     clean = frame.dropna(subset=[value_column]).copy()
-    groups = [
-        group[value_column].astype(float).to_numpy()
-        for _, group in clean.groupby(session_column, sort=True, observed=True)
-    ]
+    groups = _ordered_session_values(clean, value_column, session_column)
     x = np.concatenate(groups)
     if len(x) <= max_lag + 1:
         raise ValueError("A amostra e curta demais para o numero de defasagens.")
     conventional_acf = acf(x, nlags=max_lag, fft=True)
     conventional_pacf = pacf(x, nlags=max_lag, method="ywmle")
 
-    acf_values, pair_counts_array = _within_session_acf(groups, max_lag)
+    if acf_normalization == "pairwise":
+        acf_values, pair_counts_array = _within_session_pairwise_correlation(
+            groups, max_lag
+        )
+    elif acf_normalization == "box_jenkins":
+        acf_values, pair_counts_array = _within_session_acf(groups, max_lag)
+    else:
+        raise ValueError(
+            "acf_normalization deve ser 'box_jenkins' ou 'pairwise'."
+        )
     pacf_values = [1.0]
     pair_counts = pair_counts_array.tolist()
     regression_counts = [len(x)]
@@ -169,16 +211,20 @@ def dependence_in_magnitude(
     max_lag: int = 30,
     value_column: str = "return_pct",
     session_column: str = "date",
+    acf_normalization: str = "box_jenkins",
 ) -> pd.DataFrame:
     clean = frame.dropna(subset=[value_column]).copy()
-    groups = [
-        group[value_column].astype(float).to_numpy()
-        for _, group in clean.groupby(session_column, sort=True, observed=True)
-    ]
-    absolute, pair_counts = _within_session_acf(
-        [np.abs(values) for values in groups], max_lag
-    )
-    squared, _ = _within_session_acf([values**2 for values in groups], max_lag)
+    groups = _ordered_session_values(clean, value_column, session_column)
+    if acf_normalization == "pairwise":
+        estimator = _within_session_pairwise_correlation
+    elif acf_normalization == "box_jenkins":
+        estimator = _within_session_acf
+    else:
+        raise ValueError(
+            "acf_normalization deve ser 'box_jenkins' ou 'pairwise'."
+        )
+    absolute, pair_counts = estimator([np.abs(values) for values in groups], max_lag)
+    squared, _ = estimator([values**2 for values in groups], max_lag)
     return pd.DataFrame(
         {
             "lag": np.arange(max_lag + 1, dtype=int),

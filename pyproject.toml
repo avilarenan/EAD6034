@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "ead6034-seminario"
-version = "0.1.0"
+version = "0.2.0"
 description = "Analise empirica de previsibilidade linear em dados intradiarios da B3"
 readme = "README.md"
 requires-python = ">=3.11"
@@ -19,6 +19,7 @@ dependencies = [
 
 [project.scripts]
 ead6034-entrega = "ead6034.pipeline:main"
+ead6034-entrega-multiescala = "ead6034.multiscale_pipeline:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
