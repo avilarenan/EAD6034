@@ -12,3 +12,4 @@ data/raw/*
 
 # Resumo diário com níveis exatos derivado do feed: apenas uso local.
 results/**/tables/daily_summary_in_sample.csv
+results/entrega_14_09/private/

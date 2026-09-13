@@ -1,0 +1,54 @@
+{
+  "source_sha256": "dc9a661df39efa85de1032d71cc2a8cca1a4a8626ac8698bb974a829337a4e23",
+  "member_name": "BTG-ATS-A26/WIN.parquet",
+  "audit_2024": {
+    "raw_rows": 141245,
+    "raw_start": "2024-01-02 12:00:00",
+    "raw_end": "2024-12-30 21:31:00",
+    "trading_days": 250,
+    "contracts": 7,
+    "maximum_symbols_per_day": 1,
+    "duplicate_symbol_timestamps": 0,
+    "missing_values": 0,
+    "nonpositive_closes": 0,
+    "invalid_ohlc_rows": 0,
+    "local_date_mismatches": 0
+  },
+  "config": {
+    "start_date": "2024-01-01",
+    "end_date": "2024-12-31",
+    "source_timezone": "UTC",
+    "market_timezone": "America/Sao_Paulo",
+    "session_start": "09:05",
+    "session_end": "18:05",
+    "train_end_date": "2024-12-31",
+    "test_start_date": "2025-01-01",
+    "comparison_horizon_minutes": 60,
+    "daily_max_lag": 15,
+    "known_source_gaps": [
+      "2024-04-16"
+    ]
+  },
+  "period_start": "2024-01-02",
+  "period_end": "2024-12-30",
+  "trading_days": 246,
+  "holdout_used": false,
+  "max_order": 5,
+  "optimizer_starts": 3,
+  "python": "3.12.14",
+  "versions": {
+    "numpy": "2.3.5",
+    "pandas": "2.2.3",
+    "scipy": "1.17.0",
+    "statsmodels": "0.15.0",
+    "arch": "8.0.0",
+    "pyarrow": "25.0.1",
+    "matplotlib": "3.10.8",
+    "reportlab": "4.4.9"
+  },
+  "stationarity_unit": "continuous_segment; no pooled p-values",
+  "selection": "Gaussian segmented quasi-likelihood BIC",
+  "seed": 6034,
+  "bootstrap_reps": 999,
+  "bootstrap_seed_base": 14092026
+}

@@ -1,0 +1,7 @@
+scale,bootstrap_q,bootstrap_p,bootstrap_reps,bootstrap_requested,bootstrap_seed,bootstrap_exceedances,bootstrap_mc_se,bootstrap_critical_95,bootstrap_null
+1min,146.1747771455795,0.001,999,999,14092026,0,0.0009994998749374609,79.42049902911599,"Gaussian homoskedastic segmented ARMA, fixed order, refitted parameters"
+5min,25.58111343730419,0.013,999,999,14092027,12,0.003582038525755969,21.25896342752008,"Gaussian homoskedastic segmented ARMA, fixed order, refitted parameters"
+15min,8.052794597633905,0.079,999,999,14092028,78,0.008529888627643388,9.101752798676769,"Gaussian homoskedastic segmented ARMA, fixed order, refitted parameters"
+30min,4.963034372621891,0.283,999,999,14092029,282,0.014244683218660919,9.163411349294577,"Gaussian homoskedastic segmented ARMA, fixed order, refitted parameters"
+60min,12.551319428761417,0.012,999,999,14092030,11,0.003443254274665175,9.581352875455408,"Gaussian homoskedastic segmented ARMA, fixed order, refitted parameters"
+1d,4.617057956790557,0.913,999,999,14092031,912,0.008912407082264588,18.916944723528804,"Gaussian homoskedastic segmented ARMA, fixed order, refitted parameters"

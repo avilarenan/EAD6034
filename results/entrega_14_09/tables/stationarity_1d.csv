@@ -1,0 +1,79 @@
+scale,segment,start,end,n,specification,test,trend,null,adf_max_lags,lag_rule,small_sample,status,statistic,pvalue,critical_1,critical_5,critical_10,lags,nobs,reject_5pct,warning
+1d,1,2024-01-02,2024-02-05,25,main,ADF,c,unit_root,4.0,bic,False,ok,-7.252426209257221,1.7658328245465364e-10,-3.7377092158564813,-2.9922162731481485,-2.635746736111111,0.0,24.0,True,
+1d,1,2024-01-02,2024-02-05,25,main,PP,c,unit_root,,Bartlett_short_bandwidth,False,ok,-7.7607394725772325,9.469887030711783e-12,-3.7377092158564813,-2.9922162731481485,-2.635746736111111,2.0,24.0,True,
+1d,1,2024-01-02,2024-02-05,25,main,KPSS,c,level_or_trend_stationarity,,Bartlett_short_bandwidth,False,ok,0.09986731115854319,0.5861634442072841,0.7428,0.4614,0.3475,2.0,25.0,False,
+1d,1,2024-01-02,2024-02-05,25,trend_sensitivity,ADF,ct,unit_root,4.0,bic,False,ok,-7.216339418373257,4.5544782069839e-09,-4.395041166087963,-3.6123930960648147,-3.243216493055556,0.0,24.0,True,
+1d,1,2024-01-02,2024-02-05,25,trend_sensitivity,PP,ct,unit_root,,Bartlett_short_bandwidth,False,ok,-7.86714597505652,1.4492789894320037e-10,-4.395041166087963,-3.6123930960648147,-3.243216493055556,2.0,24.0,True,
+1d,1,2024-01-02,2024-02-05,25,trend_sensitivity,KPSS,ct,level_or_trend_stationarity,,Bartlett_short_bandwidth,False,ok,0.07502155605326903,0.3052187995902382,0.2175,0.1479,0.1193,2.0,25.0,False,
+1d,1,2024-01-02,2024-02-05,25,lag_sensitivity,ADF,c,unit_root,4.0,aic,False,ok,-7.252426209257221,1.7658328245465364e-10,-3.7377092158564813,-2.9922162731481485,-2.635746736111111,0.0,24.0,True,
+1d,1,2024-01-02,2024-02-05,25,lag_sensitivity,PP,c,unit_root,,Bartlett_short_bandwidth,False,ok,-7.9992983172544685,2.357498838469825e-12,-3.7377092158564813,-2.9922162731481485,-2.635746736111111,4.0,24.0,True,
+1d,1,2024-01-02,2024-02-05,25,lag_sensitivity,KPSS,c,level_or_trend_stationarity,,Bartlett_short_bandwidth,False,ok,0.12424051580967518,0.4793137533828611,0.7428,0.4614,0.3475,4.0,25.0,False,
+1d,2,2024-02-07,2024-02-09,3,main,ADF,c,unit_root,0.0,bic,True,too_short,,,,,,,,,n < 8; test not computed
+1d,2,2024-02-07,2024-02-09,3,main,PP,c,unit_root,,Bartlett_short_bandwidth,True,too_short,,,,,,,,,n < 8; test not computed
+1d,2,2024-02-07,2024-02-09,3,main,KPSS,c,level_or_trend_stationarity,,Bartlett_short_bandwidth,True,too_short,,,,,,,,,n < 8; test not computed
+1d,2,2024-02-07,2024-02-09,3,lag_sensitivity,ADF,c,unit_root,0.0,aic,True,too_short,,,,,,,,,n < 8; test not computed
+1d,2,2024-02-07,2024-02-09,3,lag_sensitivity,PP,c,unit_root,,Bartlett_short_bandwidth,True,too_short,,,,,,,,,n < 8; test not computed
+1d,2,2024-02-07,2024-02-09,3,lag_sensitivity,KPSS,c,level_or_trend_stationarity,,Bartlett_short_bandwidth,True,too_short,,,,,,,,,n < 8; test not computed
+1d,3,2024-02-15,2024-03-07,16,main,ADF,c,unit_root,2.0,bic,True,ok,-2.6084840410062426,0.09125643609504358,-3.9644434814814815,-3.0849081481481484,-2.6818144444444445,0.0,15.0,False,
+1d,3,2024-02-15,2024-03-07,16,main,PP,c,unit_root,,Bartlett_short_bandwidth,True,ok,-2.522655116389049,0.11005894191249205,-3.9644434814814815,-3.0849081481481484,-2.6818144444444445,2.0,15.0,False,
+1d,3,2024-02-15,2024-03-07,16,main,KPSS,c,level_or_trend_stationarity,,Bartlett_short_bandwidth,True,ok,0.39576679316038993,0.07421823311487172,0.7428,0.4614,0.3475,2.0,16.0,False,
+1d,3,2024-02-15,2024-03-07,16,lag_sensitivity,ADF,c,unit_root,2.0,aic,True,ok,-2.6084840410062426,0.09125643609504358,-3.9644434814814815,-3.0849081481481484,-2.6818144444444445,0.0,15.0,False,
+1d,3,2024-02-15,2024-03-07,16,lag_sensitivity,PP,c,unit_root,,Bartlett_short_bandwidth,True,ok,-2.442898224731402,0.12999282849457178,-3.9644434814814815,-3.0849081481481484,-2.6818144444444445,4.0,15.0,False,
+1d,3,2024-02-15,2024-03-07,16,lag_sensitivity,KPSS,c,level_or_trend_stationarity,,Bartlett_short_bandwidth,True,ok,0.37578738592751465,0.0838839867716762,0.7428,0.4614,0.3475,4.0,16.0,False,
+1d,4,2024-03-11,2024-04-15,25,main,ADF,c,unit_root,4.0,bic,False,ok,-4.434506797142166,0.00025776273384762473,-3.7377092158564813,-2.9922162731481485,-2.635746736111111,0.0,24.0,True,
+1d,4,2024-03-11,2024-04-15,25,main,PP,c,unit_root,,Bartlett_short_bandwidth,False,ok,-4.399323576107924,0.0002976518868077038,-3.7377092158564813,-2.9922162731481485,-2.635746736111111,2.0,24.0,True,
+1d,4,2024-03-11,2024-04-15,25,main,KPSS,c,level_or_trend_stationarity,,Bartlett_short_bandwidth,False,ok,0.27900200441745443,0.1554145787318183,0.7428,0.4614,0.3475,2.0,25.0,False,
+1d,4,2024-03-11,2024-04-15,25,trend_sensitivity,ADF,ct,unit_root,4.0,bic,False,ok,-4.777952224259674,0.0005118262326632519,-4.395041166087963,-3.6123930960648147,-3.243216493055556,0.0,24.0,True,
+1d,4,2024-03-11,2024-04-15,25,trend_sensitivity,PP,ct,unit_root,,Bartlett_short_bandwidth,False,ok,-4.800077329269814,0.0004682499262213516,-4.395041166087963,-3.6123930960648147,-3.243216493055556,2.0,24.0,True,
+1d,4,2024-03-11,2024-04-15,25,trend_sensitivity,KPSS,ct,level_or_trend_stationarity,,Bartlett_short_bandwidth,False,ok,0.0940882354269917,0.1876110437398383,0.2175,0.1479,0.1193,2.0,25.0,False,
+1d,4,2024-03-11,2024-04-15,25,lag_sensitivity,ADF,c,unit_root,4.0,aic,False,ok,-4.434506797142166,0.00025776273384762473,-3.7377092158564813,-2.9922162731481485,-2.635746736111111,0.0,24.0,True,
+1d,4,2024-03-11,2024-04-15,25,lag_sensitivity,PP,c,unit_root,,Bartlett_short_bandwidth,False,ok,-4.400846230574798,0.0002958107024681821,-3.7377092158564813,-2.9922162731481485,-2.635746736111111,4.0,24.0,True,
+1d,4,2024-03-11,2024-04-15,25,lag_sensitivity,KPSS,c,level_or_trend_stationarity,,Bartlett_short_bandwidth,False,ok,0.3318937832128157,0.11080015002573307,0.7428,0.4614,0.3475,4.0,25.0,False,
+1d,5,2024-04-17,2024-06-06,35,main,ADF,c,unit_root,6.0,bic,False,ok,-4.560944423258298,0.0001523605052665594,-3.639224104416853,-2.9512301791166293,-2.614446989619377,0.0,34.0,True,
+1d,5,2024-04-17,2024-06-06,35,main,PP,c,unit_root,,Bartlett_short_bandwidth,False,ok,-4.538809139957173,0.00016721359292007397,-3.639224104416853,-2.9512301791166293,-2.614446989619377,3.0,34.0,True,
+1d,5,2024-04-17,2024-06-06,35,main,KPSS,c,level_or_trend_stationarity,,Bartlett_short_bandwidth,False,ok,0.17860658751499447,0.31354807467817364,0.7428,0.4614,0.3475,3.0,35.0,False,
+1d,5,2024-04-17,2024-06-06,35,trend_sensitivity,ADF,ct,unit_root,6.0,bic,False,ok,-4.656969950561857,0.0008264507311799306,-4.253042608385915,-3.5485904579686545,-3.2070617952371263,0.0,34.0,True,
+1d,5,2024-04-17,2024-06-06,35,trend_sensitivity,PP,ct,unit_root,,Bartlett_short_bandwidth,False,ok,-4.573698416254277,0.0011407960453304461,-4.253042608385915,-3.5485904579686545,-3.2070617952371263,3.0,34.0,True,
+1d,5,2024-04-17,2024-06-06,35,trend_sensitivity,KPSS,ct,level_or_trend_stationarity,,Bartlett_short_bandwidth,False,ok,0.108003961805064,0.13256786514495483,0.2175,0.1479,0.1193,3.0,35.0,False,
+1d,5,2024-04-17,2024-06-06,35,lag_sensitivity,ADF,c,unit_root,6.0,aic,False,ok,-4.560944423258298,0.0001523605052665594,-3.639224104416853,-2.9512301791166293,-2.614446989619377,0.0,34.0,True,
+1d,5,2024-04-17,2024-06-06,35,lag_sensitivity,PP,c,unit_root,,Bartlett_short_bandwidth,False,ok,-4.646804396761747,0.0001058038465647612,-3.639224104416853,-2.9512301791166293,-2.614446989619377,6.0,34.0,True,
+1d,5,2024-04-17,2024-06-06,35,lag_sensitivity,KPSS,c,level_or_trend_stationarity,,Bartlett_short_bandwidth,False,ok,0.14991431358017596,0.3904931143447144,0.7428,0.4614,0.3475,6.0,35.0,False,
+1d,6,2024-06-10,2024-06-11,2,main,ADF,c,unit_root,0.0,bic,True,too_short,,,,,,,,,n < 8; test not computed
+1d,6,2024-06-10,2024-06-11,2,main,PP,c,unit_root,,Bartlett_short_bandwidth,True,too_short,,,,,,,,,n < 8; test not computed
+1d,6,2024-06-10,2024-06-11,2,main,KPSS,c,level_or_trend_stationarity,,Bartlett_short_bandwidth,True,too_short,,,,,,,,,n < 8; test not computed
+1d,6,2024-06-10,2024-06-11,2,lag_sensitivity,ADF,c,unit_root,0.0,aic,True,too_short,,,,,,,,,n < 8; test not computed
+1d,6,2024-06-10,2024-06-11,2,lag_sensitivity,PP,c,unit_root,,Bartlett_short_bandwidth,True,too_short,,,,,,,,,n < 8; test not computed
+1d,6,2024-06-10,2024-06-11,2,lag_sensitivity,KPSS,c,level_or_trend_stationarity,,Bartlett_short_bandwidth,True,too_short,,,,,,,,,n < 8; test not computed
+1d,7,2024-06-12,2024-08-13,45,main,ADF,c,unit_root,8.0,bic,False,ok,-6.886386608286124,1.391124989006039e-09,-3.5885733964124715,-2.929885661157025,-2.6031845661157025,0.0,44.0,True,
+1d,7,2024-06-12,2024-08-13,45,main,PP,c,unit_root,,Bartlett_short_bandwidth,False,ok,-6.879379122769836,1.4465820804112442e-09,-3.5885733964124715,-2.929885661157025,-2.6031845661157025,3.0,44.0,True,
+1d,7,2024-06-12,2024-08-13,45,main,KPSS,c,level_or_trend_stationarity,,Bartlett_short_bandwidth,False,ok,0.1648605869355534,0.3478555303968313,0.7428,0.4614,0.3475,3.0,45.0,False,
+1d,7,2024-06-12,2024-08-13,45,trend_sensitivity,ADF,ct,unit_root,8.0,bic,False,ok,-6.852746643566311,3.0347192993010826e-08,-4.1807810419797145,-3.5154718322689704,-3.1881037377911348,0.0,44.0,True,
+1d,7,2024-06-12,2024-08-13,45,trend_sensitivity,PP,ct,unit_root,,Bartlett_short_bandwidth,False,ok,-6.84383110960413,3.177884224483457e-08,-4.1807810419797145,-3.5154718322689704,-3.1881037377911348,3.0,44.0,True,
+1d,7,2024-06-12,2024-08-13,45,trend_sensitivity,KPSS,ct,level_or_trend_stationarity,,Bartlett_short_bandwidth,False,ok,0.11270779358282204,0.11781677410048097,0.2175,0.1479,0.1193,3.0,45.0,False,
+1d,7,2024-06-12,2024-08-13,45,lag_sensitivity,ADF,c,unit_root,8.0,aic,False,ok,-2.2261623520051175,0.19688740910799396,-3.6055648906249997,-2.937069375,-2.606985625,4.0,40.0,False,
+1d,7,2024-06-12,2024-08-13,45,lag_sensitivity,PP,c,unit_root,,Bartlett_short_bandwidth,False,ok,-6.865512550040133,1.5628432508060808e-09,-3.5885733964124715,-2.929885661157025,-2.6031845661157025,6.0,44.0,True,
+1d,7,2024-06-12,2024-08-13,45,lag_sensitivity,KPSS,c,level_or_trend_stationarity,,Bartlett_short_bandwidth,False,ok,0.15545642133680382,0.3739987460214172,0.7428,0.4614,0.3475,6.0,45.0,False,
+1d,8,2024-08-14,2024-10-15,45,main,ADF,c,unit_root,8.0,bic,False,ok,-6.445318435165993,1.5711525619758234e-08,-3.5885733964124715,-2.929885661157025,-2.6031845661157025,0.0,44.0,True,
+1d,8,2024-08-14,2024-10-15,45,main,PP,c,unit_root,,Bartlett_short_bandwidth,False,ok,-6.448001643685941,1.5485220223417966e-08,-3.5885733964124715,-2.929885661157025,-2.6031845661157025,3.0,44.0,True,
+1d,8,2024-08-14,2024-10-15,45,main,KPSS,c,level_or_trend_stationarity,,Bartlett_short_bandwidth,False,ok,0.2744090953981298,0.16019885896028146,0.7428,0.4614,0.3475,3.0,45.0,False,
+1d,8,2024-08-14,2024-10-15,45,trend_sensitivity,ADF,ct,unit_root,8.0,bic,False,ok,-6.476735332023227,2.0755506151760854e-07,-4.1807810419797145,-3.5154718322689704,-3.1881037377911348,0.0,44.0,True,
+1d,8,2024-08-14,2024-10-15,45,trend_sensitivity,PP,ct,unit_root,,Bartlett_short_bandwidth,False,ok,-6.481321950122642,2.0280301857882455e-07,-4.1807810419797145,-3.5154718322689704,-3.1881037377911348,3.0,44.0,True,
+1d,8,2024-08-14,2024-10-15,45,trend_sensitivity,KPSS,ct,level_or_trend_stationarity,,Bartlett_short_bandwidth,False,ok,0.1601364284341631,0.037511904882313075,0.2175,0.1479,0.1193,3.0,45.0,True,
+1d,8,2024-08-14,2024-10-15,45,lag_sensitivity,ADF,c,unit_root,8.0,aic,False,ok,-6.445318435165993,1.5711525619758234e-08,-3.5885733964124715,-2.929885661157025,-2.6031845661157025,0.0,44.0,True,
+1d,8,2024-08-14,2024-10-15,45,lag_sensitivity,PP,c,unit_root,,Bartlett_short_bandwidth,False,ok,-6.454771558525446,1.4928409800386427e-08,-3.5885733964124715,-2.929885661157025,-2.6031845661157025,6.0,44.0,True,
+1d,8,2024-08-14,2024-10-15,45,lag_sensitivity,KPSS,c,level_or_trend_stationarity,,Bartlett_short_bandwidth,False,ok,0.27047852171431064,0.16429320654759308,0.7428,0.4614,0.3475,6.0,45.0,False,
+1d,9,2024-10-16,2024-12-17,43,main,ADF,c,unit_root,7.0,bic,False,ok,-7.622914265883881,2.1052063412748204e-11,-3.596635636000432,-2.933297331821618,-2.6049909750566895,0.0,42.0,True,
+1d,9,2024-10-16,2024-12-17,43,main,PP,c,unit_root,,Bartlett_short_bandwidth,False,ok,-7.788985789397167,8.036199120845125e-12,-3.596635636000432,-2.933297331821618,-2.6049909750566895,3.0,42.0,True,
+1d,9,2024-10-16,2024-12-17,43,main,KPSS,c,level_or_trend_stationarity,,Bartlett_short_bandwidth,False,ok,0.15786717468934225,0.36706820140290586,0.7428,0.4614,0.3475,3.0,43.0,False,
+1d,9,2024-10-16,2024-12-17,43,trend_sensitivity,ADF,ct,unit_root,7.0,bic,False,ok,-7.718327915979614,3.1986826824006954e-10,-4.1922463983371125,-3.520758216175359,-3.1911390346614836,0.0,42.0,True,
+1d,9,2024-10-16,2024-12-17,43,trend_sensitivity,PP,ct,unit_root,,Bartlett_short_bandwidth,False,ok,-8.017652849680287,6.50416830506974e-11,-4.1922463983371125,-3.520758216175359,-3.1911390346614836,3.0,42.0,True,
+1d,9,2024-10-16,2024-12-17,43,trend_sensitivity,KPSS,ct,level_or_trend_stationarity,,Bartlett_short_bandwidth,False,ok,0.043641037172290606,0.6663844424156409,0.2175,0.1479,0.1193,3.0,43.0,False,
+1d,9,2024-10-16,2024-12-17,43,lag_sensitivity,ADF,c,unit_root,7.0,aic,False,ok,-5.132937676371661,1.2031431199061792e-05,-3.6055648906249997,-2.937069375,-2.606985625,2.0,40.0,True,
+1d,9,2024-10-16,2024-12-17,43,lag_sensitivity,PP,c,unit_root,,Bartlett_short_bandwidth,False,ok,-8.32783391990884,3.4321510903985314e-13,-3.596635636000432,-2.933297331821618,-2.6049909750566895,6.0,42.0,True,
+1d,9,2024-10-16,2024-12-17,43,lag_sensitivity,KPSS,c,level_or_trend_stationarity,,Bartlett_short_bandwidth,False,ok,0.24203642636201697,0.19925496338608756,0.7428,0.4614,0.3475,6.0,43.0,False,
+1d,10,2024-12-18,2024-12-30,7,main,ADF,c,unit_root,0.0,bic,True,too_short,,,,,,,,,n < 8; test not computed
+1d,10,2024-12-18,2024-12-30,7,main,PP,c,unit_root,,Bartlett_short_bandwidth,True,too_short,,,,,,,,,n < 8; test not computed
+1d,10,2024-12-18,2024-12-30,7,main,KPSS,c,level_or_trend_stationarity,,Bartlett_short_bandwidth,True,too_short,,,,,,,,,n < 8; test not computed
+1d,10,2024-12-18,2024-12-30,7,lag_sensitivity,ADF,c,unit_root,0.0,aic,True,too_short,,,,,,,,,n < 8; test not computed
+1d,10,2024-12-18,2024-12-30,7,lag_sensitivity,PP,c,unit_root,,Bartlett_short_bandwidth,True,too_short,,,,,,,,,n < 8; test not computed
+1d,10,2024-12-18,2024-12-30,7,lag_sensitivity,KPSS,c,level_or_trend_stationarity,,Bartlett_short_bandwidth,True,too_short,,,,,,,,,n < 8; test not computed

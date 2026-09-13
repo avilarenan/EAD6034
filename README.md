@@ -2,6 +2,35 @@
 
 Repositório do seminário **Previsibilidade linear em múltiplas escalas e classes de ativos**, desenvolvido para a disciplina EAD6034 da FEA-USP.
 
+## Entrega de 14/09/2026
+
+Continuação em Python da comparação multiescala do WIN, usando exclusivamente os 246 pregões de 2024. A entrega contém ADF, Phillips-Perron e KPSS, busca ARMA por BIC, comparação com AIC e diagnóstico dos resíduos.
+
+O BIC escolheu ARMA(0,0) com constante nas seis escalas. A referência de ausência de autocorrelação residual é rejeitada em 1, 5 e 60 minutos, e há dependência nos resíduos ao quadrado intradiários. A conclusão distingue essa escolha parcimoniosa de um modelo plenamente adequado. A revisão de toda a grade, a sensibilidade ao horizonte e as alternativas por AIC estão documentadas.
+
+- [Apresentação em PDF, 7 páginas](results/entrega_14_09/ENTREGA_14_09.pdf)
+- [Relatório técnico com hipóteses, decisões e resultados completos](results/entrega_14_09/RELATORIO_14_09.md)
+- [Guia para apresentação e perguntas](results/entrega_14_09/GUIA_APRESENTACAO.md)
+- [Testes por trecho e especificação](results/entrega_14_09/tables/stationarity_all.csv)
+- [Grade de modelos ARMA](results/entrega_14_09/tables/arma_grid_all.csv)
+- [Modelos selecionados](results/entrega_14_09/tables/selected_models.csv)
+- [Diagnósticos](results/entrega_14_09/tables/residual_diagnostics.csv)
+
+**Fronteiras entre pregões:** testes convencionais são aplicados separadamente aos trechos contínuos. Não se atribui um p-valor convencional a uma regressão pooled com resets. As taxas de rejeição por escala são descritivas. Sessões de 30/60 minutos contêm apenas 18/9 observações, o que limita a evidência. No diário, sete segmentos são testáveis e os dez segmentos entram na estimação ARMA.
+
+**Box-Jenkins:** parâmetros comuns, verossimilhança gaussiana com inicialização estacionária em cada segmento e grade `p,q=0,...,5`. BIC conta média e variância entre os parâmetros. O relatório registra falhas, restrições de identificação e convergência. O Q dos resíduos respeita as fronteiras e acompanha uma calibração bootstrap gaussiana com reestimação, condicionada à ordem escolhida. Essa referência não corrige heteroscedasticidade.
+
+```bash
+pip install -r requirements-lock-14-09.txt
+pip install -e . --no-deps
+OPENBLAS_NUM_THREADS=1 python scripts/run_entrega_14_09.py \
+  --input data/raw/BTG-ATS-A26.zip \
+  --output results/entrega_14_09
+PYTHONPATH=src python -m unittest discover -s tests -v
+```
+
+O comando calcula a grade completa com três inicializações e executa 999 réplicas bootstrap por escala. `--skip-report` omite apenas a geração de figuras, Markdown e PDF. O parâmetro `--bootstrap-reps` controla as réplicas. Os caches locais de retornos/resíduos em `private/` não são publicados. As decisões da entrega de 31/08 e seus artefatos continuam disponíveis abaixo.
+
 ## Entrega de 31/08/2026
 
 A versão principal da primeira entrega implementa a dimensão multiescala da proposta:
