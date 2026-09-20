@@ -14,6 +14,7 @@ import pandas as pd
 SCALES = ["1min", "5min", "15min", "30min", "60min", "1d"]
 LABELS = dict(zip(SCALES, ["1 min", "5 min", "15 min", "30 min", "60 min", "Diário OC"]))
 REPO = "https://github.com/avilarenan/EAD6034"
+DATASET_URL = "https://alphalab.btgpactual.com/datasets/publication:7a74b3ae-90e0-4393-b1e0-01e61c0bedba"
 
 
 def tex(value):
@@ -102,6 +103,8 @@ def build_slides(output, code_ref="main", figures=None):
     body += r"Treino: \textbf{2024}, 246 pregões.\par Teste: \textbf{2025}, 221 pregões.\medskip\par" + "\n"
     body += r"Janela comum: 09:05--18:05.\par Retornos logarítmicos em \%.\medskip\par" + "\n"
     body += r"\alert{Não criamos retorno overnight.}\par Os lags e estados \textbf{continuam} entre pregões, em tempo de negociação." + "\n"
+    body += r"\par\medskip\scriptsize\href{" + DATASET_URL + r"}{Fonte: BTG Alpha Lab | BTG-ATS-A26}\par "
+    body += r"Candles de negócios B3. Contrato de maior volume do próprio dia: seleção retrospectiva."
     body += r"\end{column}\begin{column}{0.47\textwidth}\centering\scriptsize" + "\n"
     body += table(["Escala", "$n$ treino", "$n$ teste"], counts)
     body += r"\smallskip\scriptsize 02/01--30/12/2024; 02/01--28/11/2025.\par Diário: abertura--fechamento da janela.\par "
@@ -155,7 +158,12 @@ def build_slides(output, code_ref="main", figures=None):
     rejected = [LABELS[s] for s in SCALES if principal.loc[s, "lb_pvalue"] < .05]
     body += r"\raggedright\medskip\small \textbf{Seleção não é validação.} "
     body += tex("Ljung–Box rejeita em " + ", ".join(rejected) + "." if rejected else "Ljung–Box não rejeita nos horizontes principais.")
-    body += r"\par\medskip AR e MA positivos são comparadores pré-especificados; não substituem o vencedor geral.\par"
+    grid = read("arma_grid")
+    minute_grid = grid.loc[grid.scale.eq("1min") & grid.status.eq("eligible")]
+    zero_bic = float(minute_grid.loc[minute_grid.p.eq(0) & minute_grid.q.eq(0), "bic"].iloc[0])
+    delta_bic = zero_bic - float(main_models.loc["1min", "bic"])
+    body += r"\par\smallskip\scriptsize Minuto: vantagem de apenas $\Delta BIC=" + number(delta_bic, 2) + r"$ sobre (0,0); candidato sem validação residual.\par "
+    body += r"5 min: não rejeita em 24 lags, mas rejeita em 10, 12 e 20. AR e MA são as alternativas lineares.\par\smallskip "
     body += r"\scriptsize Diagnósticos assintóticos aproximados sob heteroscedasticidade. Q usa $h-p-q-1$ (Aula 4); $h=60$ em 1 min, 24 nas demais intradiárias, 20 no diário."
     frame("BIC seleciona; os resíduos ainda precisam passar", body, "annual_models.py", "Aulas 3--4 | Box--Jenkins e alternativas lineares")
 
@@ -172,7 +180,7 @@ def build_slides(output, code_ref="main", figures=None):
     body = r"\tagline{Aula 6: constante, ARCH(1) e GARCH(1,1), escolhidos apenas em 2024}" + "\n"
     body += r"\centering\small" + table(["Escala", "Variância BIC", "$\\alpha+\\beta$", "$p$ Q($z^2$)*", "MSE/const.*"], var_rows)
     body += r"\raggedright\medskip\small Estimação \textbf{sequencial}; previsão pontual do retorno \textbf{não muda}.\par BIC não atesta adequação: rejeições em Q($z^2$) sinalizam dependência restante.\par\medskip"
-    body += r"\scriptsize *Q dos resíduos padronizados ao quadrado no maior lag exibido. MSE em 2025 contra inovação ao quadrado: proxy ruidosa, não variância observada. BIC das variâncias é condicional à média fixa."
+    body += r"\scriptsize *Q dos resíduos padronizados ao quadrado no maior lag exibido. MSE em 2025 contra inovação ao quadrado: proxy ruidosa, não variância observada.\par Captura parcial: minuto, hora e diário ainda rejeitam em Q($z^2$). BIC é condicional à média fixa."
     frame("Prever a variância não é prever a direção", body, "conditional_volatility.py", "Aula 6 | Estabilidade, persistência e diagnóstico")
 
     accuracy_rows = []
@@ -189,7 +197,7 @@ def build_slides(output, code_ref="main", figures=None):
                               pformat(d.p_value)])
     body = r"\tagline{21/09: parâmetros fixos de 2024, somente informação passada em cada origem}" + "\n"
     body += r"\centering\small" + table(["Escala", "ARMA", "AR", "MA", "50/50", "$p$ DM"], accuracy_rows)
-    body += r"\raggedright\medskip\small \textbf{Razão MSE/modelo zero: menor que 1 é melhor.}\par "
+    body += r"\raggedright\medskip\small \textbf{MSE do modelo / MSE do retorno zero: menor que 1 é melhor.}\par "
     target_count = f"{int(alignment.targets.iloc[0]):,}".replace(",", ".")
     body += tex(f"Intradiário: {target_count} alvos idênticos de 60 minutos, sem sobreposição.") + r"\par"
     body += r"\scriptsize *Diário prevê sua janela open-to-close: alvo diferente, não entra no ranking intradiário.\par DM compara apenas AR versus MA, não ARMA versus zero. Referência aproximada; p-valores sem ajuste de multiplicidade. Perdas absolutas e horizonte nativo estão no relatório."
@@ -198,15 +206,8 @@ def build_slides(output, code_ref="main", figures=None):
     common = main_accuracy.loc[main_accuracy.evaluation.eq("common_60min")].set_index("scale")
     hour = float(common.loc["60min", "mse_ratio_vs_zero"])
     minute = float(common.loc["1min", "mse_ratio_vs_zero"])
-    conclusion = (f"ARMA por BIC, alvo comum: MSE/zero = {number(minute, 4)} (1 min) e {number(hour, 4)} (60 min). ")
-    if np.isclose(hour, minute, atol=1e-10, rtol=0):
-        conclusion += "Desempenhos numericamente equivalentes. "
-    if min(hour, minute) >= 1:
-        conclusion += "Nenhum dos dois supera o retorno zero."
-    else:
-        conclusion += "Diferença descritiva, sem teste de superioridade entre escalas."
-    body = r"\tagline{21/09: previsibilidade, horário e gap são perguntas relacionadas, mas distintas}" + "\n"
-    body += r"\small\textbf{Previsibilidade:} " + tex(conclusion) + r"\par\medskip"
+    body = r"\tagline{A hipótese de maior previsibilidade horária não recebeu suporte neste desenho}" + "\n"
+    body += r"\small\textbf{Evidência:} ARMA no alvo comum tem " + number(100*(minute-1), 3) + r"\% (1 min) e " + number(100*(hour-1), 3) + r"\% (60 min) mais MSE que zero. Diferença descritiva; DM compara AR com MA.\par\medskip"
     body += r"\begin{columns}[T]\begin{column}{0.50\textwidth}\small"
     subgroup = accuracy.loc[accuracy.scale.eq("60min") & accuracy.evaluation.eq("common_60min")
                             & accuracy.model.eq("ARMA_BIC")]
@@ -219,13 +220,14 @@ def build_slides(output, code_ref="main", figures=None):
     body += r"\textbf{ARMA de 60 min em 2025}\par\smallskip" + table(["Recorte", "$n$", "MSE/zero"], group_rows)
     body += r"\scriptsize Início: 09:05--10:05; meio: até 17:05; fim: até 18:05. Todas as escalas no relatório.\par Grupos não são aditivos; gaps indisponíveis excluídos desse recorte."
     body += r"\end{column}\begin{column}{0.46\textwidth}\small"
-    body += r"\textbf{Overnight:} fora do retorno, mas não da memória. Gap observado tem corte fixado em 2024.\par\medskip"
-    body += r"\alert{Não identificamos causalmente efeitos de leilões.}\par\medskip"
-    body += r"\scriptsize Sem flags de fase; horários históricos incompletos. A janela exclui calls próprios do WIN nos regimes documentados, mas pode incluir calls das ações.\par\medskip "
-    body += r"Dias completos escolhidos retrospectivamente; inferência aproximada; sem teste de ganho após custos."
+    body += r"\textbf{Força:} mesmos alvos e parâmetros fixados antes do teste.\par\smallskip "
+    body += r"\textbf{Limites:} contrato escolhido por volume diário e dias completos são seleções retrospectivas.\par\smallskip "
+    body += r"\alert{Leilões: mecanismos plausíveis, sem identificação causal.}\par\smallskip "
+    body += r"\scriptsize Overnight fora do alvo, mas lags continuam. Sem flags de fase; horários históricos incompletos.\par\smallskip "
+    body += r"Dependência da variância não garante direção previsível. Resultado restrito a este ativo, janela e modelos; não prova eficiência de mercado ou lucro após custos."
     body += r"\end{column}\end{columns}\medskip\scriptsize"
     body += r"\href{" + REPO + r"/blob/main/results/entrega_21_09/RELATORIO_21_09.md}{Relatório, análises por faixa/gap e resultados completos}" + "\n"
-    frame("Agregação não garante ganho preditivo", body, "forecast_pipeline.py", "Síntese cumulativa | Benchmark: Matías e Reboredo (2012), adaptação linear")
+    frame("Conclusão: alcance dos resultados e da metodologia", body, "forecast_pipeline.py", "Síntese cumulativa | Evidência, adequação e utilidade econômica são distintas")
     path = out / "ENTREGA_21_09.tex"
     path.write_text(preamble + "\n".join(slides) + "\n\\end{document}\n", encoding="utf-8")
     for _ in range(2):
@@ -250,9 +252,22 @@ def write_report(output, code_ref="main"):
     for name in scientific_modules:
         if metadata["code_sha256"].get(name) != hashes[name]:
             raise ValueError(f"Scientific source {name} changed after analysis; rerun before reporting")
+    metadata.setdefault("analysis_code_ref", metadata.get("code_ref"))
     metadata.update(code_ref=code_ref, code_sha256=hashes,
                     report_created_utc=datetime.now(timezone.utc).isoformat(),
                     presentation_format="seven_slide_editable_Beamer_and_PDF")
+    metadata["source_documentation"] = {
+        "provider": "BTG Alpha Lab / BTG Solutions Data Services",
+        "dataset": "BTG-ATS-A26",
+        "landing_page": DATASET_URL,
+        "readme": "https://dataservices.btgpactualsolutions.com/alphalab/v1/api/alphalab/readme/README-BTG-ATS-A26.md",
+        "consulted_on": "2026-09-20",
+        "timestamp": "start of one-minute interval, UTC",
+        "supplier_contract_selection": "highest traded volume in the same day; ex post",
+        "fresh_download_hash_compared": False,
+        "operational_caveat": "Causal forecast recursion does not undo ex-post contract and full-day selection",
+    }
+    metadata["estimation_or_selection_scope"] = "Model orders and fitted parameters; excludes supplier contract selection and complete-session filtering"
     manifest.write_text(json.dumps(metadata, ensure_ascii=False, indent=2, allow_nan=False) + "\n", encoding="utf-8")
     figures = make_figures(out, code_ref=code_ref)
     write_narrative(out, code_ref=code_ref)

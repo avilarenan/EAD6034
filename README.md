@@ -10,11 +10,16 @@ Estudo empírico do **WIN nas seis escalas disponíveis**, com treino exclusivam
 
 - [Slides cumulativos — sete páginas](results/entrega_21_09/ENTREGA_21_09.pdf) e [fonte editável Beamer](results/entrega_21_09/ENTREGA_21_09.tex).
 - [Relatório técnico completo](results/entrega_21_09/RELATORIO_21_09.md) e [guia de apresentação](results/entrega_21_09/GUIA_APRESENTACAO.md).
+- [Conclusão crítica](results/entrega_21_09/CONCLUSAO_CRITICA.md) e [perguntas dos professores, com respostas e referências às aulas](results/entrega_21_09/PERGUNTAS_PROFESSORES.md).
 - [Protocolo pré-especificado](docs/PROTOCOL_21_09.md) e [auditoria histórica dos horários/leilões](docs/market_hours_2024_2025.md).
 - [Código principal](src/ead6034/forecast_pipeline.py), [dados](src/ead6034/trading_time_data.py), [testes e ARMA](src/ead6034/annual_models.py), [previsões e DM](src/ead6034/forecast_evaluation.py) e [ARCH/GARCH](src/ead6034/conditional_volatility.py).
 - [Modelos selecionados](results/entrega_21_09/tables/selected_models.csv), [acurácia](results/entrega_21_09/tables/accuracy.csv), [DM](results/entrega_21_09/tables/diebold_mariano.csv) e [manifesto reproduzível](results/entrega_21_09/analysis_summary.json).
 
 **Amostras:** 246 pregões comuns de 02/01 a 30/12/2024; 221 pregões comuns de 02/01 a 28/11/2025. Janela 09:05–18:05 de São Paulo. As ordens e parâmetros são fixados no treino; durante o teste só os estados são atualizados com informação passada. O filtro de dias completos é retrospectivo e condiciona a amostra avaliada.
+
+**Origem dos dados:** [BTG Alpha Lab — BTG-ATS-A26](https://alphalab.btgpactual.com/datasets/publication:7a74b3ae-90e0-4393-b1e0-01e61c0bedba), candles de negócios da B3. [Documentação e proveniência](docs/DATA_SOURCE.md). O fornecedor seleciona o vencimento de maior volume **do próprio dia**; essa escolha ex post também limita a interpretação operacional. A causalidade temporal das previsões não transforma a composição retrospectiva da base em uma regra executável antecipadamente.
+
+**Conclusão principal:** os modelos não superaram globalmente o retorno zero em 2025. No horizonte comum de 60 minutos, o ARMA por BIC tem aproximadamente 0,194% a 0,203% mais MSE que zero. A evidência de dinâmica na variância é mais forte, mas a modelagem é parcial e não altera a previsão pontual. Os resultados não identificam causalmente efeitos de leilões. O roteiro detalha essas ressalvas e as perguntas técnicas das Aulas 2–6 disponíveis.
 
 **Comparação justa:** além da próxima barra de cada escala, as cinco escalas intradiárias preveem os mesmos 1.989 alvos não sobrepostos de 60 minutos. MSE bruto de horizontes distintos não ranqueia previsibilidade. O diário open-to-close é avaliado separadamente. DM compara AR puro com MA puro, não modelos de variância aninhados. ARCH/GARCH é estimado sequencialmente sobre a mesma média fixa; sua inclusão não muda a previsão pontual do retorno.
 

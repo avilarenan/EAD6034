@@ -1,0 +1,24 @@
+{
+  "analysis_code_ref": "a6c7de81989e586ea117e994f366a1bb6933a66b",
+  "purpose": "Bind the reviewed oral script, FAQ and critical conclusion to the unchanged public numerical results",
+  "table_sha256": {
+    "sequence_audit.csv": "d0e479a79e51b30527d52a2539aa8fb40b5f17fd2d986cecc1141b8c6070c671",
+    "descriptive.csv": "27e9c16542de865f977685e68f3e3c3c70a9c27d20e1f2da6c6be8ff112d9967",
+    "time_band_description.csv": "d07271eb34abf30a340fa7a4bfe9135a29c68101ecab1741ccb7b82f5d08f8bd",
+    "monthly_description.csv": "241250c86baeb4433d0866f2b71a69bbe6b6a6fa58239c2dba0efe2a63026df5",
+    "lag_boundary_description.csv": "9caeb946715d4c7882d4baa08d2016e064f9a4a8e241f111c965b49a72cc0716",
+    "return_acf_pacf.csv": "b0cde08ee0508f71ff3dffc920d0dfddb66344a22098a2fa9d3c8494b0f2578c",
+    "stationarity.csv": "e1b4a0073f2405b09e949aa7105435b73164606220c055ceeb697947c49478f7",
+    "arma_grid.csv": "d7c5ee49375d80282502499578975b18bf2abd2d0bd9ebb06445261bcd16811b",
+    "selected_models.csv": "5f21938ab435866490ea7c26b783dced99553758790e37b3c1580bbe83ee1960",
+    "mean_diagnostics.csv": "ea67d9543e733c3bd2061efd4def816856b268a97d8c3857de02e84a4e50fedb",
+    "accuracy.csv": "ccb9be4ff2618c61cf024680e7777f9dd907c68f53fd5070d25b2c35dbe9196d",
+    "diebold_mariano.csv": "19d078d611c14076f20b4f765a75c342e7dc41e017da32207d3864f832685401",
+    "variance_models.csv": "525c2e8cfeb59cc5fe62153c9fa900450871c359773dada9cb20fa83ff14862b",
+    "variance_diagnostics.csv": "cec852e89c7d37af6f5da2f78ca39c6852c638e90e735b14bcbbbdcbe1bb0eb6",
+    "common_target_alignment.csv": "8f6b924c36ea37b9f32fd347bf9427c9d76d2b191a89a5ef8258e27ecbafb4cf",
+    "forecast_equivalence.csv": "094e3ccc2b913cb5a4fea695f04e17d6a577df5124b6116e0a01a8e961c43c58",
+    "observed_gap_summary.csv": "47db1b0bb4ee83472c05ad360ee22b4ed7ae9ac116c6c7771045a1245c71c1fc",
+    "observed_source_hours.csv": "dcc44ef6ef122e77aec62ce1c20239acbe4662eb0f26997a2851f3f62cc71908"
+  }
+}

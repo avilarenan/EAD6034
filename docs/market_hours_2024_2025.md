@@ -63,3 +63,11 @@ Os valores individuais de preços e retornos auxiliares permanecem privados; o r
 ## Formulação adequada para slides e conclusões
 
 “Comparamos a previsão nas seis escalas e, no intradiário, em faixas fixas da janela 09:05-18:05. O retorno entre sessões foi excluído do alvo principal, embora as defasagens atravessem pregões. A sensibilidade ao gap observado e ao horário é exploratória. Os candles não identificam a fase de leilão, e a cronologia documental de horários é incompleta; por isso, os resultados não identificam causalmente efeitos de leilões nem demonstram ausência de efeitos overnight.”
+
+## Mecanismos de leilão e hipóteses de microestrutura
+
+O [Manual de Procedimentos Operacionais de Negociação da B3, edição de 17/02/2025](https://www.b3.com.br/data/files/55/65/B5/7D/AC31591029BEEC39AC094EA8/MPO%20de%20Negociacao%20da%20B3.pdf), pp. 36 e 55, descreve a formação de preço nas fases de abertura/fechamento e a maximização da quantidade negociada como primeiro critério do fixing. Isso não garante menor volatilidade: a incorporação de uma surpresa pode produzir uma variação expressiva. O mecanismo documentado não identifica seu efeito causal nesta amostra.
+
+O mesmo manual, p. 45, relaciona spread, profundidade e volume à liquidez. A alternância de negócios nas ofertas de compra e venda pode gerar reversões nos preços negociados sem igual oscilação no ponto médio das ofertas (*bid–ask bounce*). Essa é uma hipótese interpretativa: os candles de negócios não contêm cotações nem permitem verificar o mecanismo. Agregar minutos em horas pode atenuar tal oscilação, mas também acumular choques ou ocultar sinais; maior previsibilidade horária exige evidência da comparação preditiva, não decorre do mecanismo por definição.
+
+A edição do manual está identificada no [portal normativo da B3](https://www.b3.com.br/pt_br/regulacao/estrutura-normativa/operacoes/). Ela fundamenta essas descrições operacionais, sem completar a cronologia histórica dos horários de 2024–2025.
