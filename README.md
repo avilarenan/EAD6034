@@ -9,8 +9,8 @@ Estudo empírico do **WIN nas seis escalas disponíveis**, com treino exclusivam
 **Mudança aprovada no índice temporal:** retornos continuam sem atravessar pregões ou contratos, mas suas defasagens e os estados dos modelos atravessam as fronteiras entre sessões. Uma série anual por escala substitui os testes separados por pregão. Em 60 minutos, são **2.214 observações de treino**, não apenas nove por sessão. Isso não demonstra ausência de efeitos overnight; eles não são modelados separadamente.
 
 - [Slides cumulativos — sete páginas](results/entrega_21_09/ENTREGA_21_09.pdf) e [fonte editável Beamer](results/entrega_21_09/ENTREGA_21_09.tex).
-- [Relatório técnico completo](results/entrega_21_09/RELATORIO_21_09.md) e [guia de apresentação](results/entrega_21_09/GUIA_APRESENTACAO.md).
-- [Conclusão crítica](results/entrega_21_09/CONCLUSAO_CRITICA.md) e [perguntas dos professores, com respostas e referências às aulas](results/entrega_21_09/PERGUNTAS_PROFESSORES.md).
+- [Relatório técnico completo](results/entrega_21_09/RELATORIO_21_09.md) e [guia de apresentação — cinco minutos de fala](results/entrega_21_09/GUIA_APRESENTACAO.md).
+- [Conclusão crítica](results/entrega_21_09/CONCLUSAO_CRITICA.md) e [questões, com respostas e referências às aulas](results/entrega_21_09/questões.md).
 - [Protocolo pré-especificado](docs/PROTOCOL_21_09.md) e [auditoria histórica dos horários/leilões](docs/market_hours_2024_2025.md).
 - [Código principal](src/ead6034/forecast_pipeline.py), [dados](src/ead6034/trading_time_data.py), [testes e ARMA](src/ead6034/annual_models.py), [previsões e DM](src/ead6034/forecast_evaluation.py) e [ARCH/GARCH](src/ead6034/conditional_volatility.py).
 - [Modelos selecionados](results/entrega_21_09/tables/selected_models.csv), [acurácia](results/entrega_21_09/tables/accuracy.csv), [DM](results/entrega_21_09/tables/diebold_mariano.csv) e [manifesto reproduzível](results/entrega_21_09/analysis_summary.json).

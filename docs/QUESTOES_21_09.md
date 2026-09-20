@@ -1,4 +1,4 @@
-# Perguntas de professores — EAD6034, entrega de 21/09/2026
+# Questões — EAD6034, entrega de 21/09/2026
 
 FAQ técnico cumulativo para o seminário de 28/09/2026. As páginas citadas são **páginas físicas dos PDFs, contando a capa como página 1**. Foram consultadas as Aulas 2, 3, 4, 5 e 6; não se atribui conteúdo às Aulas 0 ou 1, que não estavam disponíveis nesta revisão. Os resultados abaixo vêm das tabelas públicas da entrega de 21/09, não de novas estimações.
 

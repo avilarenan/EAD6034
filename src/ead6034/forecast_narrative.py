@@ -140,8 +140,8 @@ def _empirical_summary(data: dict[str, pd.DataFrame]) -> list[str]:
     return conclusions
 
 
-def write_narrative(output, code_ref: str = "main") -> None:
-    """Write the cumulative report and seven-slide speaker guide, from CSV only."""
+def write_narrative(output, code_ref: str = "main", *, documents: tuple[str, ...] | None = None) -> None:
+    """Write public reports and reviewed notes, optionally selecting documents."""
     out = Path(output)
     if not re.fullmatch(r"[A-Za-z0-9._/-]+", code_ref):
         raise ValueError("code_ref must be a safe Git commit, tag or branch reference")
@@ -498,9 +498,9 @@ recursão de variância, Jacobiano, identidade de Q e cálculo de DM; verificar 
         return template.replace(f"{REPOSITORY}/blob/main/results/entrega_21_09", result_base)
 
     guide = render_discussion("ROTEIRO_ORAL_21_09.md")
-    questions = render_discussion("PERGUNTAS_PROFESSORES_21_09.md")
+    questions = render_discussion("QUESTOES_21_09.md")
     critical = render_discussion("CONCLUSAO_CRITICA_21_09.md")
-    guide += "\n\n## Cartão de resultados gerado dos CSV\n\n"
+    guide += "\n\n## Cartão de resultados — apoio, fora dos cinco minutos\n\n"
     guide += "\n".join(f"- {item}" for item in empirical)
     guide += f"\n\nGerador: {code('forecast_narrative')}.\n"
     critical_section = critical.split("\n", 1)[1].replace("\n## ", "\n### ")
@@ -511,10 +511,16 @@ recursão de variância, Jacobiano, identidade de Q e cálculo de DM; verificar 
     outputs = {
         "RELATORIO_21_09.md": report,
         "GUIA_APRESENTACAO.md": guide,
-        "PERGUNTAS_PROFESSORES.md": questions,
+        "questões.md": questions,
         "CONCLUSAO_CRITICA.md": critical,
     }
+    if documents is not None:
+        unknown = set(documents).difference(outputs)
+        if unknown:
+            raise ValueError(f"Unknown narrative documents: {sorted(unknown)}")
     for name, content in outputs.items():
+        if documents is not None and name not in documents:
+            continue
         if "{CODE_BASE}" in content or "{RESULT_BASE}" in content:
             raise ValueError(f"Unresolved source link in {name}")
         (out / name).write_text(content.rstrip() + "\n", encoding="utf-8")
