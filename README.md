@@ -2,6 +2,37 @@
 
 Repositório do seminário **Previsibilidade linear em múltiplas escalas e classes de ativos**, desenvolvido para a disciplina EAD6034 da FEA-USP.
 
+## Entrega de 21/09/2026 — versão cumulativa atual
+
+Estudo empírico do **WIN nas seis escalas disponíveis**, com treino exclusivamente em 2024 e avaliação em 2025. A pergunta sobre maior previsibilidade horária é confrontada com os resultados, não imposta aos modelos. Esta versão incorpora e recalcula as etapas de 31/08 e 14/09 e acrescenta previsão, modelos alternativos, combinação, Diebold–Mariano e ARCH/GARCH, usando somente métodos das aulas.
+
+**Mudança aprovada no índice temporal:** retornos continuam sem atravessar pregões ou contratos, mas suas defasagens e os estados dos modelos atravessam as fronteiras entre sessões. Uma série anual por escala substitui os testes separados por pregão. Em 60 minutos, são **2.214 observações de treino**, não apenas nove por sessão. Isso não demonstra ausência de efeitos overnight; eles não são modelados separadamente.
+
+- [Slides cumulativos — sete páginas](results/entrega_21_09/ENTREGA_21_09.pdf) e [fonte editável Beamer](results/entrega_21_09/ENTREGA_21_09.tex).
+- [Relatório técnico completo](results/entrega_21_09/RELATORIO_21_09.md) e [guia de apresentação](results/entrega_21_09/GUIA_APRESENTACAO.md).
+- [Protocolo pré-especificado](docs/PROTOCOL_21_09.md) e [auditoria histórica dos horários/leilões](docs/market_hours_2024_2025.md).
+- [Código principal](src/ead6034/forecast_pipeline.py), [dados](src/ead6034/trading_time_data.py), [testes e ARMA](src/ead6034/annual_models.py), [previsões e DM](src/ead6034/forecast_evaluation.py) e [ARCH/GARCH](src/ead6034/conditional_volatility.py).
+- [Modelos selecionados](results/entrega_21_09/tables/selected_models.csv), [acurácia](results/entrega_21_09/tables/accuracy.csv), [DM](results/entrega_21_09/tables/diebold_mariano.csv) e [manifesto reproduzível](results/entrega_21_09/analysis_summary.json).
+
+**Amostras:** 246 pregões comuns de 02/01 a 30/12/2024; 221 pregões comuns de 02/01 a 28/11/2025. Janela 09:05–18:05 de São Paulo. As ordens e parâmetros são fixados no treino; durante o teste só os estados são atualizados com informação passada. O filtro de dias completos é retrospectivo e condiciona a amostra avaliada.
+
+**Comparação justa:** além da próxima barra de cada escala, as cinco escalas intradiárias preveem os mesmos 1.989 alvos não sobrepostos de 60 minutos. MSE bruto de horizontes distintos não ranqueia previsibilidade. O diário open-to-close é avaliado separadamente. DM compara AR puro com MA puro, não modelos de variância aninhados. ARCH/GARCH é estimado sequencialmente sobre a mesma média fixa; sua inclusão não muda a previsão pontual do retorno.
+
+```bash
+python -m venv .venv
+source .venv/bin/activate
+python -m pip install -r requirements-lock-21-09.txt
+python -m pip install -e . --no-deps
+OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 \
+  python scripts/run_entrega_21_09.py \
+  --input data/raw/BTG-ATS-A26.zip --output results/entrega_21_09 --workers 3
+PYTHONPATH=src OPENBLAS_NUM_THREADS=1 python -m unittest discover -s tests -v
+```
+
+Os slides requerem `pdflatex`, Beamer e Latin Modern. `--skip-report` executa toda a análise sem LaTeX. Para regenerar apenas figuras/relatos/slides a partir dos CSV públicos: `PYTHONPATH=src python -m ead6034.forecast_report --output results/entrega_21_09 --code-ref COMMIT_DO_CODIGO`. Use o hash registrado no manifesto para links fixados. Não há dados individuais publicados: ZIP, preços, retornos, previsões, resíduos e caches permanecem locais em diretórios ignorados pelo Git.
+
+As versões abaixo são **históricas**, com convenções metodológicas anteriores documentadas, e não foram sobrescritas.
+
 ## Entrega de 14/09/2026
 
 Continuação em Python da comparação multiescala do WIN, usando exclusivamente os 246 pregões de 2024. A entrega contém ADF, Phillips-Perron e KPSS, busca ARMA por BIC, comparação com AIC e diagnóstico dos resíduos.
@@ -70,7 +101,7 @@ O ZIP fornecido contém candles de **1 minuto**, apesar de a proposta inicial co
 
 Os dados brutos não são publicados neste repositório. Consulte [`data/README.md`](data/README.md) para a estrutura esperada.
 
-## Decisões metodológicas desta etapa
+## Decisões metodológicas de 31/08 (histórico)
 
 1. O WIN é o análogo mais direto ao índice usado no benchmark de Matías e Reboredo (2012).
 2. O arquivo já fornece um encadeamento com um único contrato ativo por pregão. O código valida essa propriedade e nunca calcula retorno entre dias ou tickers.

@@ -13,3 +13,22 @@ data/raw/*
 # Resumo diário com níveis exatos derivado do feed: apenas uso local.
 results/**/tables/daily_summary_in_sample.csv
 results/entrega_14_09/private/
+results/entrega_21_09/private/
+results/entrega_21_09/rendered/
+results/entrega_21_09/*.aux
+results/entrega_21_09/*.log
+results/entrega_21_09/*.nav
+results/entrega_21_09/*.out
+results/entrega_21_09/*.snm
+results/entrega_21_09/*.toc
+results/entrega_21_09/*.vrb
+results/entrega_21_09/*.fls
+results/entrega_21_09/*.fdb_latexmk
+
+# Tabelas locais por escala são intermediárias; as consolidadas são publicadas.
+results/entrega_21_09/tables/*_1min.csv
+results/entrega_21_09/tables/*_5min.csv
+results/entrega_21_09/tables/*_15min.csv
+results/entrega_21_09/tables/*_30min.csv
+results/entrega_21_09/tables/*_60min.csv
+results/entrega_21_09/tables/*_1d.csv
