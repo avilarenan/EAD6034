@@ -1,0 +1,451 @@
+{
+  "source_sha256": "dc9a661df39efa85de1032d71cc2a8cca1a4a8626ac8698bb974a829337a4e23",
+  "member_name": "BTG-ATS-A26/WIN.parquet",
+  "config": {
+    "start_date": "2024-01-01",
+    "end_date": "2025-11-28",
+    "source_timezone": "UTC",
+    "market_timezone": "America/Sao_Paulo",
+    "session_start": "09:05",
+    "session_end": "18:05",
+    "train_end_date": "2024-12-31",
+    "test_start_date": "2025-01-01",
+    "comparison_horizon_minutes": 60,
+    "daily_max_lag": 15,
+    "known_source_gaps": [
+      "2024-04-16"
+    ]
+  },
+  "audits": {
+    "train": {
+      "raw_rows": 141245,
+      "raw_start": "2024-01-02 12:00:00",
+      "raw_end": "2024-12-30 21:31:00",
+      "trading_days": 250,
+      "contracts": 7,
+      "maximum_symbols_per_day": 1,
+      "duplicate_symbol_timestamps": 0,
+      "missing_values": 0,
+      "nonpositive_closes": 0,
+      "invalid_ohlc_rows": 0,
+      "local_date_mismatches": 0
+    },
+    "test": {
+      "raw_rows": 129702,
+      "raw_start": "2025-01-02 12:00:00",
+      "raw_end": "2025-11-28 21:31:00",
+      "trading_days": 230,
+      "contracts": 6,
+      "maximum_symbols_per_day": 1,
+      "duplicate_symbol_timestamps": 0,
+      "missing_values": 0,
+      "nonpositive_closes": 0,
+      "invalid_ohlc_rows": 0,
+      "local_date_mismatches": 0
+    }
+  },
+  "sample_day_counts": {
+    "test": 221,
+    "train": 246
+  },
+  "sample_row_counts": {
+    "1min": {
+      "test": 119340,
+      "train": 132840
+    },
+    "5min": {
+      "test": 23868,
+      "train": 26568
+    },
+    "15min": {
+      "test": 7956,
+      "train": 8856
+    },
+    "30min": {
+      "test": 3978,
+      "train": 4428
+    },
+    "60min": {
+      "test": 1989,
+      "train": 2214
+    },
+    "1d": {
+      "test": 221,
+      "train": 246
+    }
+  },
+  "trading_time_convention": "chronological_observations_cross_session_lags_no_overnight_return",
+  "parameter_estimation_uses_holdout": false,
+  "source_gap_convention": "unobserved_weekdays_conservatively_flagged_no_exchange_calendar",
+  "auction_identification": "not_available_in_source_columns",
+  "observed_gap_convention": "first_open_current_source_day_vs_last_close_previous_source_day_same_symbol_only",
+  "absolute_gap_threshold_train": 0.2002217468685249,
+  "gap_group_convention": "low_at_or_below_training_included_days_median_absolute_observed_gap_high_above",
+  "minute_profile_minimum_returns_for_statistics": 10,
+  "private_columns_warning": "frames and daily_context include proprietary prices/returns; do not publish",
+  "created_utc": "2026-09-20T17:10:16.978918+00:00",
+  "python": "3.12.14",
+  "versions": {
+    "numpy": "2.3.5",
+    "pandas": "2.2.3",
+    "scipy": "1.17.0",
+    "statsmodels": "0.15.0",
+    "arch": "8.0.0",
+    "pyarrow": "25.0.1",
+    "matplotlib": "3.10.8",
+    "reportlab": "4.4.9"
+  },
+  "max_order": 5,
+  "code_ref": "a6c7de81989e586ea117e994f366a1bb6933a66b",
+  "input_source": "BTG-ATS-A26(2).zip",
+  "scales": [
+    {
+      "scale": "1min",
+      "n_train": 132840,
+      "n_test": 119340,
+      "train_sha256": "95591f79b292a7bea0fe73a23a368981928553126f3c15acdddb91e932364fcc",
+      "full_sequence_sha256": "d727a2e4737c0339ce5a25b8be9027cc8452534070950161741d28820b9af215",
+      "model": {
+        "p": 2,
+        "q": 2,
+        "bic": -536591.0656985781
+      },
+      "variance": {
+        "scale": "1min",
+        "nobs_train": 132840,
+        "nobs_test": 119340,
+        "selected_model": "garch11",
+        "selected_model_label": "GARCH(1,1)",
+        "selected_bic": -569004.7075376719,
+        "eligible_models": [
+          "constant",
+          "arch1",
+          "garch11"
+        ],
+        "diagnostic_lags": [
+          10,
+          20,
+          60
+        ],
+        "selection_sample": "train_2024",
+        "fit_method": "sequential_not_joint_MLE",
+        "mean_forecast_shared": true,
+        "mean_parameters_refitted": false,
+        "likelihood_comparison": "only variance candidates conditional on the same fixed mean; not ARMA likelihood",
+        "bic_parameter_count": "variance parameters only; shared fixed mean not counted",
+        "variance_unit": "input_residual_unit_squared",
+        "proxy_mse_unit": "input_residual_unit_fourth_power",
+        "evaluation_target": "same squared fixed-ARMA forecast innovation; noisy proxy, not observed variance",
+        "boundary_policy": "continue observation index across sessions without overnight returns",
+        "diagnostic_reference": "ordinary asymptotic ARCH-LM and Ljung-Box; approximate after sequential fitting",
+        "stationarity_margin": 1e-08,
+        "notes": [
+          "Fitting, scaling, lag choices and BIC selection do not use test observations.",
+          "OOS recursion uses the previous actual innovation, never the current/future one.",
+          "No Diebold-Mariano test for these nested variance specifications.",
+          "A better variance forecast is not a better point forecast of returns.",
+          "A rejected standardized-residual Ljung-Box still indicates limitations of the mean equation."
+        ]
+      },
+      "eligible_arma_candidates": 36,
+      "total_arma_candidates": 36,
+      "fitted_parameters_use_holdout": false
+    },
+    {
+      "scale": "5min",
+      "n_train": 26568,
+      "n_test": 23868,
+      "train_sha256": "5eb7411d89d46d432052875cce58a088e2eac7079ce00c8886d359854d04b946",
+      "full_sequence_sha256": "c94fb6988f8c5737f3ef15f2c31e8b7a4eb61dce9286fdd91e0836d5314d6f9f",
+      "model": {
+        "p": 0,
+        "q": 0,
+        "bic": -64857.25702677183
+      },
+      "variance": {
+        "scale": "5min",
+        "nobs_train": 26568,
+        "nobs_test": 23868,
+        "selected_model": "garch11",
+        "selected_model_label": "GARCH(1,1)",
+        "selected_bic": -68096.12248765922,
+        "eligible_models": [
+          "constant",
+          "arch1",
+          "garch11"
+        ],
+        "diagnostic_lags": [
+          10,
+          20,
+          24
+        ],
+        "selection_sample": "train_2024",
+        "fit_method": "sequential_not_joint_MLE",
+        "mean_forecast_shared": true,
+        "mean_parameters_refitted": false,
+        "likelihood_comparison": "only variance candidates conditional on the same fixed mean; not ARMA likelihood",
+        "bic_parameter_count": "variance parameters only; shared fixed mean not counted",
+        "variance_unit": "input_residual_unit_squared",
+        "proxy_mse_unit": "input_residual_unit_fourth_power",
+        "evaluation_target": "same squared fixed-ARMA forecast innovation; noisy proxy, not observed variance",
+        "boundary_policy": "continue observation index across sessions without overnight returns",
+        "diagnostic_reference": "ordinary asymptotic ARCH-LM and Ljung-Box; approximate after sequential fitting",
+        "stationarity_margin": 1e-08,
+        "notes": [
+          "Fitting, scaling, lag choices and BIC selection do not use test observations.",
+          "OOS recursion uses the previous actual innovation, never the current/future one.",
+          "No Diebold-Mariano test for these nested variance specifications.",
+          "A better variance forecast is not a better point forecast of returns.",
+          "A rejected standardized-residual Ljung-Box still indicates limitations of the mean equation."
+        ]
+      },
+      "eligible_arma_candidates": 36,
+      "total_arma_candidates": 36,
+      "fitted_parameters_use_holdout": false
+    },
+    {
+      "scale": "15min",
+      "n_train": 8856,
+      "n_test": 7956,
+      "train_sha256": "50122a6ca35e3e190902114c91a8f8381f57db63301bc50ef5fc5647f9e0137b",
+      "full_sequence_sha256": "9f8df7a689bd4ad3f48a69d758fe8ab7ac80265c2eeeaa4c63f3343d87788cff",
+      "model": {
+        "p": 0,
+        "q": 0,
+        "bic": -12162.968658042577
+      },
+      "variance": {
+        "scale": "15min",
+        "nobs_train": 8856,
+        "nobs_test": 7956,
+        "selected_model": "garch11",
+        "selected_model_label": "GARCH(1,1)",
+        "selected_bic": -12710.834503949698,
+        "eligible_models": [
+          "constant",
+          "arch1",
+          "garch11"
+        ],
+        "diagnostic_lags": [
+          10,
+          20,
+          24
+        ],
+        "selection_sample": "train_2024",
+        "fit_method": "sequential_not_joint_MLE",
+        "mean_forecast_shared": true,
+        "mean_parameters_refitted": false,
+        "likelihood_comparison": "only variance candidates conditional on the same fixed mean; not ARMA likelihood",
+        "bic_parameter_count": "variance parameters only; shared fixed mean not counted",
+        "variance_unit": "input_residual_unit_squared",
+        "proxy_mse_unit": "input_residual_unit_fourth_power",
+        "evaluation_target": "same squared fixed-ARMA forecast innovation; noisy proxy, not observed variance",
+        "boundary_policy": "continue observation index across sessions without overnight returns",
+        "diagnostic_reference": "ordinary asymptotic ARCH-LM and Ljung-Box; approximate after sequential fitting",
+        "stationarity_margin": 1e-08,
+        "notes": [
+          "Fitting, scaling, lag choices and BIC selection do not use test observations.",
+          "OOS recursion uses the previous actual innovation, never the current/future one.",
+          "No Diebold-Mariano test for these nested variance specifications.",
+          "A better variance forecast is not a better point forecast of returns.",
+          "A rejected standardized-residual Ljung-Box still indicates limitations of the mean equation."
+        ]
+      },
+      "eligible_arma_candidates": 36,
+      "total_arma_candidates": 36,
+      "fitted_parameters_use_holdout": false
+    },
+    {
+      "scale": "30min",
+      "n_train": 4428,
+      "n_test": 3978,
+      "train_sha256": "93004251d5fe312c61b9361e9c1c34e99b9304419af9f5098df758650a84cc6b",
+      "full_sequence_sha256": "03060dfe3707338b92092c943737a9bac1abbc669c0a85b79aa86538c446bb51",
+      "model": {
+        "p": 0,
+        "q": 0,
+        "bic": -3051.4848211191934
+      },
+      "variance": {
+        "scale": "30min",
+        "nobs_train": 4428,
+        "nobs_test": 3978,
+        "selected_model": "garch11",
+        "selected_model_label": "GARCH(1,1)",
+        "selected_bic": -3202.467328986736,
+        "eligible_models": [
+          "constant",
+          "arch1",
+          "garch11"
+        ],
+        "diagnostic_lags": [
+          10,
+          20,
+          24
+        ],
+        "selection_sample": "train_2024",
+        "fit_method": "sequential_not_joint_MLE",
+        "mean_forecast_shared": true,
+        "mean_parameters_refitted": false,
+        "likelihood_comparison": "only variance candidates conditional on the same fixed mean; not ARMA likelihood",
+        "bic_parameter_count": "variance parameters only; shared fixed mean not counted",
+        "variance_unit": "input_residual_unit_squared",
+        "proxy_mse_unit": "input_residual_unit_fourth_power",
+        "evaluation_target": "same squared fixed-ARMA forecast innovation; noisy proxy, not observed variance",
+        "boundary_policy": "continue observation index across sessions without overnight returns",
+        "diagnostic_reference": "ordinary asymptotic ARCH-LM and Ljung-Box; approximate after sequential fitting",
+        "stationarity_margin": 1e-08,
+        "notes": [
+          "Fitting, scaling, lag choices and BIC selection do not use test observations.",
+          "OOS recursion uses the previous actual innovation, never the current/future one.",
+          "No Diebold-Mariano test for these nested variance specifications.",
+          "A better variance forecast is not a better point forecast of returns.",
+          "A rejected standardized-residual Ljung-Box still indicates limitations of the mean equation."
+        ]
+      },
+      "eligible_arma_candidates": 36,
+      "total_arma_candidates": 36,
+      "fitted_parameters_use_holdout": false
+    },
+    {
+      "scale": "60min",
+      "n_train": 2214,
+      "n_test": 1989,
+      "train_sha256": "450d84f3f5b529277755d028ce7badff7d4d0f56bd0b26c946e3f62db118ea50",
+      "full_sequence_sha256": "dbe3a53bdef0f8f53169d755cd33cf6be052d96a1729273bda1c5041f7d2fc5a",
+      "model": {
+        "p": 0,
+        "q": 0,
+        "bic": 62.550834270715164
+      },
+      "variance": {
+        "scale": "60min",
+        "nobs_train": 2214,
+        "nobs_test": 1989,
+        "selected_model": "arch1",
+        "selected_model_label": "ARCH(1)",
+        "selected_bic": -3.5759405454047393,
+        "eligible_models": [
+          "constant",
+          "arch1",
+          "garch11"
+        ],
+        "diagnostic_lags": [
+          10,
+          20,
+          24
+        ],
+        "selection_sample": "train_2024",
+        "fit_method": "sequential_not_joint_MLE",
+        "mean_forecast_shared": true,
+        "mean_parameters_refitted": false,
+        "likelihood_comparison": "only variance candidates conditional on the same fixed mean; not ARMA likelihood",
+        "bic_parameter_count": "variance parameters only; shared fixed mean not counted",
+        "variance_unit": "input_residual_unit_squared",
+        "proxy_mse_unit": "input_residual_unit_fourth_power",
+        "evaluation_target": "same squared fixed-ARMA forecast innovation; noisy proxy, not observed variance",
+        "boundary_policy": "continue observation index across sessions without overnight returns",
+        "diagnostic_reference": "ordinary asymptotic ARCH-LM and Ljung-Box; approximate after sequential fitting",
+        "stationarity_margin": 1e-08,
+        "notes": [
+          "Fitting, scaling, lag choices and BIC selection do not use test observations.",
+          "OOS recursion uses the previous actual innovation, never the current/future one.",
+          "No Diebold-Mariano test for these nested variance specifications.",
+          "A better variance forecast is not a better point forecast of returns.",
+          "A rejected standardized-residual Ljung-Box still indicates limitations of the mean equation."
+        ]
+      },
+      "eligible_arma_candidates": 36,
+      "total_arma_candidates": 36,
+      "fitted_parameters_use_holdout": false
+    },
+    {
+      "scale": "1d",
+      "n_train": 246,
+      "n_test": 221,
+      "train_sha256": "55150dd3df8a5b44b51a9d34dc8b7a273c960ff446a3a5a2c2c03417b8b60005",
+      "full_sequence_sha256": "4b316e1a22387b15621e5f56a81994df96b174220959b72d20e2543ec68d7118",
+      "model": {
+        "p": 0,
+        "q": 0,
+        "bic": 588.9960966263233
+      },
+      "variance": {
+        "scale": "1d",
+        "nobs_train": 246,
+        "nobs_test": 221,
+        "selected_model": "constant",
+        "selected_model_label": "Constant variance",
+        "selected_bic": 583.4907650903908,
+        "eligible_models": [
+          "constant",
+          "arch1",
+          "garch11"
+        ],
+        "diagnostic_lags": [
+          10,
+          20
+        ],
+        "selection_sample": "train_2024",
+        "fit_method": "sequential_not_joint_MLE",
+        "mean_forecast_shared": true,
+        "mean_parameters_refitted": false,
+        "likelihood_comparison": "only variance candidates conditional on the same fixed mean; not ARMA likelihood",
+        "bic_parameter_count": "variance parameters only; shared fixed mean not counted",
+        "variance_unit": "input_residual_unit_squared",
+        "proxy_mse_unit": "input_residual_unit_fourth_power",
+        "evaluation_target": "same squared fixed-ARMA forecast innovation; noisy proxy, not observed variance",
+        "boundary_policy": "continue observation index across sessions without overnight returns",
+        "diagnostic_reference": "ordinary asymptotic ARCH-LM and Ljung-Box; approximate after sequential fitting",
+        "stationarity_margin": 1e-08,
+        "notes": [
+          "Fitting, scaling, lag choices and BIC selection do not use test observations.",
+          "OOS recursion uses the previous actual innovation, never the current/future one.",
+          "No Diebold-Mariano test for these nested variance specifications.",
+          "A better variance forecast is not a better point forecast of returns.",
+          "A rejected standardized-residual Ljung-Box still indicates limitations of the mean equation."
+        ]
+      },
+      "eligible_arma_candidates": 36,
+      "total_arma_candidates": 36,
+      "fitted_parameters_use_holdout": false
+    }
+  ],
+  "evaluation_uses_2025": true,
+  "estimation_or_selection_uses_2025": false,
+  "common_targets_verified": true,
+  "course_only": true,
+  "mean_order_selection": "BIC within each candidate family on 2024",
+  "approved_protocol": "docs/PROTOCOL_21_09.md",
+  "code_sha256": {
+    "box_jenkins.py": "ce2519f733c254b70ef1c58d8040838ebe1cc377b4cffe156eed07694944ff1c",
+    "box_jenkins_report.py": "2688c50fc029fc4965cd80f42f19874b500f2b35f658289a97f7745adbb6e3aa",
+    "box_jenkins_diagnostics.py": "7cbe64f7790276091391e0465ec80bdededeafd92a3d85050b03788560d37d7d",
+    "annual_models.py": "8642d96e30e55acffc0ca7d325ed99c3b840e72c1b38ef2a849e757c0340c95d",
+    "data.py": "82e3a22193c0ee92d8bbbf6c1b30674012e66a81cf14161bc571203b39a30a73",
+    "forecast_evaluation.py": "8b88e6613d0f25e68d36ec757179b26c9d4d8bd4a157e1a4849ffa2f2abb84c5",
+    "multiscale.py": "3d0e5e9503b5baa1e6c3c1498ae77bc3cd91467af2620117d01228edac5203c3",
+    "forecast_figures.py": "93ebe90c9a5dc83943d2259c516439b98cf501682db2a9ebd438cab70e2957dd",
+    "forecast_report.py": "a813fd07c6250bdf16c180ced785d9eea659517ddfb4dcf82b31284414e52aa9",
+    "stationarity.py": "64f2b473dd0dec11a72106811b75bb4d118de782f34d3b88aa0850b54e3a7e1c",
+    "trading_time_data.py": "cf09cd15ffc859773d4bbbd3ff7ec07dea0b8378e7849bc7815deab95b3966e2",
+    "analysis.py": "687ee5f8b8a011c4b0bb39b0ce03a3087d235749ba38aa878d33eb315d42878d",
+    "forecast_pipeline.py": "8a9c2b6865849920fb96e81e3c707dd0768b9b4bd28a06e91dd7e82d6c730b96",
+    "report.py": "7408db2cd46f25d927e6468e3d3ec5e8390a8521ec4b66290a8c3179b2cd376e",
+    "forecast_narrative.py": "a99872953043abaa72647382130306e0263c69beaf98f6cb9380fa1f33a8307c",
+    "conditional_volatility.py": "3ff05804b7d6d92997f8575ce4724cf4ba693bb5b38bfb5c3d457f58d5c4d580",
+    "pipeline.py": "66ae5beca728d2ba951c21145549973bc427b1c434fa56d1d64481334b1c482a",
+    "plots.py": "7ac0dfaa5b718eb0edf207d35c05daa56b3a4dbd9fbe0023f80988defb0c55c3",
+    "multiscale_report.py": "591d29d7f74968186767ab2f65ac273d3576ef30bddc53376fac891223060fbc",
+    "multiscale_plots.py": "2a9c6a06903669686e9c001f73ae85b210ee8b90d951ecda23da5c50eeea3dee",
+    "multiscale_pipeline.py": "ae5dfd46cc14ca48f23cc5d7fc456e568ad70fe37760f596e5ff9fe7d9fbac68",
+    "__init__.py": "8f62b5ce7c2c2f107c2b331d0817f876e17ff9e87b94b1cd381498b906353f50",
+    "segmented_arma.py": "103e0ba9466108ceb6b333182b322fbf162444305eab9f2711a15d2720ade7b7"
+  },
+  "sources": {
+    "course": "Aulas 3,4,5,6 supplied by user",
+    "market_hours": "docs/market_hours_2024_2025.md"
+  },
+  "report_created_utc": "2026-09-20T17:21:29.436521+00:00",
+  "presentation_format": "seven_slide_editable_Beamer_and_PDF"
+}

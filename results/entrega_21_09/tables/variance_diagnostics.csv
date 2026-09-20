@@ -1,0 +1,120 @@
+scale,model,series,test,lag,nobs,statistic,pvalue,reference_df,model_df,f_statistic,f_pvalue,reject_5pct,sample,reference_caveat
+1min,fixed_arma_mean,innovations,ARCH-LM,10,132840,11464.67817149838,0.0,10,0,1254.664072997699,0.0,True,train_2024,asymptotic; innovations from a pre-estimated mean
+1min,fixed_arma_mean,innovations,ARCH-LM,20,132840,11768.89174724344,0.0,20,0,645.5525594523381,0.0,True,train_2024,asymptotic; innovations from a pre-estimated mean
+1min,fixed_arma_mean,innovations,ARCH-LM,60,132840,12068.7928758594,0.0,60,0,221.15567668376207,0.0,True,train_2024,asymptotic; innovations from a pre-estimated mean
+1min,constant,standardized_residuals,Ljung-Box,10,132840,24.83480624854169,0.0056675766881344,10,0,,,True,train_2024,approximate after fixed-mean and variance estimation; no df adjustment
+1min,constant,standardized_residuals,Ljung-Box,20,132840,42.03947519305676,0.0027330068974611,20,0,,,True,train_2024,approximate after fixed-mean and variance estimation; no df adjustment
+1min,constant,standardized_residuals,Ljung-Box,60,132840,100.65864842555106,0.0007918851503013,60,0,,,True,train_2024,approximate after fixed-mean and variance estimation; no df adjustment
+1min,constant,squared_standardized_residuals,Ljung-Box,10,132840,15840.62877658604,0.0,10,0,,,True,train_2024,approximate after fixed-mean and variance estimation; no df adjustment
+1min,constant,squared_standardized_residuals,Ljung-Box,20,132840,17744.101109166553,0.0,20,0,,,True,train_2024,approximate after fixed-mean and variance estimation; no df adjustment
+1min,constant,squared_standardized_residuals,Ljung-Box,60,132840,21088.45198593622,0.0,60,0,,,True,train_2024,approximate after fixed-mean and variance estimation; no df adjustment
+1min,arch1,standardized_residuals,Ljung-Box,10,132840,26.58003596098664,0.0030336186944843,10,0,,,True,train_2024,approximate after fixed-mean and variance estimation; no df adjustment
+1min,arch1,standardized_residuals,Ljung-Box,20,132840,47.83153602003976,0.0004491663442439,20,0,,,True,train_2024,approximate after fixed-mean and variance estimation; no df adjustment
+1min,arch1,standardized_residuals,Ljung-Box,60,132840,89.20953538610685,0.0085420377603645,60,0,,,True,train_2024,approximate after fixed-mean and variance estimation; no df adjustment
+1min,arch1,squared_standardized_residuals,Ljung-Box,10,132840,3716.604872222046,0.0,10,0,,,True,train_2024,approximate after fixed-mean and variance estimation; no df adjustment
+1min,arch1,squared_standardized_residuals,Ljung-Box,20,132840,6404.729674285248,0.0,20,0,,,True,train_2024,approximate after fixed-mean and variance estimation; no df adjustment
+1min,arch1,squared_standardized_residuals,Ljung-Box,60,132840,12134.968160102944,0.0,60,0,,,True,train_2024,approximate after fixed-mean and variance estimation; no df adjustment
+1min,garch11,standardized_residuals,Ljung-Box,10,132840,16.79746035306107,0.0789675369974728,10,0,,,False,train_2024,approximate after fixed-mean and variance estimation; no df adjustment
+1min,garch11,standardized_residuals,Ljung-Box,20,132840,27.06706153237317,0.1333877908717607,20,0,,,False,train_2024,approximate after fixed-mean and variance estimation; no df adjustment
+1min,garch11,standardized_residuals,Ljung-Box,60,132840,61.76154599733977,0.4129284784884114,60,0,,,False,train_2024,approximate after fixed-mean and variance estimation; no df adjustment
+1min,garch11,squared_standardized_residuals,Ljung-Box,10,132840,146.12263955631826,2.3361999148489526e-26,10,0,,,True,train_2024,approximate after fixed-mean and variance estimation; no df adjustment
+1min,garch11,squared_standardized_residuals,Ljung-Box,20,132840,168.0117196883509,2.1099967400654817e-25,20,0,,,True,train_2024,approximate after fixed-mean and variance estimation; no df adjustment
+1min,garch11,squared_standardized_residuals,Ljung-Box,60,132840,249.75490170117016,5.386977515854053e-25,60,0,,,True,train_2024,approximate after fixed-mean and variance estimation; no df adjustment
+5min,fixed_arma_mean,innovations,ARCH-LM,10,26568,794.0476536605772,3.928116582020657e-164,10,0,81.81812626556263,1.086349982706905e-166,True,train_2024,asymptotic; innovations from a pre-estimated mean
+5min,fixed_arma_mean,innovations,ARCH-LM,20,26568,819.9676682740105,8.147725859714583e-161,20,0,42.271562115309,1.7559861235879932e-163,True,train_2024,asymptotic; innovations from a pre-estimated mean
+5min,fixed_arma_mean,innovations,ARCH-LM,24,26568,822.628945563802,3.426852170330606e-158,24,0,35.33912351399185,7.52574070973852e-161,True,train_2024,asymptotic; innovations from a pre-estimated mean
+5min,constant,standardized_residuals,Ljung-Box,10,26568,17.67991723384294,0.0606090625101178,10,0,,,False,train_2024,approximate after fixed-mean and variance estimation; no df adjustment
+5min,constant,standardized_residuals,Ljung-Box,20,26568,31.389240388791837,0.0502570852689041,20,0,,,False,train_2024,approximate after fixed-mean and variance estimation; no df adjustment
+5min,constant,standardized_residuals,Ljung-Box,24,26568,33.1810213034362,0.1003112054371142,24,0,,,False,train_2024,approximate after fixed-mean and variance estimation; no df adjustment
+5min,constant,squared_standardized_residuals,Ljung-Box,10,26568,959.549689175034,9.638277964981849e-200,10,0,,,True,train_2024,approximate after fixed-mean and variance estimation; no df adjustment
+5min,constant,squared_standardized_residuals,Ljung-Box,20,26568,1025.7259748741765,1.2716199648222309e-204,20,0,,,True,train_2024,approximate after fixed-mean and variance estimation; no df adjustment
+5min,constant,squared_standardized_residuals,Ljung-Box,24,26568,1030.36016005903,3.161423558590214e-202,24,0,,,True,train_2024,approximate after fixed-mean and variance estimation; no df adjustment
+5min,arch1,standardized_residuals,Ljung-Box,10,26568,19.694862789640894,0.0322745121921348,10,0,,,True,train_2024,approximate after fixed-mean and variance estimation; no df adjustment
+5min,arch1,standardized_residuals,Ljung-Box,20,26568,32.17860628458934,0.0414319557892138,20,0,,,True,train_2024,approximate after fixed-mean and variance estimation; no df adjustment
+5min,arch1,standardized_residuals,Ljung-Box,24,26568,34.1094205082108,0.0827431090964312,24,0,,,False,train_2024,approximate after fixed-mean and variance estimation; no df adjustment
+5min,arch1,squared_standardized_residuals,Ljung-Box,10,26568,50.8602520118363,1.853237524913121e-07,10,0,,,True,train_2024,approximate after fixed-mean and variance estimation; no df adjustment
+5min,arch1,squared_standardized_residuals,Ljung-Box,20,26568,115.43611880135576,1.9836259951399567e-15,20,0,,,True,train_2024,approximate after fixed-mean and variance estimation; no df adjustment
+5min,arch1,squared_standardized_residuals,Ljung-Box,24,26568,121.3761039606875,5.514442364673029e-15,24,0,,,True,train_2024,approximate after fixed-mean and variance estimation; no df adjustment
+5min,garch11,standardized_residuals,Ljung-Box,10,26568,12.952617525825396,0.2263331060666601,10,0,,,False,train_2024,approximate after fixed-mean and variance estimation; no df adjustment
+5min,garch11,standardized_residuals,Ljung-Box,20,26568,18.235609066694995,0.5718907948084998,20,0,,,False,train_2024,approximate after fixed-mean and variance estimation; no df adjustment
+5min,garch11,standardized_residuals,Ljung-Box,24,26568,19.386101786390736,0.731097315043298,24,0,,,False,train_2024,approximate after fixed-mean and variance estimation; no df adjustment
+5min,garch11,squared_standardized_residuals,Ljung-Box,10,26568,0.7638450905185388,0.9999506695785242,10,0,,,False,train_2024,approximate after fixed-mean and variance estimation; no df adjustment
+5min,garch11,squared_standardized_residuals,Ljung-Box,20,26568,2.255350237244869,0.9999996697432616,20,0,,,False,train_2024,approximate after fixed-mean and variance estimation; no df adjustment
+5min,garch11,squared_standardized_residuals,Ljung-Box,24,26568,2.496776756808882,0.9999999905115036,24,0,,,False,train_2024,approximate after fixed-mean and variance estimation; no df adjustment
+15min,fixed_arma_mean,innovations,ARCH-LM,10,8856,258.9224125261431,7.204128761958786e-50,10,0,26.63979091100115,1.223816180364682e-50,True,train_2024,asymptotic; innovations from a pre-estimated mean
+15min,fixed_arma_mean,innovations,ARCH-LM,20,8856,263.4513689926681,2.1878282485339477e-44,20,0,13.545118946717976,4.00057067691261e-45,True,train_2024,asymptotic; innovations from a pre-estimated mean
+15min,fixed_arma_mean,innovations,ARCH-LM,24,8856,265.0546674018332,1.6812349418444493e-42,24,0,11.353407219945408,3.174082696864125e-43,True,train_2024,asymptotic; innovations from a pre-estimated mean
+15min,constant,standardized_residuals,Ljung-Box,10,8856,14.416202565014263,0.1548395790016482,10,0,,,False,train_2024,approximate after fixed-mean and variance estimation; no df adjustment
+15min,constant,standardized_residuals,Ljung-Box,20,8856,23.0693392419246,0.2854026742417748,20,0,,,False,train_2024,approximate after fixed-mean and variance estimation; no df adjustment
+15min,constant,standardized_residuals,Ljung-Box,24,8856,23.895298344734915,0.4675974569699855,24,0,,,False,train_2024,approximate after fixed-mean and variance estimation; no df adjustment
+15min,constant,squared_standardized_residuals,Ljung-Box,10,8856,319.5599077345174,1.1304873482674595e-62,10,0,,,True,train_2024,approximate after fixed-mean and variance estimation; no df adjustment
+15min,constant,squared_standardized_residuals,Ljung-Box,20,8856,325.2943344110414,5.361013831442117e-57,20,0,,,True,train_2024,approximate after fixed-mean and variance estimation; no df adjustment
+15min,constant,squared_standardized_residuals,Ljung-Box,24,8856,326.36323274525256,7.933374079996937e-55,24,0,,,True,train_2024,approximate after fixed-mean and variance estimation; no df adjustment
+15min,arch1,standardized_residuals,Ljung-Box,10,8856,15.284214535959045,0.1220383581887226,10,0,,,False,train_2024,approximate after fixed-mean and variance estimation; no df adjustment
+15min,arch1,standardized_residuals,Ljung-Box,20,8856,24.54158369882157,0.2195345906279505,20,0,,,False,train_2024,approximate after fixed-mean and variance estimation; no df adjustment
+15min,arch1,standardized_residuals,Ljung-Box,24,8856,25.53719008764179,0.377057473199267,24,0,,,False,train_2024,approximate after fixed-mean and variance estimation; no df adjustment
+15min,arch1,squared_standardized_residuals,Ljung-Box,10,8856,42.07881117896488,7.2603750271680625e-06,10,0,,,True,train_2024,approximate after fixed-mean and variance estimation; no df adjustment
+15min,arch1,squared_standardized_residuals,Ljung-Box,20,8856,49.81968480851233,0.0002350259906254,20,0,,,True,train_2024,approximate after fixed-mean and variance estimation; no df adjustment
+15min,arch1,squared_standardized_residuals,Ljung-Box,24,8856,50.729786243836735,0.0011423128099627,24,0,,,True,train_2024,approximate after fixed-mean and variance estimation; no df adjustment
+15min,garch11,standardized_residuals,Ljung-Box,10,8856,13.85894638923902,0.1795232739068938,10,0,,,False,train_2024,approximate after fixed-mean and variance estimation; no df adjustment
+15min,garch11,standardized_residuals,Ljung-Box,20,8856,23.116380732409755,0.2831161986733875,20,0,,,False,train_2024,approximate after fixed-mean and variance estimation; no df adjustment
+15min,garch11,standardized_residuals,Ljung-Box,24,8856,24.19162827933968,0.4506841687619708,24,0,,,False,train_2024,approximate after fixed-mean and variance estimation; no df adjustment
+15min,garch11,squared_standardized_residuals,Ljung-Box,10,8856,2.2999951699985064,0.993480985107026,10,0,,,False,train_2024,approximate after fixed-mean and variance estimation; no df adjustment
+15min,garch11,squared_standardized_residuals,Ljung-Box,20,8856,5.459549912320417,0.9994550988455994,20,0,,,False,train_2024,approximate after fixed-mean and variance estimation; no df adjustment
+15min,garch11,squared_standardized_residuals,Ljung-Box,24,8856,6.1950337876825206,0.9999040558635104,24,0,,,False,train_2024,approximate after fixed-mean and variance estimation; no df adjustment
+30min,fixed_arma_mean,innovations,ARCH-LM,10,4428,76.40268438176584,2.535781461556724e-12,10,0,7.755362959599953,1.9840709272799272e-12,True,train_2024,asymptotic; innovations from a pre-estimated mean
+30min,fixed_arma_mean,innovations,ARCH-LM,20,4428,104.94019704903842,1.6282918922491473e-13,20,0,5.349363772941488,1.0827580174506577e-13,True,train_2024,asymptotic; innovations from a pre-estimated mean
+30min,fixed_arma_mean,innovations,ARCH-LM,24,4428,108.88357710533164,8.830096411564417e-13,24,0,4.625419674333595,5.868186848860834e-13,True,train_2024,asymptotic; innovations from a pre-estimated mean
+30min,constant,standardized_residuals,Ljung-Box,10,4428,9.989009092413218,0.4414580872162587,10,0,,,False,train_2024,approximate after fixed-mean and variance estimation; no df adjustment
+30min,constant,standardized_residuals,Ljung-Box,20,4428,21.80744097214637,0.3510501948139277,20,0,,,False,train_2024,approximate after fixed-mean and variance estimation; no df adjustment
+30min,constant,standardized_residuals,Ljung-Box,24,4428,22.363418848969484,0.5575854028300709,24,0,,,False,train_2024,approximate after fixed-mean and variance estimation; no df adjustment
+30min,constant,squared_standardized_residuals,Ljung-Box,10,4428,89.75546645165349,5.988495002294241e-15,10,0,,,True,train_2024,approximate after fixed-mean and variance estimation; no df adjustment
+30min,constant,squared_standardized_residuals,Ljung-Box,20,4428,135.02043092189083,4.428821591419006e-19,20,0,,,True,train_2024,approximate after fixed-mean and variance estimation; no df adjustment
+30min,constant,squared_standardized_residuals,Ljung-Box,24,4428,139.80126217166708,2.5334727247685557e-18,24,0,,,True,train_2024,approximate after fixed-mean and variance estimation; no df adjustment
+30min,arch1,standardized_residuals,Ljung-Box,10,4428,12.773213718564056,0.2366295725325883,10,0,,,False,train_2024,approximate after fixed-mean and variance estimation; no df adjustment
+30min,arch1,standardized_residuals,Ljung-Box,20,4428,23.93857515715455,0.245085634025386,20,0,,,False,train_2024,approximate after fixed-mean and variance estimation; no df adjustment
+30min,arch1,standardized_residuals,Ljung-Box,24,4428,24.22204786653344,0.4489602849690301,24,0,,,False,train_2024,approximate after fixed-mean and variance estimation; no df adjustment
+30min,arch1,squared_standardized_residuals,Ljung-Box,10,4428,20.6839850983941,0.0234081710159159,10,0,,,True,train_2024,approximate after fixed-mean and variance estimation; no df adjustment
+30min,arch1,squared_standardized_residuals,Ljung-Box,20,4428,47.16849691626376,0.0005558155216569,20,0,,,True,train_2024,approximate after fixed-mean and variance estimation; no df adjustment
+30min,arch1,squared_standardized_residuals,Ljung-Box,24,4428,48.83624850372459,0.0019859502951747,24,0,,,True,train_2024,approximate after fixed-mean and variance estimation; no df adjustment
+30min,garch11,standardized_residuals,Ljung-Box,10,4428,12.575469995216984,0.2483853465533119,10,0,,,False,train_2024,approximate after fixed-mean and variance estimation; no df adjustment
+30min,garch11,standardized_residuals,Ljung-Box,20,4428,23.81317235877884,0.2506484847722719,20,0,,,False,train_2024,approximate after fixed-mean and variance estimation; no df adjustment
+30min,garch11,standardized_residuals,Ljung-Box,24,4428,24.07651292408096,0.4572290693718274,24,0,,,False,train_2024,approximate after fixed-mean and variance estimation; no df adjustment
+30min,garch11,squared_standardized_residuals,Ljung-Box,10,4428,2.454095015513714,0.9915279112831352,10,0,,,False,train_2024,approximate after fixed-mean and variance estimation; no df adjustment
+30min,garch11,squared_standardized_residuals,Ljung-Box,20,4428,25.61978241576141,0.1787396175250399,20,0,,,False,train_2024,approximate after fixed-mean and variance estimation; no df adjustment
+30min,garch11,squared_standardized_residuals,Ljung-Box,24,4428,27.0939260919845,0.3000940300029538,24,0,,,False,train_2024,approximate after fixed-mean and variance estimation; no df adjustment
+60min,fixed_arma_mean,innovations,ARCH-LM,10,2214,39.087274969873576,2.4510461044169985e-05,10,0,3.959438780967031,2.2379211196667563e-05,True,train_2024,asymptotic; innovations from a pre-estimated mean
+60min,fixed_arma_mean,innovations,ARCH-LM,20,2214,59.25742351577935,9.27332653757355e-06,20,0,3.015969764182485,7.8040906906414e-06,True,train_2024,asymptotic; innovations from a pre-estimated mean
+60min,fixed_arma_mean,innovations,ARCH-LM,24,2214,62.98695004924957,2.390743870140145e-05,24,0,2.6713271861798327,2.0142059888498015e-05,True,train_2024,asymptotic; innovations from a pre-estimated mean
+60min,constant,standardized_residuals,Ljung-Box,10,2214,9.284368520224856,0.5053454461151523,10,0,,,False,train_2024,approximate after fixed-mean and variance estimation; no df adjustment
+60min,constant,standardized_residuals,Ljung-Box,20,2214,18.20211593141406,0.5740957910974803,20,0,,,False,train_2024,approximate after fixed-mean and variance estimation; no df adjustment
+60min,constant,standardized_residuals,Ljung-Box,24,2214,24.70167363628824,0.4221142795126001,24,0,,,False,train_2024,approximate after fixed-mean and variance estimation; no df adjustment
+60min,constant,squared_standardized_residuals,Ljung-Box,10,2214,42.753244840940994,5.504433354444696e-06,10,0,,,True,train_2024,approximate after fixed-mean and variance estimation; no df adjustment
+60min,constant,squared_standardized_residuals,Ljung-Box,20,2214,67.9242063760159,3.95996242591189e-07,20,0,,,True,train_2024,approximate after fixed-mean and variance estimation; no df adjustment
+60min,constant,squared_standardized_residuals,Ljung-Box,24,2214,73.1585160514074,7.19516701725124e-07,24,0,,,True,train_2024,approximate after fixed-mean and variance estimation; no df adjustment
+60min,arch1,standardized_residuals,Ljung-Box,10,2214,8.383393704510949,0.5914416645892386,10,0,,,False,train_2024,approximate after fixed-mean and variance estimation; no df adjustment
+60min,arch1,standardized_residuals,Ljung-Box,20,2214,17.022814259438917,0.6514917368106699,20,0,,,False,train_2024,approximate after fixed-mean and variance estimation; no df adjustment
+60min,arch1,standardized_residuals,Ljung-Box,24,2214,23.798420459520305,0.473171487353868,24,0,,,False,train_2024,approximate after fixed-mean and variance estimation; no df adjustment
+60min,arch1,squared_standardized_residuals,Ljung-Box,10,2214,20.643232527730884,0.0237233631520956,10,0,,,True,train_2024,approximate after fixed-mean and variance estimation; no df adjustment
+60min,arch1,squared_standardized_residuals,Ljung-Box,20,2214,37.03255310379377,0.0115972994131298,20,0,,,True,train_2024,approximate after fixed-mean and variance estimation; no df adjustment
+60min,arch1,squared_standardized_residuals,Ljung-Box,24,2214,41.88115679761675,0.0133057899468493,24,0,,,True,train_2024,approximate after fixed-mean and variance estimation; no df adjustment
+60min,garch11,standardized_residuals,Ljung-Box,10,2214,8.762482713410101,0.5547835412480016,10,0,,,False,train_2024,approximate after fixed-mean and variance estimation; no df adjustment
+60min,garch11,standardized_residuals,Ljung-Box,20,2214,17.338112407503665,0.6309220233995307,20,0,,,False,train_2024,approximate after fixed-mean and variance estimation; no df adjustment
+60min,garch11,standardized_residuals,Ljung-Box,24,2214,24.014976186911213,0.4607412031786718,24,0,,,False,train_2024,approximate after fixed-mean and variance estimation; no df adjustment
+60min,garch11,squared_standardized_residuals,Ljung-Box,10,2214,16.286893995581234,0.0917089886262681,10,0,,,False,train_2024,approximate after fixed-mean and variance estimation; no df adjustment
+60min,garch11,squared_standardized_residuals,Ljung-Box,20,2214,33.388285523522924,0.0305730353597045,20,0,,,True,train_2024,approximate after fixed-mean and variance estimation; no df adjustment
+60min,garch11,squared_standardized_residuals,Ljung-Box,24,2214,38.1017694628361,0.0338494752432194,24,0,,,True,train_2024,approximate after fixed-mean and variance estimation; no df adjustment
+1d,fixed_arma_mean,innovations,ARCH-LM,10,246,33.13963900407619,0.0002580506871779,10,0,3.6756410859719257,0.0001437768950283,True,train_2024,asymptotic; innovations from a pre-estimated mean
+1d,fixed_arma_mean,innovations,ARCH-LM,20,246,54.42756058489847,4.997886928694822e-05,20,0,3.251585731933736,1.0580435269315386e-05,True,train_2024,asymptotic; innovations from a pre-estimated mean
+1d,constant,standardized_residuals,Ljung-Box,10,246,9.98394740208037,0.4419027672001603,10,0,,,False,train_2024,approximate after fixed-mean and variance estimation; no df adjustment
+1d,constant,standardized_residuals,Ljung-Box,20,246,19.92900543405744,0.4623785881247304,20,0,,,False,train_2024,approximate after fixed-mean and variance estimation; no df adjustment
+1d,constant,squared_standardized_residuals,Ljung-Box,10,246,26.62108807060823,0.0029888161772288,10,0,,,True,train_2024,approximate after fixed-mean and variance estimation; no df adjustment
+1d,constant,squared_standardized_residuals,Ljung-Box,20,246,41.25997868479695,0.0034490943673435,20,0,,,True,train_2024,approximate after fixed-mean and variance estimation; no df adjustment
+1d,arch1,standardized_residuals,Ljung-Box,10,246,10.50955406626706,0.3969806485532184,10,0,,,False,train_2024,approximate after fixed-mean and variance estimation; no df adjustment
+1d,arch1,standardized_residuals,Ljung-Box,20,246,21.08490828153961,0.3921501632616231,20,0,,,False,train_2024,approximate after fixed-mean and variance estimation; no df adjustment
+1d,arch1,squared_standardized_residuals,Ljung-Box,10,246,18.545450846539683,0.0464307438892863,10,0,,,True,train_2024,approximate after fixed-mean and variance estimation; no df adjustment
+1d,arch1,squared_standardized_residuals,Ljung-Box,20,246,28.688495893343905,0.0940766102066336,20,0,,,False,train_2024,approximate after fixed-mean and variance estimation; no df adjustment
+1d,garch11,standardized_residuals,Ljung-Box,10,246,9.882621625074988,0.4508510381179101,10,0,,,False,train_2024,approximate after fixed-mean and variance estimation; no df adjustment
+1d,garch11,standardized_residuals,Ljung-Box,20,246,20.37666366210674,0.434600241016636,20,0,,,False,train_2024,approximate after fixed-mean and variance estimation; no df adjustment
+1d,garch11,squared_standardized_residuals,Ljung-Box,10,246,16.56383516676166,0.0845897347208391,10,0,,,False,train_2024,approximate after fixed-mean and variance estimation; no df adjustment
+1d,garch11,squared_standardized_residuals,Ljung-Box,20,246,29.553694661546142,0.0774153986510021,20,0,,,False,train_2024,approximate after fixed-mean and variance estimation; no df adjustment

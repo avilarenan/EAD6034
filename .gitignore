@@ -32,3 +32,6 @@ results/entrega_21_09/tables/*_15min.csv
 results/entrega_21_09/tables/*_30min.csv
 results/entrega_21_09/tables/*_60min.csv
 results/entrega_21_09/tables/*_1d.csv
+
+# Previews raster locais; figuras científicas vetoriais em PDF são publicadas.
+results/entrega_21_09/figures/*.png
