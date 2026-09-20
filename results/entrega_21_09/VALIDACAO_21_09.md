@@ -24,3 +24,11 @@ Foram emitidos avisos de compatibilidade futura de `statsmodels` e de inicializa
 Testes de software não validam as hipóteses econômicas ou estatísticas. Permanecem sensibilidade dos testes de estacionariedade à tendência, heteroscedasticidade, dependência residual em algumas especificações, multiplicidade, filtro retrospectivo de dias completos e calendário histórico incompleto. O estudo não identifica causalmente leilões/overnight nem avalia lucros após custos.
 
 Na comparação comum de 60 minutos, nenhum modelo avaliado supera o retorno zero pelo MSE. Esse resultado negativo foi preservado, assim como os artefatos originais das entregas anteriores.
+
+## Revisão de apresentação, referências e defesa — 20/09/2026
+
+Esta revisão acrescenta a fonte oficial Alpha Lab, sua regra retrospectiva de seleção de contratos, a conclusão crítica, o roteiro oral dos sete slides e as perguntas dos professores. Os modelos não foram reestimados e as tabelas numéricas permanecem iguais às da validação original acima.
+
+Os cinco testes específicos de apresentação/resultados passaram novamente. Os sete slides foram renderizados e inspecionados, sem avisos de overflow do LaTeX. Cada página mantém uma referência clicável ao código, e a primeira inclui a página oficial do BTG-ATS-A26. As notas orais e a conclusão foram revisadas contra os CSV e as Aulas 2–6 disponíveis. O gerador verifica hashes de 18 tabelas para impedir a reutilização silenciosa desse texto com outra execução empírica.
+
+A documentação oficial revela que o fornecedor escolhe o contrato de maior volume do próprio dia. Portanto, o controle de causalidade temporal do filtro não elimina a seleção ex post da composição da série. Essa limitação se soma ao filtro retrospectivo de pregões completos e está explicitada nos materiais revisados.

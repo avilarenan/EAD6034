@@ -96,7 +96,7 @@
     "reportlab": "4.4.9"
   },
   "max_order": 5,
-  "code_ref": "a6c7de81989e586ea117e994f366a1bb6933a66b",
+  "code_ref": "6e24660054ee39c6037fc1e68aed22d4b78ea6ed",
   "input_source": "BTG-ATS-A26(2).zip",
   "scales": [
     {
@@ -426,13 +426,13 @@
     "forecast_evaluation.py": "8b88e6613d0f25e68d36ec757179b26c9d4d8bd4a157e1a4849ffa2f2abb84c5",
     "multiscale.py": "3d0e5e9503b5baa1e6c3c1498ae77bc3cd91467af2620117d01228edac5203c3",
     "forecast_figures.py": "93ebe90c9a5dc83943d2259c516439b98cf501682db2a9ebd438cab70e2957dd",
-    "forecast_report.py": "a813fd07c6250bdf16c180ced785d9eea659517ddfb4dcf82b31284414e52aa9",
+    "forecast_report.py": "cd020a004fe3aa87b52e01bcb9e6bca05e2b51bfd08adcc51e055c88e0c1fc07",
     "stationarity.py": "64f2b473dd0dec11a72106811b75bb4d118de782f34d3b88aa0850b54e3a7e1c",
     "trading_time_data.py": "cf09cd15ffc859773d4bbbd3ff7ec07dea0b8378e7849bc7815deab95b3966e2",
     "analysis.py": "687ee5f8b8a011c4b0bb39b0ce03a3087d235749ba38aa878d33eb315d42878d",
     "forecast_pipeline.py": "8a9c2b6865849920fb96e81e3c707dd0768b9b4bd28a06e91dd7e82d6c730b96",
     "report.py": "7408db2cd46f25d927e6468e3d3ec5e8390a8521ec4b66290a8c3179b2cd376e",
-    "forecast_narrative.py": "a99872953043abaa72647382130306e0263c69beaf98f6cb9380fa1f33a8307c",
+    "forecast_narrative.py": "1967239c13ceaa9a2a627bfcc6068025a19cbc9919ed70f8f1a8afbafe83ef08",
     "conditional_volatility.py": "3ff05804b7d6d92997f8575ce4724cf4ba693bb5b38bfb5c3d457f58d5c4d580",
     "pipeline.py": "66ae5beca728d2ba951c21145549973bc427b1c434fa56d1d64481334b1c482a",
     "plots.py": "7ac0dfaa5b718eb0edf207d35c05daa56b3a4dbd9fbe0023f80988defb0c55c3",
@@ -446,6 +446,19 @@
     "course": "Aulas 3,4,5,6 supplied by user",
     "market_hours": "docs/market_hours_2024_2025.md"
   },
-  "report_created_utc": "2026-09-20T17:21:29.436521+00:00",
-  "presentation_format": "seven_slide_editable_Beamer_and_PDF"
+  "report_created_utc": "2026-09-20T18:25:05.237925+00:00",
+  "presentation_format": "seven_slide_editable_Beamer_and_PDF",
+  "analysis_code_ref": "a6c7de81989e586ea117e994f366a1bb6933a66b",
+  "source_documentation": {
+    "provider": "BTG Alpha Lab / BTG Solutions Data Services",
+    "dataset": "BTG-ATS-A26",
+    "landing_page": "https://alphalab.btgpactual.com/datasets/publication:7a74b3ae-90e0-4393-b1e0-01e61c0bedba",
+    "readme": "https://dataservices.btgpactualsolutions.com/alphalab/v1/api/alphalab/readme/README-BTG-ATS-A26.md",
+    "consulted_on": "2026-09-20",
+    "timestamp": "start of one-minute interval, UTC",
+    "supplier_contract_selection": "highest traded volume in the same day; ex post",
+    "fresh_download_hash_compared": false,
+    "operational_caveat": "Causal forecast recursion does not undo ex-post contract and full-day selection"
+  },
+  "estimation_or_selection_scope": "Model orders and fitted parameters; excludes supplier contract selection and complete-session filtering"
 }

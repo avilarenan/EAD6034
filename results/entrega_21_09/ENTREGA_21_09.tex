@@ -32,7 +32,7 @@
 Treino: \textbf{2024}, 246 pregões.\par Teste: \textbf{2025}, 221 pregões.\medskip\par
 Janela comum: 09:05--18:05.\par Retornos logarítmicos em \%.\medskip\par
 \alert{Não criamos retorno overnight.}\par Os lags e estados \textbf{continuam} entre pregões, em tempo de negociação.
-\end{column}\begin{column}{0.47\textwidth}\centering\scriptsize
+\par\medskip\scriptsize\href{https://alphalab.btgpactual.com/datasets/publication:7a74b3ae-90e0-4393-b1e0-01e61c0bedba}{Fonte: BTG Alpha Lab | BTG-ATS-A26}\par Candles de negócios B3. Contrato de maior volume do próprio dia: seleção retrospectiva.\end{column}\begin{column}{0.47\textwidth}\centering\scriptsize
 \begin{tabular}{lrr}
 \toprule
 Escala & $n$ treino & $n$ teste \\ \midrule
@@ -45,14 +45,14 @@ Diário OC & 246 & 221 \\
 \bottomrule
 \end{tabular}\par
 \smallskip\scriptsize 02/01--30/12/2024; 02/01--28/11/2025.\par Diário: abertura--fechamento da janela.\par \includegraphics[width=\textwidth,height=2.05cm,keepaspectratio]{figures/08_monthly_mean_5min.pdf}\par \tiny Média dos retornos de 5 min, não retorno mensal acumulado.\end{column}\end{columns}
-\source{Dados e protocolo | 31/08 revisado}{https://github.com/avilarenan/EAD6034/blob/a6c7de81989e586ea117e994f366a1bb6933a66b/src/ead6034/trading_time_data.py}
+\source{Dados e protocolo | 31/08 revisado}{https://github.com/avilarenan/EAD6034/blob/6e24660054ee39c6037fc1e68aed22d4b78ea6ed/src/ead6034/trading_time_data.py}
 \end{frame}
 
 \begin{frame}[t]{Da descrição às hipóteses de dependência}
 \tagline{31/08: identificação refeita com a sequência anual de 2024}
 \centering\includegraphics[width=0.98\textwidth,height=5.0cm,keepaspectratio]{figures/01b_return_acf_pacf_slide.pdf}\par\smallskip 
 \scriptsize Um lag = uma barra da própria escala, inclusive entre pregões. Bandas pontuais não corrigem múltiplas comparações.\par Dispersão e dependência na média são propriedades distintas.\par Desvios-padrão (\%; 1/5/15/30/60 min/diário): 0,032; 0,071; 0,122; 0,171; 0,245; 0,785.
-\source{Aulas 2--4 | FAC/FACP convencionais}{https://github.com/avilarenan/EAD6034/blob/a6c7de81989e586ea117e994f366a1bb6933a66b/src/ead6034/annual_models.py}
+\source{Aulas 2--4 | FAC/FACP convencionais}{https://github.com/avilarenan/EAD6034/blob/6e24660054ee39c6037fc1e68aed22d4b78ea6ed/src/ead6034/annual_models.py}
 \end{frame}
 
 \begin{frame}[t]{Estacionariedade: uma série anual por escala}
@@ -69,7 +69,7 @@ Diário OC & 246 & $<0{,}001$ & $<0{,}001$ & 0,334 & 0/16/0 \\
 \bottomrule
 \end{tabular}\par
 \raggedright\medskip\small ADF e PP: $H_0$ = raiz unitária. KPSS: $H_0$ = estacionariedade em nível.\par\medskip\textbf{A correção central:} 60 min passa de 9 por pregão para 2.214 observações anuais.\par\scriptsize *Ordem ADF/PP/KPSS. Constante: especificação principal acima.\par \alert{Sensibilidade: KPSS com tendência rejeita em 6 das seis escalas.}\par Não rejeitar KPSS não prova estabilidade de toda a distribuição; a variância pode variar.
-\source{Aula 5 | Estatísticas e valores críticos nas tabelas completas}{https://github.com/avilarenan/EAD6034/blob/a6c7de81989e586ea117e994f366a1bb6933a66b/src/ead6034/annual_models.py}
+\source{Aula 5 | Estatísticas e valores críticos nas tabelas completas}{https://github.com/avilarenan/EAD6034/blob/6e24660054ee39c6037fc1e68aed22d4b78ea6ed/src/ead6034/annual_models.py}
 \end{frame}
 
 \begin{frame}[t]{BIC seleciona; os resíduos ainda precisam passar}
@@ -85,8 +85,8 @@ Escala & ARMA BIC & Alternativos & $p$ Ljung--Box & $p$ ARCH--LM \\ \midrule
 Diário OC & (0,0) & AR(1) / MA(1) & 0,399 & $<0{,}001$ \\
 \bottomrule
 \end{tabular}\par
-\raggedright\medskip\small \textbf{Seleção não é validação.} Ljung–Box rejeita em 1 min.\par\medskip AR e MA positivos são comparadores pré-especificados; não substituem o vencedor geral.\par\scriptsize Diagnósticos assintóticos aproximados sob heteroscedasticidade. Q usa $h-p-q-1$ (Aula 4); $h=60$ em 1 min, 24 nas demais intradiárias, 20 no diário.
-\source{Aulas 3--4 | Box--Jenkins e alternativas lineares}{https://github.com/avilarenan/EAD6034/blob/a6c7de81989e586ea117e994f366a1bb6933a66b/src/ead6034/annual_models.py}
+\raggedright\medskip\small \textbf{Seleção não é validação.} Ljung–Box rejeita em 1 min.\par\smallskip\scriptsize Minuto: vantagem de apenas $\Delta BIC=1,24$ sobre (0,0); candidato sem validação residual.\par 5 min: não rejeita em 24 lags, mas rejeita em 10, 12 e 20. AR e MA são as alternativas lineares.\par\smallskip \scriptsize Diagnósticos assintóticos aproximados sob heteroscedasticidade. Q usa $h-p-q-1$ (Aula 4); $h=60$ em 1 min, 24 nas demais intradiárias, 20 no diário.
+\source{Aulas 3--4 | Box--Jenkins e alternativas lineares}{https://github.com/avilarenan/EAD6034/blob/6e24660054ee39c6037fc1e68aed22d4b78ea6ed/src/ead6034/annual_models.py}
 \end{frame}
 
 \begin{frame}[t]{Prever a variância não é prever a direção}
@@ -102,8 +102,8 @@ Escala & Variância BIC & $\alpha+\beta$ & $p$ Q($z^2$)* & MSE/const.* \\ \midru
 Diário OC & Constante & 0,000 & 0,003 & 1,000 \\
 \bottomrule
 \end{tabular}\par
-\raggedright\medskip\small Estimação \textbf{sequencial}; previsão pontual do retorno \textbf{não muda}.\par BIC não atesta adequação: rejeições em Q($z^2$) sinalizam dependência restante.\par\medskip\scriptsize *Q dos resíduos padronizados ao quadrado no maior lag exibido. MSE em 2025 contra inovação ao quadrado: proxy ruidosa, não variância observada. BIC das variâncias é condicional à média fixa.
-\source{Aula 6 | Estabilidade, persistência e diagnóstico}{https://github.com/avilarenan/EAD6034/blob/a6c7de81989e586ea117e994f366a1bb6933a66b/src/ead6034/conditional_volatility.py}
+\raggedright\medskip\small Estimação \textbf{sequencial}; previsão pontual do retorno \textbf{não muda}.\par BIC não atesta adequação: rejeições em Q($z^2$) sinalizam dependência restante.\par\medskip\scriptsize *Q dos resíduos padronizados ao quadrado no maior lag exibido. MSE em 2025 contra inovação ao quadrado: proxy ruidosa, não variância observada.\par Captura parcial: minuto, hora e diário ainda rejeitam em Q($z^2$). BIC é condicional à média fixa.
+\source{Aula 6 | Estabilidade, persistência e diagnóstico}{https://github.com/avilarenan/EAD6034/blob/6e24660054ee39c6037fc1e68aed22d4b78ea6ed/src/ead6034/conditional_volatility.py}
 \end{frame}
 
 \begin{frame}[t]{A comparação justa usa o mesmo alvo futuro}
@@ -119,13 +119,13 @@ Escala & ARMA & AR & MA & 50/50 & $p$ DM \\ \midrule
 Diário OC* & 1,0170 & 1,0193 & 1,0195 & 1,0194 & 0,554 \\
 \bottomrule
 \end{tabular}\par
-\raggedright\medskip\small \textbf{Razão MSE/modelo zero: menor que 1 é melhor.}\par Intradiário: 1.989 alvos idênticos de 60 minutos, sem sobreposição.\par\scriptsize *Diário prevê sua janela open-to-close: alvo diferente, não entra no ranking intradiário.\par DM compara apenas AR versus MA, não ARMA versus zero. Referência aproximada; p-valores sem ajuste de multiplicidade. Perdas absolutas e horizonte nativo estão no relatório.
-\source{Aula 4 | MSE, MAE, combinação e Diebold--Mariano}{https://github.com/avilarenan/EAD6034/blob/a6c7de81989e586ea117e994f366a1bb6933a66b/src/ead6034/forecast_evaluation.py}
+\raggedright\medskip\small \textbf{MSE do modelo / MSE do retorno zero: menor que 1 é melhor.}\par Intradiário: 1.989 alvos idênticos de 60 minutos, sem sobreposição.\par\scriptsize *Diário prevê sua janela open-to-close: alvo diferente, não entra no ranking intradiário.\par DM compara apenas AR versus MA, não ARMA versus zero. Referência aproximada; p-valores sem ajuste de multiplicidade. Perdas absolutas e horizonte nativo estão no relatório.
+\source{Aula 4 | MSE, MAE, combinação e Diebold--Mariano}{https://github.com/avilarenan/EAD6034/blob/6e24660054ee39c6037fc1e68aed22d4b78ea6ed/src/ead6034/forecast_evaluation.py}
 \end{frame}
 
-\begin{frame}[t]{Agregação não garante ganho preditivo}
-\tagline{21/09: previsibilidade, horário e gap são perguntas relacionadas, mas distintas}
-\small\textbf{Previsibilidade:} ARMA por BIC, alvo comum: MSE/zero = 1,0019 (1 min) e 1,0020 (60 min). Nenhum dos dois supera o retorno zero.\par\medskip\begin{columns}[T]\begin{column}{0.50\textwidth}\small\textbf{ARMA de 60 min em 2025}\par\smallskip\begin{tabular}{lrr}
+\begin{frame}[t]{Conclusão: alcance dos resultados e da metodologia}
+\tagline{A hipótese de maior previsibilidade horária não recebeu suporte neste desenho}
+\small\textbf{Evidência:} ARMA no alvo comum tem 0,194\% (1 min) e 0,203\% (60 min) mais MSE que zero. Diferença descritiva; DM compara AR com MA.\par\medskip\begin{columns}[T]\begin{column}{0.50\textwidth}\small\textbf{ARMA de 60 min em 2025}\par\smallskip\begin{tabular}{lrr}
 \toprule
 Recorte & $n$ & MSE/zero \\ \midrule
 Início & 221 & 1,0009 \\
@@ -135,9 +135,9 @@ Gap alto & 873 & 1,0019 \\
 Gap baixo & 1026 & 1,0031 \\
 \bottomrule
 \end{tabular}\par
-\scriptsize Início: 09:05--10:05; meio: até 17:05; fim: até 18:05. Todas as escalas no relatório.\par Grupos não são aditivos; gaps indisponíveis excluídos desse recorte.\end{column}\begin{column}{0.46\textwidth}\small\textbf{Overnight:} fora do retorno, mas não da memória. Gap observado tem corte fixado em 2024.\par\medskip\alert{Não identificamos causalmente efeitos de leilões.}\par\medskip\scriptsize Sem flags de fase; horários históricos incompletos. A janela exclui calls próprios do WIN nos regimes documentados, mas pode incluir calls das ações.\par\medskip Dias completos escolhidos retrospectivamente; inferência aproximada; sem teste de ganho após custos.\end{column}\end{columns}\medskip\scriptsize\href{https://github.com/avilarenan/EAD6034/blob/main/results/entrega_21_09/RELATORIO_21_09.md}{Relatório, análises por faixa/gap e resultados completos}
+\scriptsize Início: 09:05--10:05; meio: até 17:05; fim: até 18:05. Todas as escalas no relatório.\par Grupos não são aditivos; gaps indisponíveis excluídos desse recorte.\end{column}\begin{column}{0.46\textwidth}\small\textbf{Força:} mesmos alvos e parâmetros fixados antes do teste.\par\smallskip \textbf{Limites:} contrato escolhido por volume diário e dias completos são seleções retrospectivas.\par\smallskip \alert{Leilões: mecanismos plausíveis, sem identificação causal.}\par\smallskip \scriptsize Overnight fora do alvo, mas lags continuam. Sem flags de fase; horários históricos incompletos.\par\smallskip Dependência da variância não garante direção previsível. Resultado restrito a este ativo, janela e modelos; não prova eficiência de mercado ou lucro após custos.\end{column}\end{columns}\medskip\scriptsize\href{https://github.com/avilarenan/EAD6034/blob/main/results/entrega_21_09/RELATORIO_21_09.md}{Relatório, análises por faixa/gap e resultados completos}
 
-\source{Síntese cumulativa | Benchmark: Matías e Reboredo (2012), adaptação linear}{https://github.com/avilarenan/EAD6034/blob/a6c7de81989e586ea117e994f366a1bb6933a66b/src/ead6034/forecast_pipeline.py}
+\source{Síntese cumulativa | Evidência, adequação e utilidade econômica são distintas}{https://github.com/avilarenan/EAD6034/blob/6e24660054ee39c6037fc1e68aed22d4b78ea6ed/src/ead6034/forecast_pipeline.py}
 \end{frame}
 
 \end{document}

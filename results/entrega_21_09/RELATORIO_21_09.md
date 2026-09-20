@@ -2,7 +2,7 @@
 
 Renan de Luca Avila · Prof. Leandro Maciel · Seminário final em 28/09/2026 (até 15 minutos).
 
-[Repositório](https://github.com/avilarenan/EAD6034) · [Código desta execução](https://github.com/avilarenan/EAD6034/blob/a6c7de81989e586ea117e994f366a1bb6933a66b/src/ead6034/forecast_pipeline.py) · [Protocolo pré-especificado](https://github.com/avilarenan/EAD6034/blob/a6c7de81989e586ea117e994f366a1bb6933a66b/docs/PROTOCOL_21_09.md).
+[Repositório](https://github.com/avilarenan/EAD6034) · [Código desta execução](https://github.com/avilarenan/EAD6034/blob/6e24660054ee39c6037fc1e68aed22d4b78ea6ed/src/ead6034/forecast_pipeline.py) · [Protocolo pré-especificado](https://github.com/avilarenan/EAD6034/blob/6e24660054ee39c6037fc1e68aed22d4b78ea6ed/docs/PROTOCOL_21_09.md).
 
 Este documento incorpora e revisa as etapas de 31/08 (descrição e FAC/FACP), 14/09 (estacionariedade e Box–Jenkins) e 21/09 (avaliação preditiva e modelos alternativos). Os artefatos antigos foram preservados como histórico, não corrigidos silenciosamente. A inferência atual refere-se ao desenho anual de tempo de negociação aprovado pelo autor.
 
@@ -20,7 +20,7 @@ Este documento incorpora e revisa as etapas de 31/08 (descrição e FAC/FACP), 1
 
 ## 1. Pergunta, escopo e hipótese
 
-[Código](https://github.com/avilarenan/EAD6034/blob/a6c7de81989e586ea117e994f366a1bb6933a66b/src/ead6034/forecast_pipeline.py).
+[Código](https://github.com/avilarenan/EAD6034/blob/6e24660054ee39c6037fc1e68aed22d4b78ea6ed/src/ead6034/forecast_pipeline.py).
 
 Como a previsibilidade dos retornos do WIN varia entre 1, 5, 15, 30 e 60 minutos e o diário?
 A hipótese de maior previsibilidade horária é confrontada com os erros fora da amostra, não usada para escolher vencedores.
@@ -34,7 +34,16 @@ não lineares do artigo, pois foram utilizados apenas os métodos das aulas forn
 
 ## 2. Dados, revisão amostral e significado de overnight
 
-[Código](https://github.com/avilarenan/EAD6034/blob/a6c7de81989e586ea117e994f366a1bb6933a66b/src/ead6034/trading_time_data.py).
+[Código](https://github.com/avilarenan/EAD6034/blob/6e24660054ee39c6037fc1e68aed22d4b78ea6ed/src/ead6034/trading_time_data.py).
+
+Fonte: **[BTG Alpha Lab — BTG-ATS-A26](https://alphalab.btgpactual.com/datasets/publication:7a74b3ae-90e0-4393-b1e0-01e61c0bedba)**,
+candles de negócios B3, com timestamp inicial em UTC. [README oficial](https://dataservices.btgpactualsolutions.com/alphalab/v1/api/alphalab/readme/README-BTG-ATS-A26.md).
+Consulta em 20/09/2026. O arquivo efetivamente analisado foi fornecido pelo autor; seu hash, recorte e condições de acesso
+estão na [documentação de proveniência](https://github.com/avilarenan/EAD6034/blob/6e24660054ee39c6037fc1e68aed22d4b78ea6ed/docs/DATA_SOURCE.md).
+
+O fornecedor escolhe o contrato de maior volume **do próprio dia**, informação conhecida integralmente após a sessão.
+Essa composição ex post e o filtro de dias completos condicionam a avaliação. O uso exclusivo do passado nas previsões
+não transforma a base retrospectiva em uma regra integralmente validada de execução em tempo real.
 
 Retornos são expressos em porcentagem: `100 × log(P_final/P_inicial)`. Janela fixa local de São Paulo:
 09:05–18:05, com 540 minutos. O intradiário usa a fronteira inicial no fechamento do candle iniciado às 09:04.
@@ -74,7 +83,7 @@ Auditoria completa: [sequence_audit.csv](https://github.com/avilarenan/EAD6034/b
 
 ## 3. Entrega de 31/08 revisada: descrição, FAC e FACP
 
-[Código](https://github.com/avilarenan/EAD6034/blob/a6c7de81989e586ea117e994f366a1bb6933a66b/src/ead6034/annual_models.py).
+[Código](https://github.com/avilarenan/EAD6034/blob/6e24660054ee39c6037fc1e68aed22d4b78ea6ed/src/ead6034/annual_models.py).
 
 As estatísticas e correlações foram recalculadas em 2024 sob a mesma sequência anual utilizada nos testes e modelos.
 A FAC usa pares na sequência de observações, inclusive os que atravessam sessões. A FACP usa Yule–Walker com
@@ -130,7 +139,7 @@ Uma dispersão maior na escala diária não demonstra maior ou menor previsibili
 
 ## 4. Entrega de 14/09 revisada: estacionariedade
 
-[Código](https://github.com/avilarenan/EAD6034/blob/a6c7de81989e586ea117e994f366a1bb6933a66b/src/ead6034/annual_models.py).
+[Código](https://github.com/avilarenan/EAD6034/blob/6e24660054ee39c6037fc1e68aed22d4b78ea6ed/src/ead6034/annual_models.py).
 
 ADF e PP: H0 = raiz unitária. KPSS: H0 = estacionariedade em nível (`c`) ou em torno de tendência (`ct`).
 `c` é a especificação principal; `ct` é sensibilidade pré-definida, não escolhida retrospectivamente para obter concordância.
@@ -200,7 +209,7 @@ Valores críticos de 1%, 5% e 10%, regras de lag e avisos: [stationarity.csv](ht
 
 ## 5. Box–Jenkins: identificação, estimação, seleção e diagnóstico
 
-[Código](https://github.com/avilarenan/EAD6034/blob/a6c7de81989e586ea117e994f366a1bb6933a66b/src/ead6034/annual_models.py).
+[Código](https://github.com/avilarenan/EAD6034/blob/6e24660054ee39c6037fc1e68aed22d4b78ea6ed/src/ead6034/annual_models.py).
 
 Grade ARMA(p,q), p,q entre 0 e 5, com constante, usando somente 2024.
 A constante da parametrização de `statsmodels.ARIMA` é a média incondicional μ; não é o intercepto da equação AR.
@@ -280,7 +289,7 @@ Todos os horizontes: [mean_diagnostics.csv](https://github.com/avilarenan/EAD603
 
 ## 6. Aula 6: ARCH/GARCH e previsão da variância
 
-[Código](https://github.com/avilarenan/EAD6034/blob/a6c7de81989e586ea117e994f366a1bb6933a66b/src/ead6034/conditional_volatility.py).
+[Código](https://github.com/avilarenan/EAD6034/blob/6e24660054ee39c6037fc1e68aed22d4b78ea6ed/src/ead6034/conditional_volatility.py).
 
 Sequência da Aula 6, pp. 17–20: estimar a média ARMA, examinar quadrados dos resíduos, aplicar ARCH-LM, estimar variância
 e diagnosticar resíduos padronizados. Comparamos variância constante, ARCH(1) e GARCH(1,1) normais sobre as mesmas inovações.
@@ -347,7 +356,7 @@ Ljung–Box de `z=ε/√h` e `z²` usa referência assintótica χ²(h), sem sub
 
 ## 7. Entrega de 21/09: protocolo de previsão fora da amostra
 
-[Código](https://github.com/avilarenan/EAD6034/blob/a6c7de81989e586ea117e994f366a1bb6933a66b/src/ead6034/forecast_evaluation.py).
+[Código](https://github.com/avilarenan/EAD6034/blob/6e24660054ee39c6037fc1e68aed22d4b78ea6ed/src/ead6034/forecast_evaluation.py).
 
 Ordens e parâmetros são fixados em 2024; 2025 entra somente na avaliação e na atualização causal dos estados,
 defasagens e variâncias já definidos. Filtro não é suavizador: uma observação futura não pode alterar uma previsão anterior.
@@ -390,7 +399,7 @@ Sem otimização ex post: o menor MSE observado em 2025 é um ranking descritivo
 
 ## 8. Acurácia: todas as escalas e comparadores
 
-[Código](https://github.com/avilarenan/EAD6034/blob/a6c7de81989e586ea117e994f366a1bb6933a66b/src/ead6034/forecast_evaluation.py).
+[Código](https://github.com/avilarenan/EAD6034/blob/6e24660054ee39c6037fc1e68aed22d4b78ea6ed/src/ead6034/forecast_evaluation.py).
 
 Erros de retorno estão em pontos percentuais; MSE em (p.p.)²; MAE/RMSE em p.p.; a razão com o modelo zero é adimensional.
 O sinal do ganho é `1 − MSE/MSE_zero`. Comparar previsibilidade entre escalas requer o bloco de alvos comuns,
@@ -469,7 +478,7 @@ Tabela completa, inclusive faixas e grupos de gaps: [accuracy.csv](https://githu
 
 ## 9. Comparação Diebold–Mariano
 
-[Código](https://github.com/avilarenan/EAD6034/blob/a6c7de81989e586ea117e994f366a1bb6933a66b/src/ead6034/forecast_evaluation.py).
+[Código](https://github.com/avilarenan/EAD6034/blob/6e24660054ee39c6037fc1e68aed22d4b78ea6ed/src/ead6034/forecast_evaluation.py).
 
 Comparação pré-especificada: AR puro positivo × MA puro positivo, selecionados em 2024. São famílias não aninhadas,
 mas podem degenerar em previsões ou perdas idênticas. O teste não é aplicado ao ARMA geral contra sua extensão GARCH
@@ -514,7 +523,7 @@ Todas as sensibilidades: [diebold_mariano.csv](https://github.com/avilarenan/EAD
 
 ## 10. Faixas do pregão, gaps e limites sobre leilões
 
-[Código](https://github.com/avilarenan/EAD6034/blob/a6c7de81989e586ea117e994f366a1bb6933a66b/src/ead6034/trading_time_data.py).
+[Código](https://github.com/avilarenan/EAD6034/blob/6e24660054ee39c6037fc1e68aed22d4b78ea6ed/src/ead6034/trading_time_data.py).
 
 As faixas são físicas e iguais entre escalas: início 09:05–10:05; meio 10:05–17:05; fim 17:05–18:05.
 Uma hora de minuto é comparada com uma hora de barras maiores, não a primeira barra de qualquer duração.
@@ -563,44 +572,53 @@ em horários que mudam por regime. O período intermediário não é necessariam
 A cronologia de ofícios e exceções de 2024–2025 é incompleta; não se extrapola a grade atual para toda a amostra.
 
 Fontes B3, datas de vigência, diferenças entre ajuste e call, e lacunas:
-[auditoria histórica de horários](https://github.com/avilarenan/EAD6034/blob/a6c7de81989e586ea117e994f366a1bb6933a66b/docs/market_hours_2024_2025.md).
+[auditoria histórica de horários](https://github.com/avilarenan/EAD6034/blob/6e24660054ee39c6037fc1e68aed22d4b78ea6ed/docs/market_hours_2024_2025.md).
 Primeiros e últimos horários efetivamente observados no feed: [observed_source_hours.csv](https://github.com/avilarenan/EAD6034/blob/main/results/entrega_21_09/tables/observed_source_hours.csv).
 Essas evidências não identificam efeito causal de leilões, não demonstram que os efeitos overnight desapareceram
 e não permitem atribuir toda diferença entre frequências à microestrutura.
 
-## 11. Conclusão e limites do que foi demonstrado
+## 11. Conclusão crítica dos resultados e da metodologia
 
-[Código](https://github.com/avilarenan/EAD6034/blob/a6c7de81989e586ea117e994f366a1bb6933a66b/src/ead6034/forecast_pipeline.py).
+Esta conclusão se refere ao WIN, à janela 09:05–18:05, ao treino de 2024 e ao teste de 02/01 a 28/11/2025. [Código de avaliação](https://github.com/avilarenan/EAD6034/blob/6e24660054ee39c6037fc1e68aed22d4b78ea6ed/src/ead6034/forecast_evaluation.py) · [tabela de erros](https://github.com/avilarenan/EAD6034/blob/main/results/entrega_21_09/tables/accuracy.csv) · [proveniência dos dados](https://github.com/avilarenan/EAD6034/blob/6e24660054ee39c6037fc1e68aed22d4b78ea6ed/docs/DATA_SOURCE.md).
 
-Seleção BIC da média em 2024: 1 min: ARMA(2,2); 5 min: ARMA(0,0); 15 min: ARMA(0,0); 30 min: ARMA(0,0); 60 min: ARMA(0,0); 1 dia: ARMA(0,0).
+### O que os resultados sustentam
 
-Ljung–Box da média, no horizonte diagnóstico principal, rejeita ausência de autocorrelação em: 1 min. A referência é assintótica e pode ser afetada por heterocedasticidade; não rejeitar não prova ruído independente.
+**A hipótese de que agregar minutos em horas melhoraria a previsão não recebeu suporte neste desenho.** No alvo comum de 60 minutos, todos os modelos têm MSE global ligeiramente superior ao retorno zero. O ARMA selecionado por BIC apresenta razões de 1,001940 na escala de um minuto e 1,002031 na escala horária: aproximadamente **0,194% e 0,203% mais erro quadrático**, respectivamente. São diferenças pequenas, não aumentos de 1,94% ou 2,03%. Também não há ganho global sobre zero em MSE ou MAE nos horizontes nativos. Há ganhos microscópicos em alguns recortes de AR/MA, sem constituírem uma estratégia validada.
 
-Alvo comum de 60 minutos, série-base 1 min: menor MSE descritivo de ZERO; MSE/MSE_zero=1.000000, ganho=+0.0000%. Esse ranking observado em 2025 não é uma nova seleção para reavaliar no mesmo holdout.
+Esse resultado não prova imprevisibilidade universal ou eficiência do mercado. A conclusão é mais delimitada: as estruturas lineares examinadas, com parâmetros fixados em 2024, não converteram a dependência identificada em redução global do erro em 2025. O teste de Diebold–Mariano compara AR com MA; não estabelece a significância da diferença entre ARMA e zero. Da mesma forma, não rejeitar igualdade entre AR e MA não comprova equivalência dos modelos. [Comparação e DM](https://github.com/avilarenan/EAD6034/blob/6e24660054ee39c6037fc1e68aed22d4b78ea6ed/src/ead6034/forecast_evaluation.py).
 
-Alvo comum de 60 minutos, série-base 5 min: menor MSE descritivo de ZERO; MSE/MSE_zero=1.000000, ganho=+0.0000%. Esse ranking observado em 2025 não é uma nova seleção para reavaliar no mesmo holdout.
+**A evidência de dinâmica na variância é mais forte que a de ganho na previsão da média.** ARCH/GARCH escolhidos em 2024 reduzem descritivamente o MSE contra a proxy de variância nas cinco escalas intradiárias. Contudo, todas as especificações compartilham a mesma previsão pontual de retorno. A inovação ao quadrado é uma proxy ruidosa, e não a variância verdadeira observada. Ainda há rejeição nos quadrados dos resíduos padronizados no minuto, na hora e no diário. Além disso, o GARCH escolhido no minuto melhora aproximadamente 4,50% contra a constante, mas o ARCH teria menor erro observado no teste: menor BIC no treino não garante menor erro futuro. [Código da variância](https://github.com/avilarenan/EAD6034/blob/6e24660054ee39c6037fc1e68aed22d4b78ea6ed/src/ead6034/conditional_volatility.py) · [resultados](https://github.com/avilarenan/EAD6034/blob/main/results/entrega_21_09/tables/variance_models.csv).
 
-Alvo comum de 60 minutos, série-base 15 min: menor MSE descritivo de ZERO; MSE/MSE_zero=1.000000, ganho=+0.0000%. Esse ranking observado em 2025 não é uma nova seleção para reavaliar no mesmo holdout.
+### O que o desenho resolve e o que permanece aberto
 
-Alvo comum de 60 minutos, série-base 30 min: menor MSE descritivo de ZERO; MSE/MSE_zero=1.000000, ganho=+0.0000%. Esse ranking observado em 2025 não é uma nova seleção para reavaliar no mesmo holdout.
+O principal avanço foi substituir inferências fragmentadas em nove barras horárias por uma sequência anual de 2.214 retornos, declarar a convenção temporal e manter uma separação cronológica entre treino e teste. A reconciliação dos mesmos 1.989 alvos horários evita confundir duração do retorno com previsibilidade. Benchmarks simples, ordens escolhidas antes do teste, combinação com pesos fixos e código reproduzível tornam o resultado negativo informativo. As seis escalas são transformações dos mesmos dados, não seis replicações independentes. [Construção temporal](https://github.com/avilarenan/EAD6034/blob/6e24660054ee39c6037fc1e68aed22d4b78ea6ed/src/ead6034/trading_time_data.py).
 
-Alvo comum de 60 minutos, série-base 60 min: menor MSE descritivo de ZERO; MSE/MSE_zero=1.000000, ganho=+0.0000%. Esse ranking observado em 2025 não é uma nova seleção para reavaliar no mesmo holdout.
+**A estacionariedade permanece uma conclusão condicionada à especificação.** ADF e PP rejeitam raiz unitária; KPSS com constante não rejeita estacionariedade. Porém, KPSS com tendência rejeita nas seis escalas. A divergência deve ser exposta, sem escolher o resultado conveniente nem concluir automaticamente que os retornos exigem diferenciação. Mais observações não corrigem sazonalidade intradiária, quebras ou especificação inadequada. O tamanho elevado no minuto também pode tornar significativos efeitos economicamente pequenos. [Testes e especificações](https://github.com/avilarenan/EAD6034/blob/6e24660054ee39c6037fc1e68aed22d4b78ea6ed/src/ead6034/annual_models.py) · [tabela](https://github.com/avilarenan/EAD6034/blob/main/results/entrega_21_09/tables/stationarity.csv).
 
-Seleção BIC condicional da variância em 2024: 1 min: GARCH(1,1); 5 min: GARCH(1,1); 15 min: GARCH(1,1); 30 min: GARCH(1,1); 60 min: ARCH(1); 1 dia: Constant variance. A previsão pontual permanece a mesma.
+**A etapa Box–Jenkins não produziu validação irrestrita.** O ARMA(2,2) do minuto supera o ARMA(0,0) por apenas 1,24 de BIC, tem componentes AR e MA quase compensatórios e falha no Ljung–Box principal. Em cinco minutos, a decisão muda conforme o horizonte diagnóstico: não há rejeição em 24 lags, mas há em 10, 12 e 20. Esses modelos permanecem no relato como candidatos selecionados e avaliados, não como estruturas plenamente adequadas. A orientação de diagnóstico da Aula 4 não é satisfeita simplesmente por reportar o menor BIC. Não foram publicados erros-padrão para afirmar significância individual dos coeficientes. [Grade](https://github.com/avilarenan/EAD6034/blob/main/results/entrega_21_09/tables/arma_grid.csv) · [diagnósticos](https://github.com/avilarenan/EAD6034/blob/main/results/entrega_21_09/tables/mean_diagnostics.csv).
 
-As previsões ARMA(0,0) no alvo comum coincidem nas escalas 5 min, 15 min, 30 min, 60 min: somar as médias das barras completas produz a mesma média horária. Isso decorre da agregação dos mesmos dados, não de confirmações independentes de previsibilidade.
+**A avaliação é condicional a uma série construída retrospectivamente.** O Alpha Lab seleciona o contrato de maior volume do próprio dia, informação completa conhecida depois da sessão. Nosso filtro também retém apenas dias completos, condição verificada retrospectivamente. Atualizar estados apenas com o passado evita usar retornos futuros no cálculo das previsões, mas não remove essas escolhas ex post da base. Assim, o exercício não valida integralmente uma regra operacional antecipada de escolha de contratos e disponibilidade de dados. [Documentação oficial Alpha Lab](https://dataservices.btgpactualsolutions.com/alphalab/v1/api/alphalab/readme/README-BTG-ATS-A26.md) · [auditoria da fonte](https://github.com/avilarenan/EAD6034/blob/6e24660054ee39c6037fc1e68aed22d4b78ea6ed/docs/DATA_SOURCE.md).
 
-Estacionariedade, ausência de autocorrelação linear residual, ajuste dentro da amostra e capacidade preditiva fora da amostra são propriedades distintas.
+O conteúdo estatístico está limitado às famílias das Aulas 2–6 disponíveis, com escolhas de implementação explicitadas. Por exemplo, o PP usa a regra automática de bandwidth da biblioteca, distinta da seleção de Newey–West mencionada na Aula 5; a máxima verossimilhança ARMA trata a inicialização de forma exata, enquanto a exposição didática usa uma recursão condicional. São detalhes que precisam ser defendidos, não apresentados como reprodução literal de cada fórmula da aula. AR e MA fornecem alternativas lineares, mas geram previsões muito semelhantes e pouca diversidade para a combinação. Não se deve usar GARCH como alegação de um segundo previsor da média nesta estimação sequencial.
 
-A comparação multiescala precisa separar horizonte e frequência de observação. Maior previsibilidade horária não foi incorporada como premissa nem garantida pela agregação.
+### Microestrutura: mecanismos plausíveis, sem identificação causal
 
-A validade externa está limitada a um ativo, uma janela, um ano de estimação e ao trecho disponível de 2025, condicionados ao filtro de qualidade. Não há simulação de P&L, custos, impacto de mercado ou recomendação de operação.
+Retornos baseados no último negócio podem refletir alternância entre preços de compra e venda, liquidez e chegada de informação. Agregar pode atenuar parte dessa oscilação, mas também elimina observações e pode apagar dependências curtas. Sem bid/ask, classificação de agressão ou flags de leilão, esses mecanismos são hipóteses interpretativas; não explicações demonstradas da FAC ou dos erros encontrados.
 
-Os modelos são convencionais e as referências inferenciais são aproximadas. Heterocedasticidade, sazonalidade intradiária, quebras e calendários incompletos restringem as conclusões. Os métodos das aulas foram mantidos sem bootstrap, testes de painel, redes neurais ou modelos adicionais de regime.
+Excluir o retorno fechamento–abertura retira uma variação do alvo, mas não a informação que chegou durante a noite. Os lags e estados continuam entre sessões. A primeira hora da janela pode incluir a abertura das ações às 10:00, enquanto o WIN já negocia; os calls próprios do WIN ficam fora da janela nos regimes históricos confirmados. Leilões concentram ordens e formam preços; não garantem queda da volatilidade após grandes surpresas. Diferenças por faixa e magnitude de gap são associações exploratórias, sem identificação do efeito de leilões ou do overnight. [Fontes B3 e limites históricos](https://github.com/avilarenan/EAD6034/blob/6e24660054ee39c6037fc1e68aed22d4b78ea6ed/docs/market_hours_2024_2025.md).
+
+A generalização é limitada a um ativo, dois trechos anuais e uma janela específica, sem simulação de spread, filas, impacto, tarifas ou lucro líquido. Mesmo uma redução estatística de MSE não seria automaticamente uma vantagem de negociação.
+
+### Encerramento sugerido para a apresentação
+
+> O resultado central é que a agregação, por si só, não trouxe ganho global de previsão frente ao retorno zero neste experimento. A contribuição do trabalho é tornar essa comparação verificável: mesmos alvos, treino separado do teste e diagnóstico além do BIC. A dependência é mais evidente na variância, mas sua modelagem ainda é parcial e não melhora automaticamente a direção prevista. A interpretação operacional é limitada pela construção retrospectiva da série e pela falta de informação de microestrutura. Portanto, documentamos o alcance dos modelos examinados, sem concluir que o mercado seja imprevisível ou que os leilões sejam irrelevantes.
+
+Qualquer revisão futura de horários, seleção ex ante do contrato, ordens ou especificações deverá ser definida antes de uma **nova avaliação independente**. Após esta entrega, 2025 já foi examinado; reutilizá-lo para escolher e confirmar uma versão melhorada não preservaria a condição original de holdout. Esta revisão de apresentação não recalibra modelos nem modifica os resultados numéricos.
+
 
 ## 12. Reprodutibilidade, versões e publicação
 
-[Código](https://github.com/avilarenan/EAD6034/blob/a6c7de81989e586ea117e994f366a1bb6933a66b/src/ead6034/forecast_pipeline.py).
+[Código](https://github.com/avilarenan/EAD6034/blob/6e24660054ee39c6037fc1e68aed22d4b78ea6ed/src/ead6034/forecast_pipeline.py).
 
 O comando abaixo pressupõe acesso autorizado ao ZIP original. Dados brutos, preços, retornos, previsões individuais,
 resíduos e caches de ajuste ficam em `private/` e não são publicados. Este relatório usa somente CSV agregados públicos.
@@ -612,7 +630,7 @@ source .venv/bin/activate
 python -m pip install -r requirements-lock-21-09.txt
 OPENBLAS_NUM_THREADS=1 python scripts/run_entrega_21_09.py \
   --input /caminho/autorizado/BTG-ATS-A26.zip \
-  --output results/entrega_21_09 --workers 3 --code-ref a6c7de81989e586ea117e994f366a1bb6933a66b
+  --output results/entrega_21_09 --workers 3 --code-ref 6e24660054ee39c6037fc1e68aed22d4b78ea6ed
 PYTHONPATH=src OPENBLAS_NUM_THREADS=1 python -m unittest discover -s tests -v
 ```
 
@@ -636,23 +654,25 @@ Python registrado: **3.12.14**. Versões numéricas:
 | reportlab | 4.4.9 |
 
 Manifesto com hashes do código, fonte, parâmetros do protocolo e asserções de isolamento:
-[analysis_summary.json](https://github.com/avilarenan/EAD6034/blob/main/results/entrega_21_09/analysis_summary.json). Referência de código dos links: `a6c7de81989e586ea117e994f366a1bb6933a66b`.
-Fonte deste relatório: [Código](https://github.com/avilarenan/EAD6034/blob/a6c7de81989e586ea117e994f366a1bb6933a66b/src/ead6034/forecast_narrative.py). Alterações de lógica invalidam os checkpoints pertinentes.
+[analysis_summary.json](https://github.com/avilarenan/EAD6034/blob/main/results/entrega_21_09/analysis_summary.json). Referência de código dos links: `6e24660054ee39c6037fc1e68aed22d4b78ea6ed`.
+Fonte deste relatório: [Código](https://github.com/avilarenan/EAD6034/blob/6e24660054ee39c6037fc1e68aed22d4b78ea6ed/src/ead6034/forecast_narrative.py). Alterações de lógica invalidam os checkpoints pertinentes.
 Testes automatizados exercitam isolamento de 2024, contaminação artificial do futuro, igualdade de alvos horários,
 recursão de variância, Jacobiano, identidade de Q e cálculo de DM; verificar o registro de execução para a contagem efetiva.
 
 ## Referências e vinculação às aulas
 
+- BTG Alpha Lab / BTG Solutions Data Services. [BTG-ATS-A26 — Aggregate Trade Statistics Dataset](https://alphalab.btgpactual.com/datasets/publication:7a74b3ae-90e0-4393-b1e0-01e61c0bedba). [Documentação oficial](https://dataservices.btgpactualsolutions.com/alphalab/v1/api/alphalab/readme/README-BTG-ATS-A26.md). Consulta: 20/09/2026.
+- Maciel, Leandro. EAD6034, Aula 2: equações de diferenças, estabilidade e operador de defasagem. Aulas 0 e 1 não estavam entre os arquivos disponíveis; não lhes atribuímos conteúdo não consultado.
 - Maciel, Leandro. EAD6034, Aulas 3 e 4: identificação, máxima verossimilhança, AIC/BIC, Box–Jenkins, diagnóstico e avaliação de previsões; materiais fornecidos pelo aluno.
 - Maciel, Leandro. Aula 5: ADF, Phillips–Perron e KPSS, hipóteses e especificações determinísticas.
 - Maciel, Leandro. Aula 6: ARCH/GARCH e estabilidade (pp. 9–16), FAC dos quadrados e ARCH-LM (pp. 17–18), diagnóstico e sequência metodológica (pp. 19–20), integração ARMA–GARCH (p. 28).
 - Matías, J. M.; Reboredo, J. C. (2012). Forecasting performance of nonlinear models for intraday stock returns. *Journal of Forecasting*, 31(2), 172–188. [DOI](https://doi.org/10.1002/for.1218). Referência de motivação, não reprodução dos modelos não lineares.
-- B3. Ofícios e grades históricas discriminados na [auditoria de horários](https://github.com/avilarenan/EAD6034/blob/a6c7de81989e586ea117e994f366a1bb6933a66b/docs/market_hours_2024_2025.md).
-- [Enunciado/protocolo operacional consolidado](https://github.com/avilarenan/EAD6034/blob/a6c7de81989e586ea117e994f366a1bb6933a66b/docs/PROTOCOL_21_09.md): entregas de 31/08, 14/09 e 21/09; seminário de 28/09.
+- B3. Ofícios e grades históricas discriminados na [auditoria de horários](https://github.com/avilarenan/EAD6034/blob/6e24660054ee39c6037fc1e68aed22d4b78ea6ed/docs/market_hours_2024_2025.md).
+- [Enunciado/protocolo operacional consolidado](https://github.com/avilarenan/EAD6034/blob/6e24660054ee39c6037fc1e68aed22d4b78ea6ed/docs/PROTOCOL_21_09.md): entregas de 31/08, 14/09 e 21/09; seminário de 28/09.
 
 ## Apêndice A — diagnóstico completo da variância
 
-[Código](https://github.com/avilarenan/EAD6034/blob/a6c7de81989e586ea117e994f366a1bb6933a66b/src/ead6034/conditional_volatility.py).
+[Código](https://github.com/avilarenan/EAD6034/blob/6e24660054ee39c6037fc1e68aed22d4b78ea6ed/src/ead6034/conditional_volatility.py).
 
 | Escala | Modelo | Série | Teste | Lag | Estatística | gl | p-valor | Rejeita 5% |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -778,7 +798,7 @@ recursão de variância, Jacobiano, identidade de Q e cálculo de DM; verificar 
 
 ## Apêndice B — acurácia por faixa e grupo de gap
 
-[Código](https://github.com/avilarenan/EAD6034/blob/a6c7de81989e586ea117e994f366a1bb6933a66b/src/ead6034/forecast_evaluation.py).
+[Código](https://github.com/avilarenan/EAD6034/blob/6e24660054ee39c6037fc1e68aed22d4b78ea6ed/src/ead6034/forecast_evaluation.py).
 
 ARMA selecionado e benchmark zero são exibidos abaixo; a tabela pública de acurácia contém todos os comparadores. As decomposições são exploratórias, sem testes adicionais nem alteração de especificações.
 
