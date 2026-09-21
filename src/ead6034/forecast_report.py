@@ -42,6 +42,13 @@ def pformat(value):
     return "$<0{,}001$" if value < .001 else number(value)
 
 
+def hypothesis_decision(pvalue):
+    """Display the decision about the stated null at the 5% level."""
+    if not np.isfinite(float(pvalue)):
+        return "--"
+    return r"\alert{Rejeita}" if float(pvalue) < .05 else "Não rejeita"
+
+
 def table(headers, rows, alignment=None):
     alignment = alignment or ("l" + "r" * (len(headers)-1))
     return (r"\begin{tabular}{" + alignment + "}\n\\toprule\n"
@@ -176,15 +183,21 @@ def build_slides(output, code_ref="main", figures=None):
                              pformat(test.loc["ADF", "pvalue"]), pformat(test.loc["PP", "pvalue"]),
                              pformat(test.loc["KPSS", "pvalue"]),
                              "/".join(str(int(test.loc[t, "lags"])) for t in ["ADF", "PP", "KPSS"])])
-    body = r"\tagline{ADF, PP e KPSS aplicados à amostra de 2024}" + "\n"
+    body = r"\tagline{ADF, PP e KPSS em 2024. Decisões a 5\% de significância}" + "\n"
     body += r"\centering\small" + table(["Escala", "$n$", "$p$ ADF", "$p$ PP", "$p$ KPSS", "Lags/bw*"], station_rows)
-    body += r"\raggedright\medskip\small ADF e PP: $H_0$ = raiz unitária. KPSS: $H_0$ = estacionariedade em nível.\par\medskip"
-    body += r"\textbf{Amostra horária:} 2.214 observações em 246 pregões, numa sequência anual.\par"
+    main_station = station.loc[station.specification.eq("main")]
+    unit_root_reject = main_station.loc[main_station.test.isin(["ADF", "PP"]), "reject_5pct"].mean()
+    level_not_reject = 1 - main_station.loc[main_station.test.eq("KPSS"), "reject_5pct"].mean()
+    body += r"\raggedright\medskip\small\textbf{ADF e PP:} $H_0$ = raiz unitária.\par "
+    body += r"\textbf{Rejeitam raiz unitária em " + number(100 * unit_root_reject, 0) + r"\% das escalas.}\par\smallskip "
+    body += r"\textbf{KPSS com constante:} $H_0$ = estacionariedade em nível.\par "
+    body += r"\textbf{Não rejeita estacionariedade em " + number(100 * level_not_reject, 0) + r"\% das escalas.}\par\smallskip "
     trend_kpss = station.loc[station.test.eq("KPSS") & station.specification.eq("trend_sensitivity")]
-    trend_reject = int(trend_kpss.reject_5pct.sum())
-    body += r"\scriptsize *Ordem ADF/PP/KPSS. Constante: especificação principal acima.\par "
-    body += r"\alert{" + tex(f"Sensibilidade: KPSS com tendência rejeita em {trend_reject} das seis escalas.") + r"}\par "
-    body += r"Não rejeitar KPSS não prova estabilidade de toda a distribuição; a variância pode variar."
+    trend_reject_pct = number(100 * trend_kpss.reject_5pct.mean(), 0)
+    body += r"\scriptsize\alert{KPSS com tendência: rejeita estacionariedade em torno de tendência em " + trend_reject_pct + r"\% das escalas.}\par "
+    body += r"Não rejeitar $H_0$ não a confirma. A variância condicional pode oscilar.\par\smallskip "
+    body += r"*Tabela: constante. Ordem ADF/PP/KPSS. bw = defasagens na variância de longo prazo.\par "
+    body += r"Amostra horária: 2.214 observações em 246 pregões, numa sequência anual."
     frame("Estacionariedade: uma série anual por escala", body, "annual_models.py", "Aula 5 | Estatísticas e valores críticos nas tabelas completas")
 
     model_rows = []
@@ -193,20 +206,23 @@ def build_slides(output, code_ref="main", figures=None):
         ar = selected.loc[selected.scale.eq(scale) & selected.model.eq("AR_BIC")].iloc[0]
         ma = selected.loc[selected.scale.eq(scale) & selected.model.eq("MA_BIC")].iloc[0]
         model_rows.append([LABELS[scale], f"({int(s.p)},{int(s.q)})", f"AR({int(ar.p)}) / MA({int(ma.q)})",
-                           pformat(d.lb_pvalue), pformat(d.arch_lm_pvalue)])
-    body = r"\tagline{Grade $p,q=0,\ldots,5$, média e variância contadas no BIC}" + "\n"
-    body += r"\centering\small" + table(["Escala", "ARMA BIC", "Alternativos", "$p$ Ljung--Box", "$p$ ARCH--LM"], model_rows)
-    rejected = [LABELS[s] for s in SCALES if principal.loc[s, "lb_pvalue"] < .05]
-    body += r"\raggedright\medskip\small \textbf{Seleção não é validação.} "
-    body += tex("Ljung–Box rejeita em " + ", ".join(rejected) + "." if rejected else "Ljung–Box não rejeita nos horizontes principais.")
+                           pformat(d.lb_pvalue), hypothesis_decision(d.lb_pvalue),
+                           pformat(d.arch_lm_pvalue), hypothesis_decision(d.arch_lm_pvalue)])
+    body = r"\tagline{Resíduos do ARMA escolhido em 2024. Decisões sobre $H_0$ a 5\%}" + "\n"
+    body += r"\centering\small\setlength{\tabcolsep}{3.5pt}" + table(
+        ["Escala", "ARMA BIC", "Alternativos", "$p$ LB", "Decisão $H_0$", "$p$ ARCH--LM", "Decisão $H_0$"],
+        model_rows, alignment="lccrcrc")
+    body += r"\raggedright\medskip\small\textbf{Ljung--Box (LB):} $H_0$ = ausência de autocorrelação residual até $h$.\par "
+    body += r"\textbf{ARCH--LM:} $H_0$ = ausência de efeitos ARCH até 12 defasagens.\par\smallskip "
+    body += r"\scriptsize Rejeitar $H_0$ indica autocorrelação (LB) ou efeitos ARCH (ARCH--LM).\par "
     grid = read("arma_grid")
     minute_grid = grid.loc[grid.scale.eq("1min") & grid.status.eq("eligible")]
     zero_bic = float(minute_grid.loc[minute_grid.p.eq(0) & minute_grid.q.eq(0), "bic"].iloc[0])
     delta_bic = zero_bic - float(main_models.loc["1min", "bic"])
-    body += r"\par\smallskip\scriptsize Minuto: vantagem de apenas $\Delta BIC=" + number(delta_bic, 2) + r"$ sobre (0,0); candidato sem validação residual.\par "
-    body += r"5 min: não rejeita em 24 lags, mas rejeita em 10, 12 e 20. AR e MA são as alternativas lineares.\par\smallskip "
-    body += r"\scriptsize Diagnósticos assintóticos aproximados sob heteroscedasticidade. Q usa $h-p-q-1$ (Aula 4); $h=60$ em 1 min, 24 nas demais intradiárias, 20 no diário."
-    frame("BIC seleciona; os resíduos ainda precisam passar", body, "annual_models.py", "Aulas 3--4 | Box--Jenkins e alternativas lineares")
+    body += r"\smallskip\scriptsize Minuto: vantagem de apenas $\Delta BIC=" + number(delta_bic, 2) + r"$ sobre (0,0), com autocorrelação residual.\par "
+    body += r"5 min: LB não rejeita em 24 lags, mas rejeita em 10, 12 e 20.\par\smallskip "
+    body += r"Grade $p,q=0,\ldots,5$, média e variância contadas no BIC. Diagnósticos assintóticos aproximados sob heteroscedasticidade.\par LB usa $h-p-q-1$ (Aula 4). $h=60$ em 1 min, 24 nas demais intradiárias, 20 no diário."
+    frame("Seleção por BIC e diagnóstico dos resíduos", body, "annual_models.py", "Aulas 3--4 | Box--Jenkins e alternativas lineares")
 
     var_rows = []
     for scale in SCALES:
@@ -217,12 +233,15 @@ def build_slides(output, code_ref="main", figures=None):
         pv = variance_diag.sort_values("lag").iloc[-1].pvalue if len(variance_diag) else np.nan
         ratio = v.oos_variance_proxy_mse / constant.oos_variance_proxy_mse
         label = "Constante" if v.model == "constant" else v.model_label
-        var_rows.append([LABELS[scale], tex(label), number(v.persistence), pformat(pv), number(ratio)])
+        var_rows.append([LABELS[scale], tex(label), number(v.persistence), pformat(pv),
+                         hypothesis_decision(pv), number(ratio)])
     body = r"\tagline{Aula 6: constante, ARCH(1) e GARCH(1,1), escolhidos apenas em 2024}" + "\n"
-    body += r"\centering\small" + table(["Escala", "Variância BIC", "$\\alpha+\\beta$", "$p$ Q($z^2$)*", "MSE/const.*"], var_rows)
-    body += r"\raggedright\medskip\small Estimação \textbf{sequencial}; previsão pontual do retorno \textbf{não muda}.\par BIC não atesta adequação: rejeições em Q($z^2$) sinalizam dependência restante.\par\medskip"
-    body += r"\scriptsize *Q dos resíduos padronizados ao quadrado no maior lag exibido. MSE em 2025 contra inovação ao quadrado: proxy ruidosa, não variância observada.\par Captura parcial: minuto, hora e diário ainda rejeitam em Q($z^2$). BIC é condicional à média fixa."
-    frame("Prever a variância não é prever a direção", body, "conditional_volatility.py", "Aula 6 | Estabilidade, persistência e diagnóstico")
+    body += r"\centering\small" + table(["Escala", "Variância BIC", "$\\alpha+\\beta$", "$p$ Q($z^2$)*", "Decisão $H_0$", "MSE/const.*"], var_rows, alignment="lcrrcr")
+    body += r"\raggedright\medskip\small\textbf{Ljung--Box em $z^2$:} $H_0$ = ausência de autocorrelação nos resíduos\par padronizados ao quadrado até $h$. Decisões a 5\%.\par\smallskip "
+    body += r"Estimação \textbf{sequencial}. A previsão pontual do retorno \textbf{não muda}.\par\smallskip "
+    body += r"\scriptsize *Q($z^2$): $h=60$ em 1 min, 24 nas demais intradiárias, 20 no diário. Referência assintótica aproximada após estimação, sem ajuste de graus de liberdade.\par "
+    body += r"MSE em 2025 contra inovação ao quadrado: proxy ruidosa, não variância observada.\par Rejeitar $H_0$ indica dependência remanescente em $z^2$. BIC é condicional à média fixa."
+    frame("Previsão e diagnóstico da variância", body, "conditional_volatility.py", "Aula 6 | Estabilidade, persistência e diagnóstico")
 
     accuracy_rows = []
     for scale in SCALES:
