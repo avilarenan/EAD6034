@@ -8,7 +8,7 @@ Estudo empírico do **WIN nas seis escalas disponíveis**, com treino exclusivam
 
 **Mudança aprovada no índice temporal:** retornos continuam sem atravessar pregões ou contratos, mas suas defasagens e os estados dos modelos atravessam as fronteiras entre sessões. Uma série anual por escala substitui os testes separados por pregão. Em 60 minutos, são **2.214 observações de treino**, não apenas nove por sessão. Isso não demonstra ausência de efeitos overnight; eles não são modelados separadamente.
 
-- [Slides cumulativos — capa, sete slides de conteúdo e contracapa](results/entrega_21_09/ENTREGA_21_09.pdf), nove páginas, e [fonte editável Beamer](results/entrega_21_09/ENTREGA_21_09.tex).
+- [Slides — capa, oito slides de conteúdo e contracapa](results/entrega_21_09/ENTREGA_21_09.pdf), dez páginas, e [fonte editável Beamer](results/entrega_21_09/ENTREGA_21_09.tex).
 - [Relatório técnico completo](results/entrega_21_09/RELATORIO_21_09.md) e [guia de apresentação — cinco minutos de fala](results/entrega_21_09/GUIA_APRESENTACAO.md).
 - [Conclusão crítica](results/entrega_21_09/CONCLUSAO_CRITICA.md) e [questões, com respostas e referências às aulas](results/entrega_21_09/questões.md).
 - [Podcast de preparação — transcrição com tempos](results/entrega_21_09/PODCAST_TRANSCRICAO.md), [roteiro do diálogo](docs/PODCAST_PREPARACAO_21_09.md) e [gerador Python do áudio](scripts/build_podcast.py).
@@ -35,9 +35,11 @@ OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 \
 PYTHONPATH=src OPENBLAS_NUM_THREADS=1 python -m unittest discover -s tests -v
 ```
 
-Os slides requerem `pdflatex`, Beamer e Latin Modern. `--skip-report` executa toda a análise sem LaTeX. Para regenerar apenas figuras/relatos/slides a partir dos CSV públicos: `PYTHONPATH=src python -m ead6034.forecast_report --output results/entrega_21_09 --code-ref COMMIT_DO_CODIGO`. Use o hash registrado no manifesto para links fixados. Não há dados individuais publicados: ZIP, preços, retornos, previsões, resíduos e caches permanecem locais em diretórios ignorados pelo Git.
+Os slides requerem `pdflatex`, Beamer e Latin Modern. `--skip-report` executa toda a análise sem LaTeX. Para regenerar figuras/relatos/slides a partir dos CSV públicos e da figura das séries completas já publicada: `PYTHONPATH=src python -m ead6034.forecast_report --output results/entrega_21_09 --code-ref COMMIT_DO_CODIGO`. Use o hash registrado no manifesto para links fixados. Os arquivos individuais de preços, retornos, previsões, resíduos, ZIP e caches permanecem locais em diretórios ignorados pelo Git.
 
-Na versão com capa e contracapa, `presentation.code_ref` no manifesto identifica o código da apresentação atual; `analysis_code_ref` preserva a referência da estimação original. O roteiro mantém cinco minutos para os sete slides de conteúdo, sem fala adicional nas capas.
+O slide 2/8 apresenta todas as observações nas seis escalas, com cores para treino (2024) e teste (2025). O gráfico usa eixos verticais próprios por escala, sem suavização ou subamostragem. Para reconstruí-lo a partir dos frames locais produzidos pelo pipeline: `PYTHONPATH=src python -m ead6034.series_overview --output results/entrega_21_09`. O código verifica os hashes das séries contra o manifesto antes de desenhar e publica apenas a figura, com os traços rasterizados.
+
+No manifesto, `presentation.code_ref` identifica o código da apresentação e `analysis_code_ref` preserva a referência da estimação. O roteiro de cinco minutos aborda os sete slides analíticos. O slide de inspeção visual aparece entre o primeiro e o segundo desses slides.
 
 ### Podcast de preparação
 

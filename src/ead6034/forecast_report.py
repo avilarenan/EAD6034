@@ -1,4 +1,4 @@
-"""Editable Beamer deck: cover, seven cumulative content slides and back cover."""
+"""Editable Beamer deck: cover, eight content slides and back cover."""
 from __future__ import annotations
 
 import argparse
@@ -20,7 +20,7 @@ COURSE_NAME = "Econometria de Séries Temporais"
 COURSE_CODE = "EAD6034"
 AUTHOR = "Renan de Luca Avila"
 PROFESSOR = "Prof. Leandro Maciel"
-PRESENTATION_FORMAT = "cover_seven_content_slides_back_cover_Beamer_and_PDF"
+PRESENTATION_FORMAT = "cover_eight_content_slides_back_cover_Beamer_and_PDF"
 
 
 def tex(value):
@@ -58,7 +58,7 @@ def table(headers, rows, alignment=None):
 
 
 def cover_frame(code_base):
-    """Academic title page, outside the 1--7 content numbering."""
+    """Academic title page, outside the numbered content slides."""
     return (
         r"\begin{frame}[plain,noframenumbering]" + "\n"
         + r"\vspace*{0.35cm}\raggedright "
@@ -129,7 +129,7 @@ def build_slides(output, code_ref="main", figures=None):
 \setbeamersize{text margin left=0.6cm,text margin right=0.6cm}
 \setbeamerfont{frametitle}{size=\Large,series=\bfseries}
 \setbeamerfont{footline}{size=\tiny}
-\setbeamertemplate{footline}{\hspace{0.6cm}\color{muted}EAD6034 | Renan de Luca Avila | 21/09/2026\hfill\insertframenumber/7\hspace{0.6cm}\vspace{0.15cm}}
+\setbeamertemplate{footline}{\hspace{0.6cm}\color{muted}EAD6034 | Renan de Luca Avila | 21/09/2026\hfill\insertframenumber/\inserttotalframenumber\hspace{0.6cm}\vspace{0.15cm}}
 \hypersetup{colorlinks=true,urlcolor=teal,linkcolor=teal,pdftitle={EAD6034 | Previsibilidade linear do WIN},pdfauthor={Renan de Luca Avila}}
 \newcommand{\source}[2]{\par\vfill{\raggedright\tiny\color{muted}#1\quad\href{#2}{Código reproduzível no GitHub}\par}}
 \newcommand{\tagline}[1]{{\small\color{teal}#1}\par\medskip}
@@ -159,6 +159,15 @@ def build_slides(output, code_ref="main", figures=None):
     body += r"\includegraphics[width=\textwidth,height=2.05cm,keepaspectratio]{figures/08_monthly_mean_5min.pdf}\par "
     body += r"\tiny Média dos retornos de 5 min, não retorno mensal acumulado.\end{column}\end{columns}"
     frame("Dois anos, seis escalas, uma regra temporal", body, "trading_time_data.py", "Dados e protocolo de análise")
+
+    from .series_overview import FIGURE_NAME, make_series_overview
+    series_figure = out / "figures" / FIGURE_NAME
+    if not series_figure.is_file():
+        make_series_overview(out)
+    body = r"\tagline{02/01/2024 a 28/11/2025. Retornos logarítmicos sem overnight}" + "\n"
+    body += r"\centering\includegraphics[width=0.98\textwidth,height=5.3cm,keepaspectratio]{figures/" + FIGURE_NAME + r"}\par\smallskip "
+    body += r"\scriptsize Eixo horizontal: calendário. Eixos verticais próprios por escala. Todos os retornos, sem suavização."
+    frame("Séries completas de retornos", body, "series_overview.py", "Inspeção visual | Mesmas séries usadas na análise")
 
     # Plot names are a stable interface of forecast_figures.make_figures.
     figure_dir = out / "figures"
@@ -300,9 +309,11 @@ def build_slides(output, code_ref="main", figures=None):
     metadata["presentation"] = {
         "title": STUDY_TITLE, "course_name": COURSE_NAME, "course_code": COURSE_CODE,
         "author": AUTHOR, "professor": PROFESSOR,
-        "pdf_pages": 9, "numbered_content_slides": 7, "unnumbered_covers": 2,
+        "pdf_pages": len(slides) + 2, "numbered_content_slides": len(slides), "unnumbered_covers": 2,
         "talk_minutes": 5, "code_ref": code_ref,
         "generator_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
+        "series_generator_sha256": hashlib.sha256(Path(__file__).with_name("series_overview.py").read_bytes()).hexdigest(),
+        "series_figure_sha256": hashlib.sha256(series_figure.read_bytes()).hexdigest(),
         "created_utc": datetime.now(timezone.utc).isoformat(),
     }
     (out / "analysis_summary.json").write_text(
@@ -342,6 +353,9 @@ def write_report(output, code_ref="main"):
     metadata["estimation_or_selection_scope"] = "Model orders and fitted parameters; excludes supplier contract selection and complete-session filtering"
     manifest.write_text(json.dumps(metadata, ensure_ascii=False, indent=2, allow_nan=False) + "\n", encoding="utf-8")
     figures = make_figures(out, code_ref=code_ref)
+    if (out / "private" / "frames_1min.parquet").is_file():
+        from .series_overview import make_series_overview
+        make_series_overview(out)
     write_narrative(out, code_ref=code_ref)
     return build_slides(out, code_ref=code_ref, figures=figures)
 
