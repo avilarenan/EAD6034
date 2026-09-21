@@ -63,7 +63,7 @@ def cover_frame(code_base):
         + r"\medskip{\normalsize Seminário de modelos univariados\par}\vfill "
         + r"{\large\textbf{" + tex(AUTHOR) + r"}\par}\smallskip "
         + r"{\large " + tex(PROFESSOR) + r"\par}\vspace{0.45cm}"
-        + r"{\small Entrega cumulativa de 21 de setembro de 2026\par}\smallskip "
+        + r"{\small 21 de setembro de 2026\par}\smallskip "
         + r"{\small\href{" + code_base + r"/src/ead6034/forecast_pipeline.py}{Código da análise no GitHub}\par}"
         + "\n\\end{frame}\n"
     )
@@ -123,7 +123,7 @@ def build_slides(output, code_ref="main", figures=None):
 \setbeamerfont{frametitle}{size=\Large,series=\bfseries}
 \setbeamerfont{footline}{size=\tiny}
 \setbeamertemplate{footline}{\hspace{0.6cm}\color{muted}EAD6034 | Renan de Luca Avila | 21/09/2026\hfill\insertframenumber/7\hspace{0.6cm}\vspace{0.15cm}}
-\hypersetup{colorlinks=true,urlcolor=teal,linkcolor=teal,pdftitle={EAD6034 | Entrega cumulativa de 21/09/2026},pdfauthor={Renan de Luca Avila}}
+\hypersetup{colorlinks=true,urlcolor=teal,linkcolor=teal,pdftitle={EAD6034 | Previsibilidade linear do WIN},pdfauthor={Renan de Luca Avila}}
 \newcommand{\source}[2]{\par\vfill{\raggedright\tiny\color{muted}#1\quad\href{#2}{Código reproduzível no GitHub}\par}}
 \newcommand{\tagline}[1]{{\small\color{teal}#1}\par\medskip}
 \begin{document}
@@ -138,7 +138,7 @@ def build_slides(output, code_ref="main", figures=None):
         a = audit.loc[audit.scale.eq(scale)].set_index("sample")
         counts.append([LABELS[scale], f"{int(a.loc['train','n']):,}".replace(",", "."),
                        f"{int(a.loc['test','n']):,}".replace(",", ".")])
-    body = r"\tagline{Previsibilidade linear do WIN: 31/08 + 14/09 + 21/09}" + "\n"
+    body = r"\tagline{Previsibilidade linear do WIN em seis escalas temporais}" + "\n"
     body += r"\begin{columns}[T]\begin{column}{0.48\textwidth}" + "\n"
     body += r"\textbf{Pergunta:} agregar minutos em horas melhora a previsão dos retornos?\medskip\par" + "\n"
     body += r"Treino: \textbf{2024}, 246 pregões.\par Teste: \textbf{2025}, 221 pregões.\medskip\par" + "\n"
@@ -151,7 +151,7 @@ def build_slides(output, code_ref="main", figures=None):
     body += r"\smallskip\scriptsize 02/01--30/12/2024; 02/01--28/11/2025.\par Diário: abertura--fechamento da janela.\par "
     body += r"\includegraphics[width=\textwidth,height=2.05cm,keepaspectratio]{figures/08_monthly_mean_5min.pdf}\par "
     body += r"\tiny Média dos retornos de 5 min, não retorno mensal acumulado.\end{column}\end{columns}"
-    frame("Dois anos, seis escalas, uma regra temporal", body, "trading_time_data.py", "Dados e protocolo | 31/08 revisado")
+    frame("Dois anos, seis escalas, uma regra temporal", body, "trading_time_data.py", "Dados e protocolo de análise")
 
     # Plot names are a stable interface of forecast_figures.make_figures.
     figure_dir = out / "figures"
@@ -160,9 +160,9 @@ def build_slides(output, code_ref="main", figures=None):
         acf_candidates = sorted(figure_dir.glob("01*.pdf"))
     if acf_candidates:
         relative = acf_candidates[0].relative_to(out).as_posix()
-        body = r"\tagline{31/08: identificação refeita com a sequência anual de 2024}" + "\n"
+        body = r"\tagline{Identificação por FAC/FACP na sequência anual de 2024}" + "\n"
         body += r"\centering\includegraphics[width=0.98\textwidth,height=5.0cm,keepaspectratio]{" + relative + r"}\par\smallskip " + "\n"
-        body += r"\scriptsize Um lag = uma barra da própria escala, inclusive entre pregões. Bandas pontuais não corrigem múltiplas comparações.\par Dispersão e dependência na média são propriedades distintas."
+        body += r"\scriptsize Um lag = uma barra da própria escala, inclusive entre pregões. Bandas pontuais sem ajuste para múltiplas comparações.\par Dispersão e dependência na média são propriedades distintas."
         body += r"\par Desvios-padrão (\%; 1/5/15/30/60 min/diário): " + "; ".join(
             number(desc.loc[desc.scale.eq(scale), "std_pct"].iloc[0]) for scale in SCALES) + "."
     else:
@@ -176,10 +176,10 @@ def build_slides(output, code_ref="main", figures=None):
                              pformat(test.loc["ADF", "pvalue"]), pformat(test.loc["PP", "pvalue"]),
                              pformat(test.loc["KPSS", "pvalue"]),
                              "/".join(str(int(test.loc[t, "lags"])) for t in ["ADF", "PP", "KPSS"])])
-    body = r"\tagline{14/09 revisado: inferência com toda a amostra de 2024}" + "\n"
+    body = r"\tagline{ADF, PP e KPSS aplicados à amostra de 2024}" + "\n"
     body += r"\centering\small" + table(["Escala", "$n$", "$p$ ADF", "$p$ PP", "$p$ KPSS", "Lags/bw*"], station_rows)
     body += r"\raggedright\medskip\small ADF e PP: $H_0$ = raiz unitária. KPSS: $H_0$ = estacionariedade em nível.\par\medskip"
-    body += r"\textbf{A correção central:} 60 min passa de 9 por pregão para 2.214 observações anuais.\par"
+    body += r"\textbf{Amostra horária:} 2.214 observações em 246 pregões, numa sequência anual.\par"
     trend_kpss = station.loc[station.test.eq("KPSS") & station.specification.eq("trend_sensitivity")]
     trend_reject = int(trend_kpss.reject_5pct.sum())
     body += r"\scriptsize *Ordem ADF/PP/KPSS. Constante: especificação principal acima.\par "
@@ -194,7 +194,7 @@ def build_slides(output, code_ref="main", figures=None):
         ma = selected.loc[selected.scale.eq(scale) & selected.model.eq("MA_BIC")].iloc[0]
         model_rows.append([LABELS[scale], f"({int(s.p)},{int(s.q)})", f"AR({int(ar.p)}) / MA({int(ma.q)})",
                            pformat(d.lb_pvalue), pformat(d.arch_lm_pvalue)])
-    body = r"\tagline{14/09 revisado: grade $p,q=0,\ldots,5$, média e variância contadas no BIC}" + "\n"
+    body = r"\tagline{Grade $p,q=0,\ldots,5$, média e variância contadas no BIC}" + "\n"
     body += r"\centering\small" + table(["Escala", "ARMA BIC", "Alternativos", "$p$ Ljung--Box", "$p$ ARCH--LM"], model_rows)
     rejected = [LABELS[s] for s in SCALES if principal.loc[s, "lb_pvalue"] < .05]
     body += r"\raggedright\medskip\small \textbf{Seleção não é validação.} "
@@ -236,7 +236,7 @@ def build_slides(output, code_ref="main", figures=None):
                               number(a.loc["MA_BIC", "mse_ratio_vs_zero"], 4),
                               number(a.loc["AR_MA_50_50", "mse_ratio_vs_zero"], 4),
                               pformat(d.p_value)])
-    body = r"\tagline{21/09: parâmetros fixos de 2024, somente informação passada em cada origem}" + "\n"
+    body = r"\tagline{Parâmetros fixos de 2024, somente informação passada em cada origem}" + "\n"
     body += r"\centering\small" + table(["Escala", "ARMA", "AR", "MA", "50/50", "$p$ DM"], accuracy_rows)
     body += r"\raggedright\medskip\small \textbf{MSE do modelo / MSE do retorno zero: menor que 1 é melhor.}\par "
     target_count = f"{int(alignment.targets.iloc[0]):,}".replace(",", ".")
@@ -268,7 +268,7 @@ def build_slides(output, code_ref="main", figures=None):
     body += r"Dependência da variância não garante direção previsível. Resultado restrito a este ativo, janela e modelos; não prova eficiência de mercado ou lucro após custos."
     body += r"\end{column}\end{columns}\medskip\scriptsize"
     body += r"\href{" + REPO + r"/blob/main/results/entrega_21_09/RELATORIO_21_09.md}{Relatório, análises por faixa/gap e resultados completos}" + "\n"
-    frame("Conclusão: alcance dos resultados e da metodologia", body, "forecast_pipeline.py", "Síntese cumulativa | Evidência, adequação e utilidade econômica são distintas")
+    frame("Conclusão: alcance dos resultados e da metodologia", body, "forecast_pipeline.py", "Síntese dos resultados | Evidência, adequação e utilidade econômica são distintas")
     path = out / "ENTREGA_21_09.tex"
     path.write_text(preamble + cover_frame(code_base) + "\n".join(slides)
                     + back_cover_frame(code_base) + "\n\\end{document}\n", encoding="utf-8")
