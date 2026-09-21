@@ -1,0 +1,110 @@
+{
+  "title": "EAD6034 — Preparação para o seminário",
+  "language": "pt-BR",
+  "synthetic_voices": {
+    "Apresentador": "pm_alex",
+    "Interlocutor": "pf_dora"
+  },
+  "kokoro_onnx_version": "0.6.1",
+  "synthesis": {
+    "speed": 0.9,
+    "lang": "pt-br",
+    "sentence_pause": 0.25,
+    "clause_pause": 0.1
+  },
+  "voice_hashes": {
+    "model_sha256": "beb0d1848dee9a49da392cc3df26958d46cfa35d321edf434f52949153f0df3a",
+    "voices_sha256": "bca610b8308e8d99f32e6fe4197e7ec01679264efed0cac9140fe9c29f1fbf7d"
+  },
+  "audio_file": "EAD6034_Podcast_Preparacao.mp3",
+  "audio_sha256": "7a3833a4d0b1323c6b2a1eb09e74549d8a612d5edf696e0964411b8663e1fe1d",
+  "script_sha256": "a3cf40588111ade9e233fb57b38ec3871704834a456942f046d1173ed4023b93",
+  "generator_sha256": "48391a6f62c20ece835c0796c58fd714d0e8fcb82f237ada2c597a5d9f0115eb",
+  "duration_seconds": 1063.872,
+  "duration_mmss": "17:43",
+  "maximum_duration_seconds": 1200,
+  "turn_count": 77,
+  "spoken_script_word_count": 2544,
+  "tempo_factor": 1.0,
+  "sample_rate": 24000,
+  "channels": 1,
+  "bitrate": 96000,
+  "chapters": [
+    {
+      "title": "1. A pergunta que organiza o trabalho",
+      "start": 0.45,
+      "end": 59.41
+    },
+    {
+      "title": "2. Dados, retornos e separação temporal",
+      "start": 59.41,
+      "end": 140.32
+    },
+    {
+      "title": "3. Emendar pregões e corrigir o problema de amostra",
+      "start": 140.32,
+      "end": 220.94
+    },
+    {
+      "title": "4. Primeira entrega: descrição, FAC e FACP",
+      "start": 220.94,
+      "end": 321.69
+    },
+    {
+      "title": "5. Raiz do tempo e estacionariedade",
+      "start": 321.69,
+      "end": 379.09
+    },
+    {
+      "title": "6. Segunda entrega: testes e suas hipóteses",
+      "start": 379.09,
+      "end": 488.74
+    },
+    {
+      "title": "7. Box–Jenkins e a escolha pelo BIC",
+      "start": 488.74,
+      "end": 620.96
+    },
+    {
+      "title": "8. Aula seis: prever a variância",
+      "start": 620.96,
+      "end": 730.32
+    },
+    {
+      "title": "9. Terceira entrega: uma comparação preditiva justa",
+      "start": 730.32,
+      "end": 845.09
+    },
+    {
+      "title": "10. Diebold–Mariano e resultados que parecem repetidos",
+      "start": 845.09,
+      "end": 898.44
+    },
+    {
+      "title": "11. Overnight, leilões e limites de microestrutura",
+      "start": 898.44,
+      "end": 984.1
+    },
+    {
+      "title": "12. Como defender a conclusão",
+      "start": 984.1,
+      "end": 1063.82
+    }
+  ],
+  "loudness_first_pass": {
+    "input_i": "-26.45",
+    "input_tp": "-3.56",
+    "input_lra": "2.70",
+    "input_thresh": "-36.82",
+    "output_i": "-18.43",
+    "output_tp": "-1.50",
+    "output_lra": "2.40",
+    "output_thresh": "-28.80",
+    "normalization_type": "dynamic",
+    "target_offset": "0.43"
+  },
+  "decode_validation": "All frames decoded without error by FFmpeg",
+  "source_results_commit": "e64cd0870a379c0064f3b0ebbd307266ecd9733c",
+  "scientific_code_ref": "f63a1048db3c36d2aeece3c8806be49f1be1a63c",
+  "scope": "Didactic rendering of existing results; no model re-estimation"
+}

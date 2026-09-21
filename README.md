@@ -11,6 +11,7 @@ Estudo empírico do **WIN nas seis escalas disponíveis**, com treino exclusivam
 - [Slides cumulativos — capa, sete slides de conteúdo e contracapa](results/entrega_21_09/ENTREGA_21_09.pdf), nove páginas, e [fonte editável Beamer](results/entrega_21_09/ENTREGA_21_09.tex).
 - [Relatório técnico completo](results/entrega_21_09/RELATORIO_21_09.md) e [guia de apresentação — cinco minutos de fala](results/entrega_21_09/GUIA_APRESENTACAO.md).
 - [Conclusão crítica](results/entrega_21_09/CONCLUSAO_CRITICA.md) e [questões, com respostas e referências às aulas](results/entrega_21_09/questões.md).
+- [Podcast de preparação — transcrição com tempos](results/entrega_21_09/PODCAST_TRANSCRICAO.md), [roteiro do diálogo](docs/PODCAST_PREPARACAO_21_09.md) e [gerador Python do áudio](scripts/build_podcast.py).
 - [Protocolo pré-especificado](docs/PROTOCOL_21_09.md) e [auditoria histórica dos horários/leilões](docs/market_hours_2024_2025.md).
 - [Código principal](src/ead6034/forecast_pipeline.py), [dados](src/ead6034/trading_time_data.py), [testes e ARMA](src/ead6034/annual_models.py), [previsões e DM](src/ead6034/forecast_evaluation.py) e [ARCH/GARCH](src/ead6034/conditional_volatility.py).
 - [Modelos selecionados](results/entrega_21_09/tables/selected_models.csv), [acurácia](results/entrega_21_09/tables/accuracy.csv), [DM](results/entrega_21_09/tables/diebold_mariano.csv) e [manifesto reproduzível](results/entrega_21_09/analysis_summary.json).
@@ -37,6 +38,24 @@ PYTHONPATH=src OPENBLAS_NUM_THREADS=1 python -m unittest discover -s tests -v
 Os slides requerem `pdflatex`, Beamer e Latin Modern. `--skip-report` executa toda a análise sem LaTeX. Para regenerar apenas figuras/relatos/slides a partir dos CSV públicos: `PYTHONPATH=src python -m ead6034.forecast_report --output results/entrega_21_09 --code-ref COMMIT_DO_CODIGO`. Use o hash registrado no manifesto para links fixados. Não há dados individuais publicados: ZIP, preços, retornos, previsões, resíduos e caches permanecem locais em diretórios ignorados pelo Git.
 
 Na versão com capa e contracapa, `presentation.code_ref` no manifesto identifica o código da apresentação atual; `analysis_code_ref` preserva a referência da estimação original. O roteiro mantém cinco minutos para os sete slides de conteúdo, sem fala adicional nas capas.
+
+### Podcast de preparação
+
+Diálogo em português com duas vozes sintéticas, cobrindo as três entregas, as premissas, os resultados e perguntas críticas ligadas às Aulas 2–6. O áudio de estudo tem limite de 20 minutos, distinto do roteiro de cinco minutos da apresentação. Sua duração medida, capítulos e hashes estão no [manifesto do podcast](results/entrega_21_09/podcast_manifest.json). O MP3 foi entregue diretamente ao autor; o repositório contém o roteiro, a transcrição e o gerador.
+
+A síntese usa [Kokoro ONNX](https://github.com/thewh1teagle/kokoro-onnx), inteiramente local, com as vozes brasileiras Alex e Dora. É necessário instalar FFmpeg e FFprobe, além das dependências opcionais abaixo. Baixe o [modelo ONNX](https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.1/kokoro-v1.0.onnx) e o [arquivo de vozes](https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.1/voices-v1.0.bin) para `../ead6034-vozes/`, preservando os nomes. O texto não é enviado a um serviço de síntese. O [modelo Kokoro-82M](https://huggingface.co/hexgrad/Kokoro-82M) usa licença Apache 2.0; a biblioteca kokoro-onnx usa MIT. A geração de áudio não executa nem altera a estimação econométrica.
+
+```bash
+python -m venv .venv-podcast
+source .venv-podcast/bin/activate
+python -m pip install -r requirements-podcast.txt
+python scripts/build_podcast.py \
+  --models ../ead6034-vozes \
+  --cache ../ead6034-audio-cache \
+  --audio ../EAD6034_Podcast_Preparacao.mp3
+```
+
+O script sintetiza apenas os diálogos delimitados no roteiro, adapta a pronúncia de siglas, intercala as vozes, acrescenta pausas e capítulos, normaliza o volume e verifica a decodificação completa e a duração final. Não utiliza música. Os pesos de voz e os intermediários ficam fora do repositório. A forma de onda pode variar entre versões do sintetizador; os hashes dos modelos efetivamente usados e do áudio entregue constam do manifesto.
 
 As versões abaixo são **históricas**, com convenções metodológicas anteriores documentadas, e não foram sobrescritas.
 
