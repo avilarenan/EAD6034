@@ -447,7 +447,7 @@
     "market_hours": "docs/market_hours_2024_2025.md"
   },
   "report_created_utc": "2026-09-20T18:25:05.237925+00:00",
-  "presentation_format": "seven_slide_editable_Beamer_and_PDF",
+  "presentation_format": "cover_seven_content_slides_back_cover_Beamer_and_PDF",
   "analysis_code_ref": "a6c7de81989e586ea117e994f366a1bb6933a66b",
   "source_documentation": {
     "provider": "BTG Alpha Lab / BTG Solutions Data Services",
@@ -460,5 +460,19 @@
     "fresh_download_hash_compared": false,
     "operational_caveat": "Causal forecast recursion does not undo ex-post contract and full-day selection"
   },
-  "estimation_or_selection_scope": "Model orders and fitted parameters; excludes supplier contract selection and complete-session filtering"
+  "estimation_or_selection_scope": "Model orders and fitted parameters; excludes supplier contract selection and complete-session filtering",
+  "presentation": {
+    "title": "Previsibilidade linear do WIN em múltiplas escalas temporais",
+    "course_name": "Econometria de Séries Temporais",
+    "course_code": "EAD6034",
+    "author": "Renan de Luca Avila",
+    "professor": "Prof. Leandro Maciel",
+    "pdf_pages": 9,
+    "numbered_content_slides": 7,
+    "unnumbered_covers": 2,
+    "talk_minutes": 5,
+    "code_ref": "f63a1048db3c36d2aeece3c8806be49f1be1a63c",
+    "generator_sha256": "409bd9719e3b7cc4dba6150b4294da3cefe95b1c4123cf7f5b3b1a6ad116524a",
+    "created_utc": "2026-09-21T00:19:13.862544+00:00"
+  }
 }
