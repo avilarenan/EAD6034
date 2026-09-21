@@ -108,6 +108,9 @@ artefatos antigos permanecem históricos, sem alteração silenciosa.
 - Python para toda a análise, dependências e sementes registradas.
 - Tabelas agregadas, figuras, relatório, apresentação cumulativa de sete slides
   e fontes editáveis no repositório. Código clicável em cada slide.
+  Atualização editorial de 21/09/2026, a pedido do autor: capa e contracapa
+  acrescentadas aos sete slides de conteúdo, totalizando nove páginas no PDF.
+  A inclusão não altera a análise nem o roteiro de cinco minutos.
 - Dados brutos, preços, retornos individuais, previsões individuais, resíduos,
   objetos ajustados e caches ficam em private/, ignorados pelo Git.
 - Testes de código: invariância do treino ao modificar 2025, ausência de dados

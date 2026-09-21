@@ -4,6 +4,8 @@ Renan de Luca Avila · Prof. Leandro Maciel · Seminário em 28/09/2026.
 
 Este roteiro acompanha os **sete slides existentes**, reunindo as entregas de 31/08, 14/09 e 21/09. A **fala principal inteira, incluindo as transições, tem aproximadamente 510 palavras** e foi planejada para **cinco minutos**, com pequenas pausas para apontar gráficos e tabelas. O tempo é uma estimativa de ensaio, não uma duração cronometrada. A redução é uma escolha de apresentação; o limite de 15 minutos previsto no enunciado permanece inalterado.
 
+A apresentação tem **nove páginas: capa, sete slides de conteúdo e contracapa**. A numeração 1–7 abaixo corresponde ao conteúdo, nas páginas 2–8 do PDF. Capa e contracapa são exibidas sem acrescentar fala ao roteiro de cinco minutos.
+
 Leia apenas a seção **Roteiro principal — cinco minutos** durante a apresentação. As **notas de apoio**, reunidas depois dos sete slides, são material de preparação e consulta nas perguntas, fora dos cinco minutos. As referências às aulas usam páginas físicas dos PDFs, contadas a partir de 1. Foram consultadas as Aulas 2–6 disponíveis; não se atribuem conteúdos às Aulas 0 ou 1.
 
 [Apresentação cumulativa](https://github.com/avilarenan/EAD6034/blob/main/results/entrega_21_09/ENTREGA_21_09.pdf) · [Relatório completo](https://github.com/avilarenan/EAD6034/blob/main/results/entrega_21_09/RELATORIO_21_09.md) · [Questões](https://github.com/avilarenan/EAD6034/blob/main/results/entrega_21_09/questões.md) · [Código Python](https://github.com/avilarenan/EAD6034/tree/main/src/ead6034) · [Dataset no BTG Alpha Lab](https://alphalab.btgpactual.com/datasets/publication:7a74b3ae-90e0-4393-b1e0-01e61c0bedba).

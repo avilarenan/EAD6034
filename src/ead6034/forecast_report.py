@@ -1,4 +1,4 @@
-"""Editable, cumulative seven-slide Beamer presentation for 21 September."""
+"""Editable Beamer deck: cover, seven cumulative content slides and back cover."""
 from __future__ import annotations
 
 import argparse
@@ -15,6 +15,12 @@ SCALES = ["1min", "5min", "15min", "30min", "60min", "1d"]
 LABELS = dict(zip(SCALES, ["1 min", "5 min", "15 min", "30 min", "60 min", "Diário OC"]))
 REPO = "https://github.com/avilarenan/EAD6034"
 DATASET_URL = "https://alphalab.btgpactual.com/datasets/publication:7a74b3ae-90e0-4393-b1e0-01e61c0bedba"
+STUDY_TITLE = "Previsibilidade linear do WIN em múltiplas escalas temporais"
+COURSE_NAME = "Econometria de Séries Temporais"
+COURSE_CODE = "EAD6034"
+AUTHOR = "Renan de Luca Avila"
+PROFESSOR = "Prof. Leandro Maciel"
+PRESENTATION_FORMAT = "cover_seven_content_slides_back_cover_Beamer_and_PDF"
 
 
 def tex(value):
@@ -42,6 +48,41 @@ def table(headers, rows, alignment=None):
             + " & ".join(headers) + r" \\ \midrule" + "\n"
             + "\n".join(" & ".join(map(str, row)) + r" \\" for row in rows)
             + "\n\\bottomrule\n\\end{tabular}\\par\n")
+
+
+def cover_frame(code_base):
+    """Academic title page, outside the 1--7 content numbering."""
+    return (
+        r"\begin{frame}[plain,noframenumbering]" + "\n"
+        + r"\vspace*{0.35cm}\raggedright "
+        + r"{\large\color{teal}Universidade de São Paulo\par}\medskip "
+        + r"{\large " + tex(COURSE_NAME) + " (" + tex(COURSE_CODE) + r")\par}"
+        + r"\vspace{0.9cm}"
+        + r"{\fontsize{23}{28}\selectfont\bfseries Previsibilidade linear do WIN\par "
+        + r"em múltiplas escalas temporais\par}"
+        + r"\medskip{\normalsize Seminário de modelos univariados\par}\vfill "
+        + r"{\large\textbf{" + tex(AUTHOR) + r"}\par}\smallskip "
+        + r"{\large " + tex(PROFESSOR) + r"\par}\vspace{0.45cm}"
+        + r"{\small Entrega cumulativa de 21 de setembro de 2026\par}\smallskip "
+        + r"{\small\href{" + code_base + r"/src/ead6034/forecast_pipeline.py}{Código da análise no GitHub}\par}"
+        + "\n\\end{frame}\n"
+    )
+
+
+def back_cover_frame(code_base):
+    """Closing page with repository and data links, without extra talk content."""
+    return (
+        r"\begin{frame}[plain,noframenumbering]" + "\n"
+        + r"\centering\vspace*{1.0cm}"
+        + r"{\fontsize{30}{36}\selectfont\bfseries Obrigado\par}\medskip "
+        + r"{\Large\color{teal}Perguntas e discussão\par}\vspace{0.9cm}"
+        + r"{\large " + tex(AUTHOR) + r"\par}\smallskip "
+        + r"{\normalsize " + tex(COURSE_NAME) + " (" + tex(COURSE_CODE) + r")\par}"
+        + r"\vfill{\normalsize\href{" + code_base + r"/src/ead6034/forecast_pipeline.py}{Código da análise no GitHub}\par}\medskip "
+        + r"{\small\href{" + REPO + r"/tree/main/results/entrega_21_09}{Slides, roteiro e resultados completos}\par}\smallskip "
+        + r"{\small\href{" + DATASET_URL + r"}{Dados: BTG Alpha Lab, BTG-ATS-A26}\par}\vspace{0.3cm}"
+        + "\n\\end{frame}\n"
+    )
 
 
 def build_slides(output, code_ref="main", figures=None):
@@ -229,12 +270,24 @@ def build_slides(output, code_ref="main", figures=None):
     body += r"\href{" + REPO + r"/blob/main/results/entrega_21_09/RELATORIO_21_09.md}{Relatório, análises por faixa/gap e resultados completos}" + "\n"
     frame("Conclusão: alcance dos resultados e da metodologia", body, "forecast_pipeline.py", "Síntese cumulativa | Evidência, adequação e utilidade econômica são distintas")
     path = out / "ENTREGA_21_09.tex"
-    path.write_text(preamble + "\n".join(slides) + "\n\\end{document}\n", encoding="utf-8")
+    path.write_text(preamble + cover_frame(code_base) + "\n".join(slides)
+                    + back_cover_frame(code_base) + "\n\\end{document}\n", encoding="utf-8")
     for _ in range(2):
         result = subprocess.run(["pdflatex", "-interaction=nonstopmode", "-halt-on-error", path.name],
                                 cwd=out, capture_output=True, text=True)
         if result.returncode:
             raise RuntimeError("LaTeX compilation failed:\n" + result.stdout[-6000:])
+    metadata["presentation_format"] = PRESENTATION_FORMAT
+    metadata["presentation"] = {
+        "title": STUDY_TITLE, "course_name": COURSE_NAME, "course_code": COURSE_CODE,
+        "author": AUTHOR, "professor": PROFESSOR,
+        "pdf_pages": 9, "numbered_content_slides": 7, "unnumbered_covers": 2,
+        "talk_minutes": 5, "code_ref": code_ref,
+        "generator_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
+        "created_utc": datetime.now(timezone.utc).isoformat(),
+    }
+    (out / "analysis_summary.json").write_text(
+        json.dumps(metadata, ensure_ascii=False, indent=2, allow_nan=False) + "\n", encoding="utf-8")
     return out / "ENTREGA_21_09.pdf"
 
 
@@ -255,7 +308,7 @@ def write_report(output, code_ref="main"):
     metadata.setdefault("analysis_code_ref", metadata.get("code_ref"))
     metadata.update(code_ref=code_ref, code_sha256=hashes,
                     report_created_utc=datetime.now(timezone.utc).isoformat(),
-                    presentation_format="seven_slide_editable_Beamer_and_PDF")
+                    presentation_format=PRESENTATION_FORMAT)
     metadata["source_documentation"] = {
         "provider": "BTG Alpha Lab / BTG Solutions Data Services",
         "dataset": "BTG-ATS-A26",

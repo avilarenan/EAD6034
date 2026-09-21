@@ -5,10 +5,23 @@ import unittest
 import numpy as np
 import pandas as pd
 
-from ead6034.forecast_report import number, pformat, table, tex
+from ead6034.forecast_report import back_cover_frame, cover_frame, number, pformat, table, tex
 
 
 class TestSlidePrimitives(unittest.TestCase):
+    def test_cover_contains_requested_academic_identification(self):
+        rendered = cover_frame("https://github.com/avilarenan/EAD6034/blob/test")
+        for text in ["Previsibilidade linear do WIN", "em múltiplas escalas temporais",
+                     "Econometria de Séries Temporais", "EAD6034", "Renan de Luca Avila",
+                     "Prof. Leandro Maciel", "noframenumbering", "forecast_pipeline.py"]:
+            self.assertIn(text, rendered)
+
+    def test_back_cover_keeps_links_without_changing_content_numbering(self):
+        rendered = back_cover_frame("https://github.com/avilarenan/EAD6034/blob/test")
+        for text in ["Obrigado", "Perguntas e discussão", "noframenumbering",
+                     "forecast_pipeline.py", "alphalab.btgpactual.com"]:
+            self.assertIn(text, rendered)
+
     def test_table_ends_paragraph_before_following_text(self):
         rendered = table(["Escala", "N"], [["1 min", "100"]])
         self.assertTrue(rendered.endswith("\\end{tabular}\\par\n"))
