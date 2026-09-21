@@ -447,7 +447,7 @@
     "market_hours": "docs/market_hours_2024_2025.md"
   },
   "report_created_utc": "2026-09-20T18:25:05.237925+00:00",
-  "presentation_format": "cover_seven_content_slides_back_cover_Beamer_and_PDF",
+  "presentation_format": "cover_eight_content_slides_back_cover_Beamer_and_PDF",
   "analysis_code_ref": "a6c7de81989e586ea117e994f366a1bb6933a66b",
   "source_documentation": {
     "provider": "BTG Alpha Lab / BTG Solutions Data Services",
@@ -467,12 +467,14 @@
     "course_code": "EAD6034",
     "author": "Renan de Luca Avila",
     "professor": "Prof. Leandro Maciel",
-    "pdf_pages": 9,
-    "numbered_content_slides": 7,
+    "pdf_pages": 10,
+    "numbered_content_slides": 8,
     "unnumbered_covers": 2,
     "talk_minutes": 5,
-    "code_ref": "ead128cd7a63690d2beacfcdaf2eb2bb60a84911",
-    "generator_sha256": "9216a28fb5e8818497a460bb628b3d100f2165092d2a8b33bb9d073efd75d138",
-    "created_utc": "2026-09-21T15:33:17.736341+00:00"
+    "code_ref": "1782cade2ed752ce6b7c1b8b10c316445aef2626",
+    "generator_sha256": "5e768e0ef4df5ea82b9e89cb6e947f7e271d65d1876fddb5db54b37b02173ed1",
+    "series_generator_sha256": "166ae9e5c9cb93e2b6813465eda285979fb9d76741bef3e82fb3c0aac0ae9e0e",
+    "series_figure_sha256": "d2358c43c0c746b3894dae097a133dd10aa42a52aa7b33271986048bcf974d93",
+    "created_utc": "2026-09-21T15:56:41.394208+00:00"
   }
 }
