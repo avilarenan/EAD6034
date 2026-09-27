@@ -44,12 +44,15 @@ class TradingTimeDataTests(unittest.TestCase):
         self.assertTrue(context.loc[1, "observed_session_gap_valid"])
 
     def test_training_unchanged_when_holdout_prices_are_poisoned(self):
-        source = source_days([("2024-12-27", "WING25", 99.),
-                              ("2024-12-30", "WING25", 100.),
-                              ("2025-01-02", "WING25", 110.)])
+        # Dates straddle the current 80/20 mechanical cutoff (train_end_date=
+        # 2025-07-15, test_start_date=2025-07-16), not the old calendar-year
+        # boundary -- the first two days are train, the third is test/holdout.
+        source = source_days([("2025-07-14", "WING25", 99.),
+                              ("2025-07-15", "WING25", 100.),
+                              ("2025-07-16", "WING25", 110.)])
         first, cov_a, ctx_a, meta_a = build_trading_time_data(source)
         poisoned = source.copy()
-        poison = poisoned["date"].str.startswith("2025")
+        poison = poisoned["date"].eq("2025-07-16")
         price_columns = ["open", "high", "low", "close", "financial_volume"]
         # Change both price levels AND the return path, not just numeraire.
         factors = 1000 * np.exp(np.linspace(0, 2, int(poison.sum())))

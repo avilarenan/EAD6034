@@ -26,8 +26,11 @@ class MultiscaleConfig:
     session_start: str = "09:05"
     # Nove horas: janela comum divisível por 1, 5, 15, 30 e 60 minutos.
     session_end: str = "18:05"
-    train_end_date: str = "2024-12-31"
-    test_start_date: str = "2025-01-01"
+    # 80/20 split by complete-trading-day count (374/93 of 467 days,
+    # 2024-01-02..2025-11-28), fixed mechanically per TA feedback, not
+    # chosen after observing performance on any candidate cutoff.
+    train_end_date: str = "2025-07-15"
+    test_start_date: str = "2025-07-16"
     comparison_horizon_minutes: int = 60
     daily_max_lag: int = 15
     # Lacuna sem qualquer linha em WIN/WDO/DI1, identificada na auditoria.

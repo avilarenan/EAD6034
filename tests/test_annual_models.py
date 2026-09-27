@@ -72,14 +72,19 @@ class TestAnnualModels(unittest.TestCase):
         # Fifteen independent nine-bar sessions would have only 15*8 pairs.
         self.assertNotEqual(table.valid_pairs.iloc[0], 15 * 8)
 
-    def test_stationarity_is_six_full_sample_tests_not_per_session(self):
+    def test_stationarity_is_full_sample_tests_not_per_session(self):
         table = annual_stationarity(self.y, "60min")
-        self.assertEqual(len(table), 6)
+        # 3 ADF specs (none/drift/trend) + (PP, KPSS) x 2 specs (c/ct) x 2 bandwidths (short/long).
+        self.assertEqual(len(table), 3 + 2 * 2 * 2)
         self.assertTrue((table.n == len(self.y)).all())
         self.assertTrue((table.status == "ok").all())
         self.assertEqual(set(table.test), {"ADF", "PP", "KPSS"})
-        self.assertEqual(set(table.trend), {"c", "ct"})
+        self.assertEqual(set(table.trend), {"n", "c", "ct"})
         self.assertTrue((table.loc[table.test == "ADF", "lags"] <= 12).all())
+        self.assertEqual(set(table.loc[table.test != "ADF", "bandwidth_label"]), {"short", "long"})
+        short = table.loc[(table.test == "PP") & (table.bandwidth_label == "short") & (table.trend == "c"), "lags"].iloc[0]
+        long = table.loc[(table.test == "PP") & (table.bandwidth_label == "long") & (table.trend == "c"), "lags"].iloc[0]
+        self.assertLess(short, long)
 
     def test_ljung_box_is_conventional(self):
         result = self.selected["AR_BIC"]

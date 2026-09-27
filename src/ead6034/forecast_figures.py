@@ -124,7 +124,7 @@ def _returns_correlogram(tables, directory, code_ref):
     handles = [Line2D([], [], color=NAVY, marker="o", label="FAC"),
                Line2D([], [], color=TEAL, marker="s", label="FACP"),
                Patch(facecolor=PALE, label="Referência pontual ±1,96 / √n")]
-    return _finish(fig, "Dependência dos retornos | 2024",
+    return _finish(fig, "Dependência dos retornos | treino",
                    "Sequência anual de barras; defasagens podem atravessar pregões. Um lag não representa sempre o mesmo tempo de relógio.\n"
                    "Bandas pontuais sob referência de ruído branco; não são teste conjunto nem correção para múltiplas defasagens.",
                    directory, "01_return_acf_pacf", code_ref, handles=handles, ncol=3)
@@ -182,9 +182,9 @@ def _dispersion(tables, directory, code_ref):
     axes[1].set_xlim(-.65, .65)
     for ax in axes:
         ax.yaxis.set_major_formatter(FuncFormatter(_pt_number))
-    handles = [Line2D([], [], color=NAVY, marker="o", label="Observado em 2024"),
+    handles = [Line2D([], [], color=NAVY, marker="o", label="Observado no treino"),
                Line2D([], [], color=ORANGE, linestyle="--", label="Referência: σ(1 min) × √minutos")]
-    return _finish(fig, "Dispersão por escala | 2024",
+    return _finish(fig, "Dispersão por escala | treino",
                    "A raiz do tempo é somente uma referência ancorada em 1 minuto, não um expoente estimado nem uma hipótese confirmada.\n"
                    "Diário OC: abertura às 09:05 até fechamento da janela às 18:05, sem overnight; eixo próprio e definição distinta.",
                    directory, "02_dispersion_scales", code_ref, handles=handles, ncol=2)
@@ -206,7 +206,7 @@ def _residuals(tables, directory, code_ref):
     handles = [Line2D([], [], color=NAVY, marker="o", label="FAC dos resíduos padronizados"),
                Line2D([], [], color=ORANGE, marker="s", label="FAC dos resíduos padronizados²"),
                Patch(facecolor=PALE, label="Referência pontual ±1,96 / √n")]
-    return _finish(fig, "Diagnóstico da média ARMA por BIC | 2024",
+    return _finish(fig, "Diagnóstico da média ARMA por BIC | treino",
                    "Resíduos da equação da média, antes da extensão ARCH/GARCH. Dependência linear e dependência nos quadrados são propriedades distintas.\n"
                    "As bandas são referências pontuais aproximadas; os testes formais estão nas tabelas públicas de diagnóstico.",
                    directory, "03_residual_acf", code_ref, handles=handles, ncol=3)
@@ -231,9 +231,9 @@ def _forecast_accuracy(tables, directory, code_ref):
     ax.yaxis.set_major_formatter(FuncFormatter(_pt_number))
     counts = sorted(set(frame.n.astype(int)))
     ntext = str(counts[0]) if len(counts) == 1 else ", ".join(map(str, counts))
-    return _finish(fig, "Previsão do mesmo retorno de 60 minutos | 2025",
+    return _finish(fig, "Previsão do mesmo retorno de 60 minutos | teste",
                    f"Mesmos alvos, origens horárias e preços de referência entre as escalas; n = {ntext}. Linha 1: previsão de retorno zero.\n"
-                   "Razão menor que 1 indica menor MSE. Eixo ampliado para leitura; curvas coincidentes podem se sobrepor. Parâmetros fixados em 2024.",
+                   "Razão menor que 1 indica menor MSE. Eixo ampliado para leitura; curvas coincidentes podem se sobrepor. Parâmetros fixados no treino.",
                    directory, "04_common_hour_accuracy", code_ref, handles=handles, ncol=4)
 
 
@@ -254,10 +254,10 @@ def _session_bands(tables, directory, code_ref):
         axes[0].plot(range(3), train.loc[bands, "std_pct"], "o-", color=color, linewidth=2, markersize=7)
         axes[1].plot(range(3), test.loc[bands, "mse_ratio_vs_zero"], "o-", color=color, linewidth=2, markersize=7)
         handles.append(Line2D([], [], color=color, marker="o", label=LABELS[scale]))
-    axes[0].set_title("Dispersão da barra | treino 2024")
+    axes[0].set_title("Dispersão da barra | treino")
     axes[0].set_ylabel("Desvio-padrão do retorno (%)")
     axes[0].set_ylim(bottom=0)
-    axes[1].set_title("ARMA por BIC | previsão 60 min em 2025")
+    axes[1].set_title("ARMA por BIC | previsão 60 min no teste")
     axes[1].set_ylabel("MSE / MSE da previsão ZERO na faixa")
     axes[1].axhline(1, color=GRAY, linestyle="--", linewidth=1.2)
     for ax in axes:
@@ -288,9 +288,9 @@ def _minute_profile(tables, directory, code_ref):
     ax.set_xlabel("Horário do candle da fonte (São Paulo)")
     ax.set_ylabel("Média de |retorno de 1 minuto| (%)")
     ax.yaxis.set_major_formatter(FuncFormatter(_pt_number))
-    handles = [Line2D([], [], color=NAVY, label="Média por horário em 2024"),
+    handles = [Line2D([], [], color=NAVY, label="Média por horário no treino"),
                Patch(facecolor=TEAL, alpha=.15, label="Janela principal 09:05-18:05")]
-    return _finish(fig, "Perfil por minuto observado | 2024",
+    return _finish(fig, "Perfil por minuto observado | treino",
                    "Retornos entre candles consecutivos do mesmo pregão e contrato; sem retorno overnight. Estatísticas omitidas quando n < 10.\n"
                    "O horário do candle não identifica a fase de negociação; este gráfico não classifica negócios como pertencentes a leilões.",
                    directory, "06_minute_profile", code_ref, handles=handles, ncol=2)
@@ -325,8 +325,8 @@ def _variance_accuracy(tables, directory, code_ref):
         ax.set_ylabel("Razão de MSE da proxy de variância (eixo log)")
     else:
         ax.yaxis.set_major_formatter(FuncFormatter(_pt_number))
-    return _finish(fig, "Previsão da variância | 2025",
-                   "Alvo: inovação ARMA², proxy ruidosa da variância, comum aos candidatos em cada escala. Linha 1: variância constante estimada em 2024.\n"
+    return _finish(fig, "Previsão da variância | teste",
+                   "Alvo: inovação ARMA², proxy ruidosa da variância, comum aos candidatos em cada escala. Linha 1: variância constante estimada no treino.\n"
                    "Horizonte nativo de uma observação: durações diferem entre escalas. Modelos inelegíveis não são plotados; previsão pontual da média é a mesma.",
                    directory, "07_variance_accuracy", code_ref, handles=handles, ncol=2)
 
@@ -335,28 +335,34 @@ def _monthly_mean_5min(tables, directory, code_ref):
     """Compact training-only temporal description for the cumulative deck.
 
     Each point is the mean of five-minute returns in that month, NOT a
-    cumulative monthly return. All twelve months are required and displayed.
+    cumulative monthly return. Every month in the training partition is
+    required and displayed, contiguously (the partition may now span two
+    calendar years under the 80/20 mechanical split, not just 2024).
     """
     frame = _table(tables, "monthly_description", ("scale", "month", "n", "mean_pct"))
     frame = _subset(frame, "5min").sort_values("month")
-    expected = [f"2024-{month:02d}" for month in range(1, 13)]
-    if frame.month.tolist() != expected:
-        raise ValueError("The compact monthly figure requires all 12 distinct months of 2024")
+    months = frame.month.tolist()
+    expected = pd.period_range(months[0], months[-1], freq="M").strftime("%Y-%m").tolist() if months else []
+    if months != expected:
+        raise ValueError("The compact monthly figure requires every contiguous training month")
     if frame.n.lt(10).any() or not np.isfinite(frame.mean_pct.to_numpy(float)).all():
         raise ValueError("Monthly public means must be finite aggregates with at least 10 returns")
-    fig, ax = plt.subplots(figsize=(7.2, 2.5))
-    ax.plot(range(12), frame.mean_pct, color=NAVY, linewidth=1.7, marker="o",
+    n_months = len(months)
+    labels_pt = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"]
+    tick_labels = [f"{labels_pt[int(m[5:7]) - 1]}/{m[2:4]}" for m in months]
+    fig, ax = plt.subplots(figsize=(7.2 * max(1.0, n_months / 12), 2.5))
+    ax.plot(range(n_months), frame.mean_pct, color=NAVY, linewidth=1.7, marker="o",
             markersize=4.5, markerfacecolor=TEAL, markeredgecolor=TEAL)
     ax.axhline(0, color=GRAY, linewidth=1, linestyle="--")
-    ax.set_title("Média mensal | 5 min · 2024", fontsize=14, weight="bold", pad=8,
+    span = months[0] if months[0][:4] == months[-1][:4] else f"{months[0]} a {months[-1]}"
+    ax.set_title(f"Média mensal | 5 min · {span}", fontsize=14, weight="bold", pad=8,
                  url=f"https://github.com/avilarenan/EAD6034/blob/{code_ref}/src/ead6034/forecast_figures.py")
     ax.set_ylabel("Média (%)", fontsize=13)
-    ax.set_xticks(range(12), ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun",
-                             "Jul", "Ago", "Set", "Out", "Nov", "Dez"])
-    ax.tick_params(axis="both", labelsize=12)
+    ax.set_xticks(range(n_months), tick_labels)
+    ax.tick_params(axis="both", labelsize=11 if n_months <= 12 else 9)
     ax.yaxis.set_major_locator(MaxNLocator(nbins=4))
     ax.yaxis.set_major_formatter(FuncFormatter(_pt_number))
-    ax.set_xlim(-.3, 11.3)
+    ax.set_xlim(-.3, n_months - .7)
     ax.grid(False, axis="x")
     fig.tight_layout(pad=.6)
     paths = {}

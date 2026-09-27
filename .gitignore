@@ -4,6 +4,7 @@ __pycache__/
 *.py[cod]
 .pytest_cache/
 .ipynb_checkpoints/
+*.egg-info/
 
 # Os dados-fonte nao sao versionados neste repositorio publico.
 data/raw/*
@@ -25,6 +26,17 @@ results/entrega_21_09/*.toc
 results/entrega_21_09/*.vrb
 results/entrega_21_09/*.fls
 results/entrega_21_09/*.fdb_latexmk
+results/entrega_28_09/private/
+results/entrega_28_09/rendered/
+results/entrega_28_09/*.aux
+results/entrega_28_09/*.log
+results/entrega_28_09/*.nav
+results/entrega_28_09/*.out
+results/entrega_28_09/*.snm
+results/entrega_28_09/*.toc
+results/entrega_28_09/*.vrb
+results/entrega_28_09/*.fls
+results/entrega_28_09/*.fdb_latexmk
 
 # Tabelas locais por escala são intermediárias; as consolidadas são publicadas.
 results/entrega_21_09/tables/*_1min.csv
@@ -33,6 +45,13 @@ results/entrega_21_09/tables/*_15min.csv
 results/entrega_21_09/tables/*_30min.csv
 results/entrega_21_09/tables/*_60min.csv
 results/entrega_21_09/tables/*_1d.csv
+results/entrega_28_09/tables/*_1min.csv
+results/entrega_28_09/tables/*_5min.csv
+results/entrega_28_09/tables/*_15min.csv
+results/entrega_28_09/tables/*_30min.csv
+results/entrega_28_09/tables/*_60min.csv
+results/entrega_28_09/tables/*_1d.csv
 
 # Previews raster locais; figuras científicas vetoriais em PDF são publicadas.
 results/entrega_21_09/figures/*.png
+results/entrega_28_09/figures/*.png

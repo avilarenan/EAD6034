@@ -23,7 +23,8 @@ from .trading_time_data import SCALES, build_trading_time_data
 MODULE_DIR = Path(__file__).resolve().parent
 SCALE_MINUTES = {"1min": 1, "5min": 5, "15min": 15, "30min": 30, "60min": 60}
 COMBINED_TABLES = (
-    "stationarity", "arma_grid", "selected_models", "mean_diagnostics", "return_acf_pacf",
+    "stationarity", "arma_grid", "selected_models", "coefficient_significance",
+    "mean_diagnostics", "return_acf_pacf",
     "residual_acf_pacf", "squared_residual_acf", "accuracy", "diebold_mariano",
     "variance_models", "variance_diagnostics", "descriptive", "time_band_description",
     "monthly_description", "lag_boundary_description", "forecast_equivalence",
@@ -86,7 +87,10 @@ def _read_model_cache(path, y, model_key):
 
 def _summary(values):
     y = np.asarray(values, float)
+    q1, q2, q3 = np.percentile(y, [25, 50, 75])
     return dict(n=len(y), mean_pct=float(y.mean()), std_pct=float(y.std(ddof=1)),
+                min_pct=float(y.min()), q1_pct=float(q1), median_pct=float(q2),
+                q3_pct=float(q3), max_pct=float(y.max()),
                 skewness=float(stats.skew(y)), excess_kurtosis=float(stats.kurtosis(y)),
                 zero_share=float(np.mean(y == 0)))
 
@@ -121,8 +125,8 @@ def process_scale(scale, output, max_order=5, resume=True):
     y = frame.return_pct.to_numpy(float)
     n_train = int(frame["sample"].eq("train").sum())
     train = y[:n_train]
-    if not frame.loc[:n_train-1, "date"].str.startswith("2024").all():
-        raise AssertionError("Training prefix must contain only 2024")
+    if not frame.loc[:n_train-1, "sample"].eq("train").all():
+        raise AssertionError("Row-sliced training prefix must match the labeled train partition")
     code_hash = source_digest(["annual_models.py", "forecast_evaluation.py",
                                "conditional_volatility.py", "forecast_pipeline.py"])
     frame_hash = hashlib.sha256(pd.util.hash_pandas_object(
@@ -150,7 +154,8 @@ def process_scale(scale, output, max_order=5, resume=True):
     fitted = _read_model_cache(model_cache, train, model_key) if resume else None
     selection_path = tables / f"selected_models_{scale}.csv"
     grid_path = tables / f"arma_grid_{scale}.csv"
-    if fitted is not None and selection_path.exists() and grid_path.exists():
+    coefficients_path = tables / f"coefficient_significance_{scale}.csv"
+    if fitted is not None and selection_path.exists() and grid_path.exists() and coefficients_path.exists():
         selected, grid = pd.read_csv(selection_path), pd.read_csv(grid_path)
         print(f"{scale}: verified training-only model cache reused", flush=True)
     else:
@@ -160,6 +165,19 @@ def process_scale(scale, output, max_order=5, resume=True):
         grid["scale"], selected["scale"] = scale, scale
         grid.to_csv(grid_path, index=False)
         selected.to_csv(selection_path, index=False)
+        # _read_model_cache() below only stores (p, q, params) and reconstructs
+        # with cov_type="none" (no SEs) -- t-stats are saved here, from the
+        # freshly-fitted real-cov_type results, not recomputed on cache reuse.
+        coefficient_rows = []
+        for name, result in fitted.items():
+            for param, estimate, se, t, p_value in zip(
+                    result.param_names, result.params, result.bse, result.tvalues, result.pvalues):
+                coefficient_rows.append(dict(
+                    scale=scale, model=name, parameter=param, estimate=float(estimate),
+                    se=float(se), t_stat=float(t), p_value=float(p_value),
+                    significant_5pct=bool(np.isfinite(t) and abs(t) > 1.96),
+                    cov_type=result.cov_type))
+        pd.DataFrame(coefficient_rows).to_csv(coefficients_path, index=False)
         write_json(model_cache, dict(key=model_key, train_sha256=array_digest(train),
                                      models={name: dict(p=result.model.order[0], q=result.model.order[2],
                                                        params=np.asarray(result.params).tolist())
@@ -319,12 +337,19 @@ def main(argv=None):
     alignment.to_csv(tables / "common_target_alignment.csv", index=False)
     versions = {name: importlib.metadata.version(name) for name in (
         "numpy", "pandas", "scipy", "statsmodels", "arch", "pyarrow", "matplotlib", "reportlab")}
+    train_end_date = metadata["config"]["train_end_date"]
+    test_start_date = metadata["config"]["test_start_date"]
     metadata.update(created_utc=datetime.now(timezone.utc).isoformat(), python=platform.python_version(),
                     versions=versions, max_order=args.max_order, code_ref=args.code_ref,
                     input_source=str(Path(args.input).name), scales=[summaries[s] for s in SCALES],
-                    evaluation_uses_2025=True, estimation_or_selection_uses_2025=False,
+                    # Split is an 80/20 mechanical day-count cutoff inside 2024-2025, not a
+                    # calendar-year boundary; the load-bearing guarantee is that order/parameter
+                    # selection never sees the test partition (test_start_date onward).
+                    evaluation_partition_start=test_start_date,
+                    estimation_or_selection_uses_test_partition=False,
                     common_targets_verified=True,
-                    course_only=True, mean_order_selection="BIC within each candidate family on 2024",
+                    course_only=True,
+                    mean_order_selection=f"BIC within each candidate family on the train partition (through {train_end_date})",
                     approved_protocol="docs/PROTOCOL_21_09.md",
                     code_sha256={p.name: hashlib.sha256(p.read_bytes()).hexdigest()
                                  for p in MODULE_DIR.glob("*.py")},

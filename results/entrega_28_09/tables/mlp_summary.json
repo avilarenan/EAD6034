@@ -1,0 +1,79 @@
+{
+  "method": "MLPRegressor_lagged_returns",
+  "window": 30,
+  "validation_fraction": 0.15,
+  "fit_n": 171666,
+  "val_n": 30294,
+  "hyperparameter_trials": [
+    {
+      "hidden_layer_sizes": [
+        8
+      ],
+      "alpha": 0.0001,
+      "val_mse": 0.001296930264732984
+    },
+    {
+      "hidden_layer_sizes": [
+        8
+      ],
+      "alpha": 0.001,
+      "val_mse": 0.0012913724862142653
+    },
+    {
+      "hidden_layer_sizes": [
+        8
+      ],
+      "alpha": 0.01,
+      "val_mse": 0.0012807443721764911
+    },
+    {
+      "hidden_layer_sizes": [
+        16
+      ],
+      "alpha": 0.0001,
+      "val_mse": 0.0012881608184772235
+    },
+    {
+      "hidden_layer_sizes": [
+        16
+      ],
+      "alpha": 0.001,
+      "val_mse": 0.0012884040023344243
+    },
+    {
+      "hidden_layer_sizes": [
+        16
+      ],
+      "alpha": 0.01,
+      "val_mse": 0.0012788364738438346
+    },
+    {
+      "hidden_layer_sizes": [
+        32
+      ],
+      "alpha": 0.0001,
+      "val_mse": 0.0012622329953086112
+    },
+    {
+      "hidden_layer_sizes": [
+        32
+      ],
+      "alpha": 0.001,
+      "val_mse": 0.001261654478884221
+    },
+    {
+      "hidden_layer_sizes": [
+        32
+      ],
+      "alpha": 0.01,
+      "val_mse": 0.001253009591571251
+    }
+  ],
+  "selected_hidden_layer_sizes": [
+    32
+  ],
+  "selected_alpha": 0.01,
+  "selected_validation_mse": 0.001253009591571251,
+  "refit_on_train_plus_validation": true,
+  "random_state": 6034
+}

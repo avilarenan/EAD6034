@@ -38,8 +38,10 @@ class SampleConfig:
     session_end: str = "18:25"
     frequency: str = "5min"
     minimum_daily_coverage: float = 0.95
-    train_end_date: str = "2024-12-31"
-    test_start_date: str = "2025-01-01"
+    # 80/20 split by complete-trading-day count, fixed mechanically per TA
+    # feedback (see MultiscaleConfig for the derivation).
+    train_end_date: str = "2025-07-15"
+    test_start_date: str = "2025-07-16"
     max_lag: int = 30
 
 

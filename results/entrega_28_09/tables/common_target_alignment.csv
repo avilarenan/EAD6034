@@ -1,0 +1,6 @@
+scale,targets,identical_origins,max_target_reconciliation_error_pct,tolerance_pct,sample,checked_after_finite_prediction_mask
+1min,837,True,0.0,1e-10,2025,True
+5min,837,True,1.4142853554943713e-13,1e-10,2025,True
+15min,837,True,1.2106982083537332e-13,1e-10,2025,True
+30min,837,True,1.2771728119531645e-13,1e-10,2025,True
+60min,837,True,1.272870697732742e-13,1e-10,2025,True

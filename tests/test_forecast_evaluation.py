@@ -123,8 +123,13 @@ class TestEvaluation(unittest.TestCase):
         self.assertEqual(set(metrics.loc[metrics.group_type == "gap_group", "group"]), {"high", "low"})
         self.assertFalse(metrics.group_type.eq("time_band").any())
 
-    def test_rejects_holdout_other_than_2025(self):
-        frame = frame_fixture(days=("2024-12-30", "2026-01-02"))
+    def test_rejects_test_partition_not_chronologically_after_train(self):
+        # Split is now an 80/20 mechanical day-count cutoff, not a fixed calendar
+        # year, so the guarantee that matters is chronological separation, not
+        # "test == 2025". Here the "test"-labeled day (2025-01-02, positioned and
+        # timestamped first) precedes the "train"-labeled day (2024-12-30) --
+        # exactly the kind of inversion the fixed protocol must still reject.
+        frame = frame_fixture(days=("2025-01-02", "2024-12-30"))
         with self.assertRaises(ValueError):
             evaluate_scale(frame, {}, "30min")
 

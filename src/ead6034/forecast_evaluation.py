@@ -156,10 +156,11 @@ def _validate_frame(frame: pd.DataFrame) -> pd.DataFrame:
     train_n = int(train.sum())
     if not train_n or not test.any() or not train[:train_n].all() or not test[train_n:].all():
         raise ValueError("Expected a training prefix followed by an evaluation suffix.")
-    if not result.loc[train, "timestamp"].dt.year.eq(2024).all():
-        raise ValueError("The fixed study protocol uses only 2024 for training.")
-    if not result.loc[test, "timestamp"].dt.year.eq(2025).all():
-        raise ValueError("The fixed study protocol evaluates only 2025.")
+    # Protocol split moved from a calendar-year boundary to an 80/20 mechanical
+    # day-count cutoff (both inside 2024-2025); the load-bearing guarantee is
+    # strict chronological separation, not any specific calendar year.
+    if not result.loc[train, "timestamp"].max() < result.loc[test, "timestamp"].min():
+        raise ValueError("Training observations must all chronologically precede evaluation observations.")
     return result
 
 

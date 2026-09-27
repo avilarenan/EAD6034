@@ -1,0 +1,10 @@
+{
+  "method": "chronos2_zero_shot",
+  "model_name": "amazon/chronos-2",
+  "context_length": 512,
+  "n_origins_total": 837,
+  "n_origins_scored": 837,
+  "horizon": 60,
+  "batch_size": 64,
+  "fitted": false
+}

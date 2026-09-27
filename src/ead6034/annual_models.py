@@ -34,48 +34,64 @@ def _finite_series(y):
 
 
 def annual_stationarity(y, scale):
-    """ADF/PP/KPSS on the complete input, with c main and ct sensitivity.
+    """ADF (none/drift/trend) and PP/KPSS (short/long) on the complete input.
 
-    ADF chooses lags by BIC among 0..min(12, floor(n/2)-3). PP uses the
-    package's Schwert bandwidth ceil(12*(n/100)**.25); KPSS uses its automatic
-    data-dependent Newey-West bandwidth. Both have Bartlett weights. The
-    constant-plus-trend rows are pre-specified sensitivity checks, not a
-    data-driven replacement of the primary constant-only test.
+    ADF chooses lags by BIC among 0..min(12, floor(n/2)-3), in all three Aula 5
+    specifications (none, drift=c, trend=ct). PP and KPSS each run twice, at
+    the Schwert (1989) short and long bandwidths (ceil(4*(n/100)**.25) and
+    ceil(12*(n/100)**.25) respectively, both Bartlett-weighted) -- the same
+    "short"/"long" pair named in Aula 5 and the TA checklist, using this
+    package's own ceil convention rather than R urca's trunc (an
+    implementação choice, not a claim of bit-for-bit equivalence with R).
+    The ct/trend rows are pre-specified sensitivity checks, not a data-driven
+    replacement of the primary constant (drift) test.
     """
     y = _finite_series(y)
     n = len(y)
     max_lags = min(12, n // 2 - 3)
+    short_bw = int(np.ceil(4.0 * (n / 100.0) ** 0.25))
+    long_bw = int(np.ceil(12.0 * (n / 100.0) ** 0.25))
     rows = []
-    for specification, trend in (("main", "c"), ("trend_sensitivity", "ct")):
-        for name in ("ADF", "PP", "KPSS"):
-            row = dict(scale=scale, specification=specification, test=name,
-                       trend=trend, n=n, sequence="annual_trading_time",
-                       null="unit_root" if name != "KPSS" else
-                       ("level_stationarity" if trend == "c" else "trend_stationarity"),
-                       adf_max_lags=max_lags if name == "ADF" else np.nan,
-                       lag_rule={"ADF": "BIC_0_to_cap12", "PP": "Schwert_automatic_Bartlett",
-                                 "KPSS": "automatic_data_dependent_Bartlett"}[name])
-            try:
-                with warnings.catch_warnings(record=True) as caught:
-                    warnings.simplefilter("always")
-                    if name == "ADF":
-                        test = ADF(y, trend=trend, max_lags=max_lags, method="bic")
-                    elif name == "PP":
-                        test = PhillipsPerron(y, trend=trend, lags=None, test_type="tau")
-                    else:
-                        test = KPSS(y, trend=trend, lags=None)
-                    statistic = float(test.stat)
-                    critical = test.critical_values
-                    reject = statistic > critical["5%"] if name == "KPSS" else statistic < critical["5%"]
-                    row.update(status="ok", statistic=statistic, pvalue=float(test.pvalue),
-                               critical_1=float(critical["1%"]), critical_5=float(critical["5%"]),
-                               critical_10=float(critical["10%"]), lags=int(test.lags),
-                               nobs=int(test.nobs), reject_5pct=bool(reject),
-                               conclusion="reject_H0" if reject else "do_not_reject_H0",
-                               warning="; ".join(str(item.message) for item in caught))
-            except (ValueError, np.linalg.LinAlgError) as exc:
-                row.update(status="failed", warning=str(exc))
-            rows.append(row)
+    adf_trends = (("no_constant_sensitivity", "n"), ("main", "c"), ("trend_sensitivity", "ct"))
+    pp_kpss_trends = (("main", "c"), ("trend_sensitivity", "ct"))
+    bandwidths = (("short", short_bw), ("long", long_bw))
+
+    def _run(name, trend, specification, bandwidth_label, bandwidth, **extra):
+        row = dict(scale=scale, specification=specification, test=name,
+                   trend=trend, n=n, sequence="annual_trading_time",
+                   null="unit_root" if name != "KPSS" else
+                   ("level_stationarity" if trend == "c" else "trend_stationarity"),
+                   bandwidth_label=bandwidth_label, **extra)
+        try:
+            with warnings.catch_warnings(record=True) as caught:
+                warnings.simplefilter("always")
+                if name == "ADF":
+                    test = ADF(y, trend=trend, max_lags=max_lags, method="bic")
+                elif name == "PP":
+                    test = PhillipsPerron(y, trend=trend, lags=bandwidth, test_type="tau")
+                else:
+                    test = KPSS(y, trend=trend, lags=bandwidth)
+                statistic = float(test.stat)
+                critical = test.critical_values
+                reject = statistic > critical["5%"] if name == "KPSS" else statistic < critical["5%"]
+                row.update(status="ok", statistic=statistic, pvalue=float(test.pvalue),
+                           critical_1=float(critical["1%"]), critical_5=float(critical["5%"]),
+                           critical_10=float(critical["10%"]), lags=int(test.lags),
+                           nobs=int(test.nobs), reject_5pct=bool(reject),
+                           conclusion="reject_H0" if reject else "do_not_reject_H0",
+                           warning="; ".join(str(item.message) for item in caught))
+        except (ValueError, np.linalg.LinAlgError) as exc:
+            row.update(status="failed", warning=str(exc))
+        rows.append(row)
+
+    for specification, trend in adf_trends:
+        _run("ADF", trend, specification, "BIC_0_to_cap12", None, adf_max_lags=max_lags,
+             lag_rule="BIC_0_to_cap12")
+    for specification, trend in pp_kpss_trends:
+        for bandwidth_label, bandwidth in bandwidths:
+            for name in ("PP", "KPSS"):
+                _run(name, trend, specification, bandwidth_label, bandwidth,
+                     lag_rule=f"schwert_1989_{bandwidth_label}_ceil_bartlett")
     return pd.DataFrame(rows)
 
 
@@ -204,8 +220,25 @@ def fit_annual_grid(y, max_order=5, progress=None):
         best = candidates.iloc[0]
         p, q = int(best.p), int(best.q)
         # Construct only selected filter results in original percentage units.
-        result = ARIMA(y, order=(p, 0, q), trend="c", enforce_stationarity=True,
-                       enforce_invertibility=True).filter(params_by_order[p, q], cov_type="none")
+        # Grid search fits (_fit_candidate) deliberately keep cov_type="none" for
+        # speed/stability over 216 candidates; only these ~3 selected-per-scale
+        # models get a real covariance type, so coefficient t-statistics are
+        # available (result.cov_type/.bse/.tvalues/.pvalues are standard
+        # statsmodels attributes once a real cov_type is used).
+        result = None
+        for candidate_cov_type in ("robust", "opg", "none"):
+            try:
+                candidate = ARIMA(y, order=(p, 0, q), trend="c", enforce_stationarity=True,
+                                  enforce_invertibility=True).filter(
+                                      params_by_order[p, q], cov_type=candidate_cov_type)
+                if candidate_cov_type != "none" and not np.all(np.isfinite(np.asarray(candidate.bse, float))):
+                    raise ValueError("non-finite standard errors")
+                result = candidate
+                break
+            except (ValueError, np.linalg.LinAlgError) as exc:
+                if candidate_cov_type == "none":
+                    raise RuntimeError(f"{label}: could not construct even a cov_type='none' result") from exc
+                continue
         if not np.isclose(result.llf, best.llf, rtol=1e-8, atol=1e-5):
             raise RuntimeError("Scaled innovations likelihood disagrees with original-unit Kalman likelihood.")
         selected_results[label] = result

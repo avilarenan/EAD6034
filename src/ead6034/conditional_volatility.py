@@ -31,6 +31,7 @@ MODEL_LABELS = {
     "constant": "Constant variance",
     "arch1": "ARCH(1)",
     "garch11": "GARCH(1,1)",
+    "gjr_garch": "GJR-GARCH(1,1,1)",
 }
 
 
@@ -45,14 +46,23 @@ def _vector(values: np.ndarray, name: str, *, allow_empty: bool = False) -> np.n
     return x
 
 
-def variance_parameters_valid(omega: float, alpha: float, beta: float) -> bool:
-    """Positive intercept, nonnegative coefficients and finite long-run variance."""
+def variance_parameters_valid(omega: float, alpha: float, beta: float, gamma: float = 0.0) -> bool:
+    """Positive intercept, nonnegative coefficients and finite long-run variance.
+
+    ``gamma`` is the GJR-GARCH asymmetry term (0 for symmetric ARCH/GARCH).
+    Persistence uses alpha + beta + gamma/2 (the E[I(e<0)]=1/2 convention for
+    the GJR variance recursion; see arch.univariate.volatility's own GJR
+    stationarity bound, "sum(alpha) + 0.5 sum(gamma) + sum(beta) < 1").
+    Non-negativity of the recursion itself additionally requires alpha+gamma>=0
+    (the coefficient on a negative shock must stay nonnegative).
+    """
     return bool(
-        np.isfinite([omega, alpha, beta]).all()
+        np.isfinite([omega, alpha, beta, gamma]).all()
         and omega > 0
         and alpha >= 0
         and beta >= 0
-        and alpha + beta < 1.0 - STATIONARITY_MARGIN
+        and alpha + gamma >= 0
+        and alpha + beta + gamma / 2 < 1.0 - STATIONARITY_MARGIN
     )
 
 
@@ -64,22 +74,26 @@ def forecast_variance(
     omega: float,
     alpha: float,
     beta: float,
+    gamma: float = 0.0,
 ) -> np.ndarray:
-    """Causal one-step ARCH/GARCH recursion with fixed training parameters.
+    """Causal one-step ARCH/GARCH(/GJR-GARCH) recursion with fixed training parameters.
 
     ``out[t]`` is calculated BEFORE using ``test_residuals[t]``.  The latter
     becomes available only to forecast ``out[t + 1]``.  For a constant variance,
     pass alpha=beta=0 and omega equal to the training residual second moment.
+    ``gamma`` (default 0, i.e. symmetric ARCH/GARCH) adds the GJR asymmetry
+    term, active only when the previous residual is negative.
     """
     residuals = _vector(test_residuals, "test_residuals", allow_empty=True)
-    if not variance_parameters_valid(omega, alpha, beta):
+    if not variance_parameters_valid(omega, alpha, beta, gamma):
         raise ValueError("Variance parameters violate positivity/stability")
     if not np.isfinite(last_residual) or not np.isfinite(last_variance) or last_variance <= 0:
         raise ValueError("Initial innovation and positive variance must be finite")
     output = np.empty(len(residuals), dtype=float)
     previous_residual, previous_variance = float(last_residual), float(last_variance)
     for index, residual in enumerate(residuals):
-        variance = omega + alpha * previous_residual**2 + beta * previous_variance
+        asymmetry = gamma * previous_residual**2 if previous_residual < 0 else 0.0
+        variance = omega + alpha * previous_residual**2 + asymmetry + beta * previous_variance
         if not np.isfinite(variance) or variance <= 0:
             raise FloatingPointError("Variance recursion produced invalid variance")
         output[index] = variance
@@ -158,8 +172,8 @@ def fit_volatility(
             "reference_caveat": "asymptotic; innovations from a pre-estimated mean",
         })
 
-    for model, q in (("constant", None), ("arch1", 0), ("garch11", 1)):
-        k = {"constant": 1, "arch1": 2, "garch11": 3}[model]
+    for model, o, q in (("constant", 0, None), ("arch1", 0, 0), ("garch11", 0, 1), ("gjr_garch", 1, 1)):
+        k = {"constant": 1, "arch1": 2, "garch11": 3, "gjr_garch": 4}[model]
         row = {
             "scale": scale, "model": model, "model_label": MODEL_LABELS[model],
             "nobs": n, "nobs_test": len(test), "variance_parameter_count": k,
@@ -170,6 +184,7 @@ def fit_volatility(
             "near_boundary": False,
         }
         try:
+            gamma = 0.0
             if model == "constant":
                 omega, alpha, beta = rms**2, 0.0, 0.0
                 h_train = np.full(n, omega)
@@ -179,7 +194,7 @@ def fit_volatility(
                 with warnings.catch_warnings(record=True) as caught:
                     warnings.simplefilter("always")
                     fitted = arch_model(
-                        scaled, mean="Zero", vol="GARCH", p=1, o=0, q=q,
+                        scaled, mean="Zero", vol="GARCH", p=1, o=o, q=q,
                         power=2.0, dist="normal", rescale=False,
                     ).fit(
                         update_freq=0, disp="off", show_warning=False,
@@ -189,6 +204,7 @@ def fit_volatility(
                 omega = float(fitted.params["omega"]) * rms**2
                 alpha = float(fitted.params["alpha[1]"])
                 beta = float(fitted.params["beta[1]"]) if q else 0.0
+                gamma = float(fitted.params["gamma[1]"]) if o else 0.0
                 # Keep arch's exact training initialization/backcast and bounds.
                 h_train = np.asarray(fitted.conditional_volatility, dtype=float)**2 * rms**2
                 # f_e(e) = f_scaled(e / rms) / rms: essential Jacobian.
@@ -196,10 +212,10 @@ def fit_volatility(
                 convergence_flag = int(fitted.convergence_flag)
                 convergence_message = str(fitted.optimization_result.message)
             converged = convergence_flag == 0
-            valid_params = variance_parameters_valid(omega, alpha, beta)
+            valid_params = variance_parameters_valid(omega, alpha, beta, gamma)
             valid_path = bool(np.isfinite(h_train).all() and (h_train > 0).all())
             eligible = bool(converged and valid_params and valid_path and np.isfinite(llf))
-            persistence = alpha + beta
+            persistence = alpha + beta + gamma / 2
             near_boundary = bool(persistence >= NEAR_BOUNDARY)
             if near_boundary:
                 fit_warnings.append("persistence >= 0.98; near the unit-persistence boundary")
@@ -210,7 +226,8 @@ def fit_volatility(
             if not valid_path:
                 fit_warnings.append("excluded: invalid training variance path")
             row.update({
-                "omega": omega, "alpha": alpha, "beta": beta, "persistence": persistence,
+                "omega": omega, "alpha": alpha, "beta": beta, "gamma": gamma, "persistence": persistence,
+                "leverage_effect": bool(gamma > 0) if model == "gjr_garch" and valid_params else None,
                 "unconditional_variance": omega / (1 - persistence) if valid_params else np.nan,
                 "loglikelihood": float(llf), "aic": float(-2 * llf + 2 * k),
                 "bic": float(-2 * llf + k * np.log(n)),
@@ -223,7 +240,7 @@ def fit_volatility(
             if eligible:
                 h_test = forecast_variance(
                     test, last_residual=float(train[-1]), last_variance=float(h_train[-1]),
-                    omega=omega, alpha=alpha, beta=beta,
+                    omega=omega, alpha=alpha, beta=beta, gamma=gamma,
                 )
                 z_train, z_test = train / np.sqrt(h_train), test / np.sqrt(h_test)
                 arrays[f"{model}_train_variance"] = h_train
@@ -278,7 +295,10 @@ def fit_volatility(
         "notes": [
             "Fitting, scaling, lag choices and BIC selection do not use test observations.",
             "OOS recursion uses the previous actual innovation, never the current/future one.",
-            "No Diebold-Mariano test for these nested variance specifications.",
+            "No Diebold-Mariano test between these candidates: constant subset ARCH(1) subset "
+            "GARCH(1,1) subset GJR-GARCH(1,1,1) are all nested in each other (each is the next "
+            "with one more coefficient set to zero), and Aula 4 explicitly teaches DM is not "
+            "appropriate for nested models.",
             "A better variance forecast is not a better point forecast of returns.",
             "A rejected standardized-residual Ljung-Box still indicates limitations of the mean equation.",
         ],
