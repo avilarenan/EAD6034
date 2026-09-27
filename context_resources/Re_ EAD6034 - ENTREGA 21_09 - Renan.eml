@@ -1,0 +1,389 @@
+Received: from CP6P284MB1772.BRAP284.PROD.OUTLOOK.COM (2603:10d6:103:117::5)
+ by CP9P284MB4310.BRAP284.PROD.OUTLOOK.COM with HTTPS; Tue, 22 Sep 2026
+ 20:36:57 +0000
+ARC-Seal: i=2; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=fail;
+ b=nlkaH8B2uWxRVK6fSC6zQ+RvLPleq+HLfekG/ud+bDPnYinxQnE33vljXSSKuT0y+xBKMCzxOSHQajeqpnaL+QQoKn/7blCqghh5X6bqVJeu9XNtWq7TW4P74f1KHxZt/WOgdY1aOmY3HpQZRzGyYWKn5Mhb+D+nZVK58VaWoMkympLSvS3w5xr38a41MGYwY5qEC2vZs3XvDhKmU+Uv/0N9bzT75QzQ2mR48R99KQZRHiyHy+ox3MZaN6c3oXFJvci0kCwzbLowyvjwUZTos8fo55yYPq1BxS2EVR6fEWN/jVn9m1OHzma0qcP0LhRXjfEG1PwtQeK0aQZVMwDJ3g==
+ARC-Message-Signature: i=2; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=VwmDMCKPoXKtmM2noLZQzE4a5J6QSwvrrtarhmimlHk=;
+ b=ydjT3zz/41bgF0+0FoM58rS36TMplwKex2CFbBcTIYnbZrBuYcxKXMTao+pAcccCqoxep6svmz6wTg6bNmO5091pMyusgsKEWKFgyjGj/fKdGAtgOpIOaCGIryygRNLN5O3KyQu9WHB3P22V6tW+olidLdKcsk/oDBd4rSwHCECVjMB4kCM4VGy+k6Vj5ggtWa8UiyQbY5NRLkRyScY0RB0vdWYIMH7WkHRCf9FwmUWyUijI8Pf/SgS6CTMaWSF6KK+H7Qkm/pikykmFVW00PEbRxBu3T99JvKDBnYY2uqi+WELg6hkqb/jAmiN8U8l53v4hAN6dx2G5PZBsyPfipQ==
+ARC-Authentication-Results: i=2; mx.microsoft.com 1; spf=fail (sender ip is
+ 66.159.239.202) smtp.rcpttodomain=btgpactual.com smtp.mailfrom=usp.br;
+ dmarc=fail (p=quarantine sp=none pct=10) action=none header.from=usp.br;
+ dkim=fail (body hash did not verify) header.d=usp.br; arc=fail (47)
+Received: from BY3PR04CA0001.namprd04.prod.outlook.com (2603:10b6:a03:217::6)
+ by CP6P284MB1772.BRAP284.PROD.OUTLOOK.COM (2603:10d6:103:117::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.451.14; Tue, 22 Sep
+ 2026 20:36:54 +0000
+Received: from SJ5PEPF000001F7.namprd05.prod.outlook.com
+ (2603:10b6:a03:217:cafe::5d) by BY3PR04CA0001.outlook.office365.com
+ (2603:10b6:a03:217::6) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.21.428.16 via Frontend Transport; Tue,
+ 22 Sep 2026 20:36:51 +0000
+Authentication-Results: mx.microsoft.com 1; spf=fail (sender IP is
+ 66.159.239.202) smtp.mailfrom=usp.br; dkim=fail (body hash did not verify)
+ header.d=usp.br;dmarc=fail action=none header.from=usp.br;compauth=none
+ reason=405
+Received-SPF: Fail (protection.outlook.com: domain of usp.br does not
+ designate 66.159.239.202 as permitted sender)
+ receiver=protection.outlook.com; client-ip=66.159.239.202;
+ helo=mx0b-0057a602.pphosted.com;
+Received: from mx0b-0057a602.pphosted.com (66.159.239.202) by
+ SJ5PEPF000001F7.mail.protection.outlook.com (10.167.242.75) with Microsoft
+ SMTP Server (version=TLS1_3, cipher=TLS_AES_256_GCM_SHA384) id 15.21.451.8
+ via Frontend Transport; Tue, 22 Sep 2026 20:36:50 +0000
+Received: from pps.filterd (m0442089.ppops.net [127.0.0.1])
+	by mx0b-0057a602.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 68MKVbIR088932
+	for <Renan.Avila@btgpactual.com>; Tue, 22 Sep 2026 17:36:49 -0300
+Authentication-Results-Original: ppops.net;	spf=pass
+ smtp.mailfrom=anderson.brito@usp.br;	dkim=pass header.d=usp.br
+ header.s=usp-google;	dmarc=pass header.from=usp.br
+Received: from mail-dy2-f43.google.com (mail-dy2-f43.google.com [74.125.229.43])
+	by mx0b-0057a602.pphosted.com (PPS) with ESMTPS id 4guuuu9n97-1
+	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NOT)
+	for <Renan.Avila@btgpactual.com>; Tue, 22 Sep 2026 17:36:49 -0300 (BRT)
+Received: by mail-dy2-f43.google.com with SMTP id 5a478bee46e88-33c0d931083so67427eec.1
+        for <Renan.Avila@btgpactual.com>; Tue, 22 Sep 2026 13:36:49 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1790109408; cv=none;
+        d=google.com; s=arc-20260327;
+        b=q77sbtAucilhRcdPzW20a+ERLPwYDv0bEvLzVRkxX8VhQ65PoLgr8lZnxwuw1ADpbO
+         ChVyGmCDaGhLvIh/IruMWsAigWjfTX6gbYCZVUdBQIyUCthUbr0M/OzWrU4n+CusnRb/
+         UZfKPjIfPT5ALy5x+BdBHDGfpQc44bTi4mfAjNananCBneg+pszH6L5piO60q4YHM/lH
+         +4u7JogRjrXaFUCCdsK+DmSqBCo3Tl4lb8wxw9otNR2yrK/n0pHLtTnFfKM39nIDAxvS
+         rSUqOo69eobUdGusZBP0ES9yi3p4rxM+6IQ2qy0PTl+NlkrIaFimSes2ZbgE2eS/U+fk
+         umoQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:dkim-signature;
+        bh=/Qi6eOSsKvC/gES+8tyBtoz3Zj3GAhlasdU6vLlQOkc=;
+        fh=WC1gjTSdX+KdSovcLwIWff4FLuoO9X0SJy+sSNtuTwY=;
+        b=ZvANdb6RxmV70twCRFurwo0My6ZU+3aXd2mkBC/sIF130onk+E047E5eNSCEpZXw5V
+         tkSnk2ksDmlVRBSBSitPnyyZXDvbiRVriS9OOkHEDM416i7PEOGkPYLVH4mAxKOIYc5T
+         C/j22r2fkviwcIkivFe1P5a8ta22Om1JygsM7AHE70rOzmY4fQ0SPV5IInwCeJtLSCTg
+         XuaDxXdLN79nZpiSJENqB6xhIY5E4NACcBtV8vz4vGvtB/9uCcDYrWpLBnA174hbYJ0j
+         6w9WKqvGtOdNmg7k44ELf9AqmVTug8vjI0M3ZQd9nR2aQyM0ij95LlqZMkxuQQTmSUu3
+         SgjQ==;
+        darn=btgpactual.com
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=usp.br; s=usp-google; t=1790109408; x=1790714208; darn=btgpactual.com;
+        h=content-type:cc:to:subject:message-id:date:from:in-reply-to
+         :references:mime-version:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=/Qi6eOSsKvC/gES+8tyBtoz3Zj3GAhlasdU6vLlQOkc=;
+        b=e4zxGuDDNSiISDzEbJJx++MLHAkEbFhF/91EYQFjDxuAK4t8O6RAXKzX/TAJ/kb4rv
+         rirmH/Gsdzs5bN0I+JHdDeLYpbL6kYUmWfb6L3M3eTP3AmmxKEEnQbgJdsckmAzOB99V
+         zLL9IsOIAdrlnQ+eELwY5WZKNJeScjMYXG8xkFCWX6DC62Yc7FXi2MYxz6kXcOrY/ekt
+         SEO7PGWUZWZvub854ushq7Gy7FYldT2tgcYs3Jj6LGskzvMJxtXRTCy39zGt+haNP5h3
+         bhdx6QOcyFkFP6ZTR+g/b69peOFsggbcKzNXDGMtTYvv/xEY8CgD9XeRlXh2gw9CcRBf
+         HJ/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1790109408; x=1790714208;
+        h=content-type:cc:to:subject:message-id:date:from:in-reply-to
+         :references:mime-version:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to:content-type;
+        bh=/Qi6eOSsKvC/gES+8tyBtoz3Zj3GAhlasdU6vLlQOkc=;
+        b=UPOCVWyuHWnzb0Bl0mmBe8z4h6wgq3qlL/b/VVzS7pDAJqP7b4+mHBYeyE4vDRU6Y2
+         6NacIoI5+wh0poiLSq+3kyLX2vChgrT+nzpdbISpLAM1GMtNMdyUXzi5p6ROaoMtS3AZ
+         Av+z7/HGs7YLqcYm9M4wRLrn/uYu1bHpLUXpCSNHwDEYZJVOD/x4+LQb5S1sUmOJCK1x
+         9hZ4ijUciYvC+fWhLZLqBkNGEVvcj8kXI4N/UG5dOHhbefuT5RpFbBMpz1YnuNICunKO
+         ch1BSUBvywFR3fha24Rw5fiQGIzaEDeJaC53vQuWEgtV2OqsggXpIyfoELfvUVlgbrjO
+         DBSQ==
+X-Gm-Message-State: AFuF++nevZoExt0KXpKIbkOQk/4h3R3N9QfbumbdZ/jG33YV51v+wW86
+	s6XNrmtpGPtymszcmbCqE/7re8kePAB933DFtsGob40HR5Yh6iWxW+9bRSI2ju9D5apPJ4enUki
+	Uf4482Gk0XnR+tChYPLX4HRMY+ATO2ifMd5GTvPu8zGGGMQawusISGjI=
+X-Gm-Gg: AYBFou1fWnwLV5e2QdI188nVAoUOV0CsaE1viUSsJjl/xavxVxMxMG+dGxHjl3icL/5
+	BZPlzetHRNIP72hjMQo3yo1UNNUtldeMSgz5aA+KY6DC4uDC+4uhorc2DE7Avs1+X521SP4NmIH
+	EBSKNmblBy9fLVaw6gHTSxazjDic/5+V81alZuL6X8FPZ2Fpofcac63VmK9lqfuWfkuKscVGKTn
+	kvJdpguexQAZR9QGpPV9v+ypnIuvm6ef/M/EXhVVIDk77jChm3l7Xt2vjOeyGqTxuQBzNMRBeNX
+	X3C8f5dU5wcgZ6Ks/RRTtk53vr+u+kM5vtbLS/gKvyGQSGxqyH5OVCpePnnaxZdUSWfEYCOXEs4
+	zaH916AwyGQ==
+X-Received: by 2002:a05:701b:2517:b0:144:ef65:13a0 with SMTP id
+ a92af1059eb24-144f8d8ccccmr610508c88.6.1790109407333; Tue, 22 Sep 2026
+ 13:36:47 -0700 (PDT)
+References: <CP9P284MB4310C0DCDC50CB1084B80CFF91842@CP9P284MB4310.BRAP284.PROD.OUTLOOK.COM>
+In-Reply-To: <CP9P284MB4310C0DCDC50CB1084B80CFF91842@CP9P284MB4310.BRAP284.PROD.OUTLOOK.COM>
+From: Anderson Dias Brito <anderson.brito@usp.br>
+Date: Tue, 22 Sep 2026 17:36:36 -0300
+X-Gm-Features: AcwNN1X2hQutOGQHyf-BhYU3jYzu2RIljv_uv6_izgyJu4-z1LhYd9CjKOa96FA
+Message-ID: <CAOs2=bnu9pS8jzo3VLhLqfXQe=PCZrPZkf1sSyjRT8rPVdm3cw@mail.gmail.com>
+Subject: Re: EAD6034 - ENTREGA 21/09 - Renan
+To: "Avila, Renan" <Renan.Avila@btgpactual.com>
+Cc: Leandro dos Santos Maciel <leandromaciel@usp.br>
+Content-Type: multipart/alternative; boundary="000000000000556035065c1853be"
+X-Proofpoint-GUID: zIAzlYxHoABdawWoaoi-5y026QdQFv5g
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwOTIyMDI5NCBTYWx0ZWRfXwGSvdHRJE+71
+ P+PUCOwxSD9lxcA4HFMTnceyn89Gw095bZB98htTENTsb1L9viRTXQU8K7KnpaRODGXGc+XDkQG
+ aXSJmqrCl3RysEYSq2PfIHCwuaGgMP5//crDdBaqhx0k/DCOQjemxs5IhmpdAnN2eNoxaGjJ3DS
+ rbuYUF4dMYJhtjY7UV292yGl/zLyLLoFFjE/k5cL9aHrde1PLTPwccyXEkZxcolBY0vUBZrvJVJ
+ iBOAb/7SaozGPa+e+WlGfpOozBJWjl/V4igKk7BzcAFtqNZiSmf60BM2AFxsjBzv5df1TdRb9gZ
+ Dtj4671NbLyZOHxDkVTpRisZUs6JcFuUgrGngcvIIKcn37R43CWXZ6gWRFiuA5FgbSZx5OiGPfP
+ Pw3TalKL+JoSCgslmfNsy2vClfcRgIpPWyIqJ7TIvvYDIkomGbvZwPUkAU7ZIzGbyZY1qtCqJqS
+ hjZcPOPU8L/VgA0pFGwH3rNJXqCtM0vrRoQOvItfRdg9QLOm3SJ9FWEejt/gU
+X-CLX-Response: 1TFkXGxoaHxEKTHoXGhEKWUQXaH9zH0x5XllNaFMRClhYF2hNWRNjGGttckx
+ iEQp4ThdvW2ltThNIa04FHhEKeUwXYWliGRp/HRoSe34RCkNIFxsfEQpDWRcHGB8YEQpDSRcaBB
+ oaGhEKWU0Xbk9GQ1xPWBEKX1kXHxgZEQpfTRdnZnIRCllJFx0fcRsGGx8adwYYGhoGGxoaQhkGG
+ gYbGhoGGnEaEBp3BhoGGgYeEgYaBhoGGnEaEBp3BhoRClleF2xseREKSUYXSF5NWktJXl9LRkhY
+ S1BDRnUYdUJFWV5PThEKSUcXeE9NEQpDThdQY2tQRnNSYkVraE5LXX1FS0VDBx9TGhgce057bFw
+ fTREKWFwXHwQaBB4YEwUbGgQbGxoEGxkeBBkfEBseGh8aEQpeWRdCHGNeEhEKTVwXGBkaEQpMWh
+ doaWtraxEKTEYXb2trbGtrEQpCTxd6e1BgcHN8b31uXBEKQ1oXHR4EGxgfBBgYEwQeGREKQl4XG
+ xEKREkXGxEKQlwXGxEKXk4XGxEKQksXb1tpbU4TSGtOBR4RCkJJF29baW1OE0hrTgUeEQpCRRds
+ WFpmTGtaGgFoSREKQk4Xb1tpbU4TSGtOBR4RCkJMF2hNWRNjGGttckxiEQpCbBdgQm8aex5If0l
+ 9YxEKQkAXa2R5GkNoYVkYaUgRCkJYF2VdTxxmTVpoZn5TEQpNXhcHGxEKWlgXGxgRCnlDF29aYF
+ haT0dvSXNOEQpZSxcbGx8SHREKcGgXaxt/RlllW3twWhgQBxkaEQpwaBdkaVlNRXBBGAFneRAHG
+ RoRCnBoF216SVNHW1JzZU1dEBMfEQpwaBd6TEAFHmZTRl8fcxAbGx0RCnBoF2BhbFIeAVAfHh1S
+ EBsaExEKcGgXb2N+e2ZNT2JhZWEQBxkaEQpwaBdpTEJFHnlObGESSRAHGRoRCnBoF2VZEn8TfFJ
+ BWxh7EAcZGhEKcH0Xb1xOe2kBf2Npf2sQEx4RCnB9F2ZaaHJJXn5BEh0eEBMfEQpwfRdlWkhARB
+ sfSXBaZxAbGhgRCnB/F2BEQxN+YXxYUk1NEBsaGBEKcF8XYnBYTUxyTwV/fEgQGxoYEQpwfxdrW
+ HoFZlkSQU8aaxAbGh4RCnBfF2ATZGt8ZFh6WEJbEBsaHxEKcGwXYH5oZFtrT3JdfhgQBxkaEQpw
+ TBdifEQaUhh9ZFJobBAHGRoRCm1+FwcbEQpYTRdLESA=
+X-Authority-Analysis: v=2.4 cv=UsT2pOwB c=1 sm=1 tr=0 ts=6ab2e6e1 cx=c_pps
+ a=n7dbL8uPEkY4NWLNNil8yg==:117 a=VdqzKS8jKosA:10 a=4_u_rikb8joA:10
+ a=Kan8h273Bse8B8Jy5C1n:22 a=za_rGWGOF3AWoFelt4AN:22 a=P5PuSUj6Gu3PolVMRqnZ:22
+ a=_6GpL_ENAAAA:8 a=v4J8lpdCAAAA:8 a=ws90P0bj8fuoGK-v-1UA:9 a=QEXdDO2ut3YA:10
+ a=4d2D4LtiAAAA:8 a=FCxNGD6u7W0N2fCD3VsA:9 a=6eicLRpzovtv4xfY:21
+ a=lqcHg5cX4UMA:10 a=QMFkTkmNbYJhIb8gMv98:22
+X-Proofpoint-Spam-Info: AW1haW4tMjYwOTIyMDI5NCBTYWx0ZWRfXxSm34Vac0K9J
+ fy1faPtkDSy1/3V0yBeA0w6gXluWAdm4XaY+0BzTjkKB9q69BHZH/DGBvjM7O4MG6Y3lHcMaWTe
+ o9eAgfLGTnZMZMSl3g+pyCegtwuwyCzdpKlfumaUKl4zVT5qlmfm
+X-CLX-Shades: Deliver
+X-Proofpoint-ORIG-GUID: zIAzlYxHoABdawWoaoi-5y026QdQFv5g
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1176,Hydra:6.1.134,FMLib:17.12.100.49
+ definitions=2026-09-22_03,2026-09-21_02,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=inbound_notspam policy=inbound score=0
+ priorityscore=0 impostorscore=0 phishscore=0 spamscore=0 bulkscore=0
+ malwarescore=0 suspectscore=0 clxscore=1005 lowpriorityscore=0 adultscore=0
+ classifier=clx:Deliver authscore=0 authtc= authcc= route=inbound adjust=0
+ reason=mlx scancount=1 engine=8.22.0-2609040000 definitions=main-2609220294
+ domainage_hfrom=11587
+Return-Path: anderson.brito@usp.br
+X-MS-Exchange-Organization-ExpirationStartTime: 22 Sep 2026 20:36:50.5986
+ (UTC)
+X-MS-Exchange-Organization-ExpirationStartTimeReason: OriginalSubmit
+X-MS-Exchange-Organization-ExpirationInterval: 1:00:00:00.0000000
+X-MS-Exchange-Organization-ExpirationIntervalReason: OriginalSubmit
+X-MS-Exchange-Organization-Network-Message-Id: 415621e2-0ece-4701-b671-08df18e93afc
+X-EOPAttributedMessage: 0
+X-EOPTenantAttributedMessage: 16e7cf3f-6af4-4e76-941e-aecafb9704e9:0
+X-MS-Exchange-Organization-MessageDirectionality: Incoming
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SJ5PEPF000001F7:EE_|CP6P284MB1772:EE_|CP9P284MB4310:EE_
+X-MS-Exchange-Organization-AuthSource: SJ5PEPF000001F7.namprd05.prod.outlook.com
+X-MS-Exchange-Organization-AuthAs: Anonymous
+X-MS-Office365-Filtering-Correlation-Id: 415621e2-0ece-4701-b671-08df18e93afc
+X-MS-Exchange-Organization-SCL: -1
+X-Microsoft-Antispam: BCL:0;ARA:13230040|1032899013|7049299003|3109299003|19092799006|69100299015|43022699015|7149299003|82310400026|5063699009|56012099006|11063799006|19002099009|10067099003|22082099003|16102099003|8096899003|2066899003|4076899003|13003099007|4133799003|18003699003;
+X-Forefront-Antispam-Report: CIP:66.159.239.202;CTRY:US;LANG:pt;SCL:-1;SRV:;IPV:CAL;SFV:SKN;H:mx0b-0057a602.pphosted.com;PTR:mx0b-0057a602.pphosted.com;CAT:NONE;SFS:(13230040)(1032899013)(7049299003)(3109299003)(19092799006)(69100299015)(43022699015)(7149299003)(82310400026)(5063699009)(56012099006)(11063799006)(19002099009)(10067099003)(22082099003)(16102099003)(8096899003)(2066899003)(4076899003)(13003099007)(4133799003)(18003699003);DIR:INB;
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Sep 2026 20:36:50.3268
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 415621e2-0ece-4701-b671-08df18e93afc
+X-MS-Exchange-CrossTenant-Id: 16e7cf3f-6af4-4e76-941e-aecafb9704e9
+X-MS-Exchange-CrossTenant-AuthSource: SJ5PEPF000001F7.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: Internet
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CP6P284MB1772
+X-MS-Exchange-Transport-EndToEndLatency: 00:00:07.6590870
+X-MS-Exchange-Processed-By-BccFoldering: 15.21.0451.004
+X-Microsoft-Antispam-Mailbox-Delivery:
+	ucf:0;jmr:0;auth:0;dest:I;ENG:(910005)(944506478)(944626604)(920097)(930201)(20251009189)(140003);
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?cVhXYzNmbU96MTB2UzduaE51MTdXL1MrdDU2cHhCc3R1cHdRaEtuakx5RmRq?=
+ =?utf-8?B?MlE2ZjZJK1BLRk5CTnNYUVFqWGhaam1NWTlpVlIxRDNMS1J2SFZlZjViaGhS?=
+ =?utf-8?B?V2tOak5id0poTWsxMHdVK3pDdE52Y0xIakpicldwUm4rNFVxYWFYV0JyZ3Vm?=
+ =?utf-8?B?Z2FBdlE2QUJvY0V2aWhXcVh2RDd0Y25UWHlFUXdTazR2bW5zUkRmTzZJTDBy?=
+ =?utf-8?B?WHRNdHhqRUtrZ2xYK0RPRU85bVVzRlRScTJVWjc2SXhWTm1OTjh6NzBqSTE4?=
+ =?utf-8?B?ZTRKdGJWa2lKemRoeGpIeG1OckZxdmY2cXRmRStzZUYwRnl2eWhZSkFwd0RV?=
+ =?utf-8?B?RDRNcGlvTUxLTVdFYklSaEYvYkZzK2N2bWtkMmxxb0Y5VVRpVytnR3N6R0hZ?=
+ =?utf-8?B?Z09WN3VCTFN1YXRyenRmaFJSZ0YvaVY0NTZLeVBYVzlxS04rVTBkVmZZTFFW?=
+ =?utf-8?B?R0oraHJQK2o1RDJ0SXp1ZmRyOFB5Nnhjc0JqYlBtVVRvby9sdmNOMXFzSEx3?=
+ =?utf-8?B?Ni81VFJzcUcvVm9RS1VKbU9lZXJGM0lOYVM3dXl1YUVQZnRucnB0VUgwWXVZ?=
+ =?utf-8?B?eFhDaWJMZVYrWEkzUXpYMmlucVZ0K05kQmxkK2pZNkdPY1QrOVlsNlBzekNn?=
+ =?utf-8?B?ZW9MYmo5ZEZXUmptUEs2SmtTUVpOOGlKSFJNRzJLWUgxcWU4MytPN2ZDTWNQ?=
+ =?utf-8?B?U1hZOFNranBqZ2dDanJCTTExR1hCSGJ0SjIxU1UveHZhSmlKR205M0Z4SGZN?=
+ =?utf-8?B?NGJqbVl6aE9uU0ZSYXBBWmo1cWxqQlRKTjZ2VVUvNE9UQ1hCVmcwSmd2M1kr?=
+ =?utf-8?B?OTc4Rlk1U3kxdmZkcEtWMkU2VG1Xcm40aUo4eVhkZis3c1BPeTdBL1FCNGsy?=
+ =?utf-8?B?ZG1CVWt0Sm9wQUl0ZFN6anNoampvSWpMWEF0bGx6OE9HY05NSkNGT2pkRkJL?=
+ =?utf-8?B?bi9maldQZ1lQQ0FUTWlBcVFEblZ5UFBDaGtnVVlYVDZ1UlZYWU92Ry81YVE2?=
+ =?utf-8?B?dlFwdG1rTWQ0cWtDNWpWbWJIMXZvQ2llaW5ZcUh4ZWVDZ1ZLS01hcVlJbWNu?=
+ =?utf-8?B?NTR5WFdEOXJZL3VCeWQya3ZTQUVWaGFKM0x4T2p5ZVpBZFRFWC94UHpZcTNv?=
+ =?utf-8?B?dUVZdURLeFZRbDVYK0pYaGxFUklzU1cvbElnNUw3ODNFb3ovVUJnb045YXZI?=
+ =?utf-8?B?enBFVmMrdUR4NDRSekVBdVFUNWxwQjJUM1NZMWJVQWpzNGx6SWowMmVIV3Js?=
+ =?utf-8?B?TFBNMDlSK0V3RHh6aytaSVhvalNoRWcvZGhMWldjY1pLa1VlQ01aa0UwSDZK?=
+ =?utf-8?B?WFJiZzVlRDZjWCtzV01SdjJ2bE9obkxSUGZoWnJZeVh0cmlzcldZVXduOTNh?=
+ =?utf-8?B?MkJqclRHV3NMM2p0bVVDazZHSjdWZkJwVFpMU0o3c0VSVkZWNWNrYklKWUE0?=
+ =?utf-8?B?clhGYTJxTitkaHVXN2l2M3NuUEJienM1UE5BQkVBZ3haSUVReDUzTCtnUjls?=
+ =?utf-8?B?ZE9ETmVBZXdzV3BYZlJHTG01QWRpclpIRmRraVQ0UTFqZVZ0RVN6RHJZVWV4?=
+ =?utf-8?B?aWRtRWVEM2ZlQk90RUsrcWJYbkNrSnZKS29xQU53MFFKNXg2UVRhc1ZzcW5L?=
+ =?utf-8?B?ejdQcE9Dc3VMNTZTZ2hQYXNLenYyNTFyTFNyN2FSUjVyOXVtRzFISWlFVUdM?=
+ =?utf-8?B?UklRanl6TjJhWGJIdlJRK2VvZnNRejlHT1hpNUkwTkM2MHRLQlE3OFRvV0xG?=
+ =?utf-8?B?bXUvR250RUtPYjdkdkUvakt5bnFJNWMzY0c2N2ZEZ2NBbk80ZXNXM1FwTEVW?=
+ =?utf-8?B?OUNGaWVFWGxJUGMxMU1CT0JtTUJYV1Y0c25WTkhtZ3FtQWZMQlFqSzNFVlVm?=
+ =?utf-8?B?a0hPczFucCtZcU94Z2h5M04wbDQ2dHpjcnYyL244S0xOMGIvNGcrMktZa3Nh?=
+ =?utf-8?B?UUNEak4zUStiOVdiUmllMDhUTzRTcEhsc01TY1FkTStpaWpwY25hd3N1cDB4?=
+ =?utf-8?B?MHBkWUtZMm1qa1A2TDNXazM5eTd0VTcrTzQ0TzBPQjUwYm5GRVRYbmdHV1pG?=
+ =?utf-8?B?cTlra3dWT1dxcVQrZXNObGpMNE8vRjlGWExTKzlzTHNJdHJiWnd3MFdWZzFK?=
+ =?utf-8?B?M0pFdEszYW40d01jMUtZL09tdmE0S2Q5bWVYZUxOVEhjRXJVSFZ4WTJuNUtL?=
+ =?utf-8?B?aEYxNGt4dlVaeGkyLzErM3dQcTd1aHhma0FzRTlncnVSUklhT3diUWs5UkhG?=
+ =?utf-8?B?SkRHL3NXR3d2dEdvY05VZUFoOWlkUXZKaTk5ZDR2ekNHR3p5cCtWRERRS0Iz?=
+ =?utf-8?B?ZkMwMTg1eU5RY2o0YkhrNkg4RFUvRGxrTUpHWWNWT0pRQmkzZlp5UW01NGFV?=
+ =?utf-8?B?d0VmR3p2b1p1ZGpxWEVsejh4emg0WDBJcmt2SGFzUVBwQzhIelVjUm4yMlJn?=
+ =?utf-8?B?UWM1RGVuVnFWcCtETlRkMFZIQUFoVkJjaWhJcWV1K0NPbXFQbFo0SWllandF?=
+ =?utf-8?B?VWtWS1MrdjI3a0hNdUc5bzNHaXVHR0ZJNnpGTjhOOVhaVkg3SUs1NXJUbSsr?=
+ =?utf-8?B?R0tUZzVKbGVaMmUzY3lTN2pXSnpMbkc5MFExNWltSWcvTjdZdklscUxydFcz?=
+ =?utf-8?B?SWE0YXJrenZ4ZEp5THE5TWZOdVltMU8zanhBbUY3NVUzb0tkYUJwT08zSjkv?=
+ =?utf-8?B?T3RMSGJGVE0wLzgrZjZ0dm1aMHUvQXRSMGgza1lncVpheFFsNURYc210d1BC?=
+ =?utf-8?B?TEhZVzRCM0JhcjNPNTRSK0lJU3pUODZBSllyZzEwcVlPMjRyWkE5ZmFpRGU0?=
+ =?utf-8?B?Wm93c1BJMEdCSDVZMU9IRVk2NmtLZVBHTHNpdjlIS0hTeGVrbHExWlVSbCta?=
+ =?utf-8?B?amgwRHB3NGJtV2k2S0ttMVhYWHY5dFhKQlNCSTFsQnp1cTFGNzBqSGxXWStn?=
+ =?utf-8?B?VmpRY1R1MmZXL0hIUnM0dG5xU05WajFBUEZ0ZWFDRnAvdHpMY2hoNlAzeWUr?=
+ =?utf-8?B?bGJvMHJjQTFRSDV0Y1ZodC9KZFVUUk9JNVNmR0RBZ3VwSk5IelZvcHhKc2h4?=
+ =?utf-8?B?RzVUV2JPejNYeGpuVi9rTktRQXpiRUptOG5PTkJGbzliekpQTlZTWUN2V0U0?=
+ =?utf-8?B?TmJNRXFxbnkyOU9uQk1uejhkNWFCeXpJS1FuZENsT21kRksrMHpKT09jazBS?=
+ =?utf-8?B?OGpMSFoxNTEzbTh1RlJyMGlCOWxnTGtwU3RsVGhuK3MvTW5nMnNNMjJNQ3U1?=
+ =?utf-8?B?bUloNGJFNmhyOC8vTURUdHlPZ0NObVZUZjE3UTJHYmtGd1hZckI2Mk1LRUdE?=
+ =?utf-8?B?SUlWQllicG1pWmUzdERrd0h5OEZ1dDJqNG9JRDhlSGhnLzNlam45OWdkcUpY?=
+ =?utf-8?B?b0ptUWo0U2JLK1RNM2REUnQ5aldLR2JiVHNBNlo5T3pibmk1REZNeTN0bVV2?=
+ =?utf-8?B?dFFFQ1VGdnAzajlGNDQ3NTQ3M09sbXBNeEovTUJ4Zm85Y283aWo5bjFZWFBm?=
+ =?utf-8?B?a2haSFhheDgyU0VoT1FoVnlPeW5oTmZRSnQwYkVqS2x6MEh3WHZWbVFsbXpC?=
+ =?utf-8?Q?bLJhCYGwFSBjD5?=
+MIME-Version: 1.0
+
+--000000000000556035065c1853be
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+
+CAUTION: External email.
+
+Renan,
+
+Seu per=C3=ADodo insample est=C3=A1 quase do msm tamanho do outsample. Use =
+a regra 80/20.
+N=C3=A3o vi a estat=C3=ADstica descritiva, al=C3=A9m de outras informa=C3=
+=A7=C3=B5es relevantes. Mandei um check-list no grupo pra ajudar.
+No mais, seu trabalho est=C3=A1 bom.
+
+[https://s-install.avcdn.net/ipm/preview/icons/icon-envelope-tick-round-ora=
+nge-animated-no-repeat-v1.gif]<https://urldefense.com/v3/__https://www.avas=
+t.com/sig-email?utm_medium=3Demail&utm_source=3Dlink&utm_campaign=3Dsig-ema=
+il&utm_content=3Dwebmail__;!!K2ka66TWH6WUggadvD99!fyC25H5J0CNA5_KOMzRvJj_0H=
+YGaimarImhYhEMA3ql94P5lP3Z5CHJTpkiDHXNprhVc_sBvtUlPJ_PlGLlO2ugL9lXxuQ$>    =
+ N=C3=A3o cont=C3=A9m v=C3=ADrus.www.avast.com<https://urldefense.com/v3/__=
+https://www.avast.com/sig-email?utm_medium=3Demail&utm_source=3Dlink&utm_ca=
+mpaign=3Dsig-email&utm_content=3Dwebmail__;!!K2ka66TWH6WUggadvD99!fyC25H5J0=
+CNA5_KOMzRvJj_0HYGaimarImhYhEMA3ql94P5lP3Z5CHJTpkiDHXNprhVc_sBvtUlPJ_PlGLlO=
+2ugL9lXxuQ$>
+
+Em seg., 21 de set. de 2026 =C3=A0s 13:32, Avila, Renan <Renan.Avila@btgpac=
+tual.com<mailto:Renan.Avila@btgpactual.com>> escreveu:
+Boa tarde, Professores.
+
+Segue a entrega de hoje em anexo.
+
+Agrade=C3=A7o!
+
+Renan de Luca Avila
+
+
+Internal Use Only
+
+--000000000000556035065c1853be
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<html><head>
+<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Dutf-8">
+</head>
+<body>
+<p><span style=3D"text-align: left; color: #800000; text-transform: none; t=
+ext-indent: 0px; letter-spacing: normal; font-family: Verdana,Arial,Helveti=
+ca,sans-serif; font-size: 9pt; font-style: normal; font-variant: normal; fo=
+nt-weight: 400; text-decoration: none; word-spacing: 0px; white-space: norm=
+al; orphans: 2; -webkit-text-stroke-width: 0px;"><strong>CAUTION:
+</strong>External email.</span></p>
+<div>
+<div dir=3D"ltr">
+<div>Renan,</div>
+<div><br>
+</div>
+<div></div>
+<div>Seu per=C3=ADodo insample est=C3=A1 quase do msm&nbsp;tamanho do&nbsp;=
+outsample. Use a regra 80/20.</div>
+<div>N=C3=A3o vi a estat=C3=ADstica descritiva, al=C3=A9m de outras informa=
+=C3=A7=C3=B5es relevantes. Mandei um check-list no grupo pra ajudar.&nbsp;<=
+/div>
+<div>No mais, seu trabalho est=C3=A1 bom.</div>
+</div>
+<div id=3D"DAB4FAD8-2DD7-40BB-A1B8-4E2AA1F9FDF2"><br>
+<table style=3D"border-top:1px solid #d3d4de">
+<tbody>
+<tr>
+<td style=3D"width:55px;padding-top:13px"><a href=3D"https://urldefense.com=
+/v3/__https://www.avast.com/sig-email?utm_medium=3Demail&amp;utm_source=3Dl=
+ink&amp;utm_campaign=3Dsig-email&amp;utm_content=3Dwebmail__;!!K2ka66TWH6WU=
+ggadvD99!fyC25H5J0CNA5_KOMzRvJj_0HYGaimarImhYhEMA3ql94P5lP3Z5CHJTpkiDHXNprh=
+Vc_sBvtUlPJ_PlGLlO2ugL9lXxuQ$" target=3D"_blank"><img src=3D"https://s-inst=
+all.avcdn.net/ipm/preview/icons/icon-envelope-tick-round-orange-animated-no=
+-repeat-v1.gif" alt=3D"" width=3D"46" height=3D"29" style=3D"width: 46px; h=
+eight: 29px;"></a></td>
+<td style=3D"width:470px;padding-top:12px;color:#41424e;font-size:13px;font=
+-family:Arial,Helvetica,sans-serif;line-height:18px">
+N=C3=A3o cont=C3=A9m v=C3=ADrus.<a href=3D"https://urldefense.com/v3/__http=
+s://www.avast.com/sig-email?utm_medium=3Demail&amp;utm_source=3Dlink&amp;ut=
+m_campaign=3Dsig-email&amp;utm_content=3Dwebmail__;!!K2ka66TWH6WUggadvD99!f=
+yC25H5J0CNA5_KOMzRvJj_0HYGaimarImhYhEMA3ql94P5lP3Z5CHJTpkiDHXNprhVc_sBvtUlP=
+J_PlGLlO2ugL9lXxuQ$" target=3D"_blank" style=3D"color:#4453ea">www.avast.co=
+m</a></td>
+</tr>
+</tbody>
+</table>
+<a href=3D"#DAB4FAD8-2DD7-40BB-A1B8-4E2AA1F9FDF2" width=3D"1" height=3D"1">=
+</a></div>
+<br>
+<div class=3D"gmail_quote gmail_quote_container">
+<div dir=3D"ltr" class=3D"gmail_attr">Em seg., 21 de set. de 2026 =C3=A0s 1=
+3:32, Avila, Renan &lt;<a href=3D"mailto:Renan.Avila@btgpactual.com">Renan.=
+Avila@btgpactual.com</a>&gt; escreveu:<br>
+</div>
+<blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-=
+left:1px solid rgb(204,204,204);padding-left:1ex">
+<div>
+<div style=3D"font-family:Aptos,Arial,Helvetica,sans-serif;font-size:12pt;c=
+olor:rgb(0,0,0)" dir=3D"ltr">
+Boa tarde, Professores.</div>
+<div style=3D"font-family:Aptos,Arial,Helvetica,sans-serif;font-size:12pt;c=
+olor:rgb(0,0,0)" dir=3D"ltr">
+<br>
+</div>
+<div style=3D"font-family:Aptos,Arial,Helvetica,sans-serif;font-size:12pt;c=
+olor:rgb(0,0,0)" dir=3D"ltr">
+Segue a entrega de hoje em anexo.</div>
+<div style=3D"font-family:Aptos,Arial,Helvetica,sans-serif;font-size:12pt;c=
+olor:rgb(0,0,0)" dir=3D"ltr">
+<br>
+</div>
+<div style=3D"font-family:Aptos,Arial,Helvetica,sans-serif;font-size:12pt;c=
+olor:rgb(0,0,0)" dir=3D"ltr">
+Agrade=C3=A7o!</div>
+<div style=3D"font-family:Aptos,Arial,Helvetica,sans-serif;font-size:12pt;c=
+olor:rgb(0,0,0)" dir=3D"ltr">
+<br>
+</div>
+<div style=3D"font-family:Aptos,Arial,Helvetica,sans-serif;font-size:12pt;c=
+olor:rgb(0,0,0)" dir=3D"ltr">
+Renan de Luca Avila</div>
+<br>
+<p style=3D"font-family:Calibri;font-size:10pt;color:rgb(0,0,0);margin:5pt;=
+font-style:normal;font-weight:normal;text-decoration:none" align=3D"Left">
+Internal Use Only<br>
+</p>
+</div>
+</blockquote>
+</div>
+</div>
+</body>
+</html>
+
+--000000000000556035065c1853be--

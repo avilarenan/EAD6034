@@ -1,0 +1,519 @@
+Received: from CP4P284MB2062.BRAP284.PROD.OUTLOOK.COM (2603:10d6:103:1ce::14)
+ by CP9P284MB4310.BRAP284.PROD.OUTLOOK.COM with HTTPS; Sun, 9 Aug 2026
+ 19:40:36 +0000
+ARC-Seal: i=2; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=pass;
+ b=R2DfWleApOBXitO62fpanWWmWyj8bzsi2zQedOvrljEK9tgRW1wvOivR7ioJCurFfF4ZQFY/PDmz8Ec0MGiMJlOWvM+vlVMja7dJKMEVRX2dZGpNgtWKTheTBnPya3QFar7h1IZwOXIIq66GeqDI8MIbQqgDw6GMG3gH+Hy8ZUjYJ/J6q+CVvxby7lrUqNRgtWjbotPbqYE1GwwM76lOch16A7bY5DyqMdpcrUMijzUcEvKXhIG51jrYYQknCS2QV1sVxT8ouaCHXoSbZGTQU/gvc3ZJn9rVOGHMJOv+qOmwFno6rRv6087Itat29LJblorNwXyXJGH1dBc7goxmqQ==
+ARC-Message-Signature: i=2; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=mqNKYR2fXpPZn0W4mReeo6M+y5O9AU9yOQwXMOyMiok=;
+ b=Wy85H+bMNE590Wvh+grzonmkNAJ4wvHkwsSDIPDhklnnuMAin/OcV+iGt0gWtGeTMUUWcikVi7M+HAjYklUkD6jl+RQOkl0h/a9Em1OyebV62nRwgp32fE3X5+Hn09eKuGZS6H0UJ21mCJhU3bPUspdQS/nXcj5dEDnRZ7wnrcLVhUW2efya5W5m9mvSM77rZh2dlT613ju/TjVRWdLRQRKrwwqWs+vyikhhJn77hTEhv7sH3hQZU4LthNucJ1+gpuIWg0ldmc2jFT+RMxE+YSujFhH5kLQq6BaIR/ushRdKzO2Ve8wew9fpnvB/9DXZP4jGaSlJ5K0uoVB4EIvnSg==
+ARC-Authentication-Results: i=2; mx.microsoft.com 1; spf=fail (sender ip is
+ 66.159.241.230) smtp.rcpttodomain=btgpactual.com smtp.mailfrom=usp.br;
+ dmarc=pass (p=quarantine sp=none pct=10) action=none header.from=usp.br;
+ dkim=pass (signature was verified) header.d=usp.br; arc=pass (0 oda=0 ltdi=1)
+Received: from BN0PR10CA0004.namprd10.prod.outlook.com (2603:10b6:408:143::18)
+ by CP4P284MB2062.BRAP284.PROD.OUTLOOK.COM (2603:10d6:103:1ce::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.292.25; Sun, 9 Aug
+ 2026 19:40:00 +0000
+Received: from BN1PEPF0000468E.namprd05.prod.outlook.com
+ (2603:10b6:408:143:cafe::91) by BN0PR10CA0004.outlook.office365.com
+ (2603:10b6:408:143::18) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.21.292.25 via Frontend Transport; Sun, 9
+ Aug 2026 19:39:59 +0000
+Authentication-Results: spf=fail (sender IP is 66.159.241.230)
+ smtp.mailfrom=usp.br; dkim=pass (signature was verified)
+ header.d=usp.br;dmarc=pass action=none header.from=usp.br;compauth=pass
+ reason=100
+Received-SPF: Fail (protection.outlook.com: domain of usp.br does not
+ designate 66.159.241.230 as permitted sender)
+ receiver=protection.outlook.com; client-ip=66.159.241.230;
+ helo=mx0a-0057a602.pphosted.com;
+Received: from mx0a-0057a602.pphosted.com (66.159.241.230) by
+ BN1PEPF0000468E.mail.protection.outlook.com (10.167.243.139) with Microsoft
+ SMTP Server (version=TLS1_3, cipher=TLS_AES_256_GCM_SHA384) id 15.21.315.6
+ via Frontend Transport; Sun, 9 Aug 2026 19:39:58 +0000
+Received: from pps.filterd (m0442088.ppops.net [127.0.0.1])
+	by mx0a-0057a602.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 679JMWJH132538
+	for <renan.avila@btgpactual.com>; Sun, 9 Aug 2026 16:39:57 -0300
+Authentication-Results-Original: ppops.net;	spf=pass
+ smtp.mailfrom=leandromaciel@usp.br;	dkim=pass header.d=usp.br
+ header.s=usp-google;	dmarc=pass header.from=usp.br
+Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
+	by mx0a-0057a602.pphosted.com (PPS) with ESMTPS id 4fxwqu03cj-1
+	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NOT)
+	for <renan.avila@btgpactual.com>; Sun, 09 Aug 2026 16:39:57 -0300 (BRT)
+Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-49556f97a9dso7769035e9.1
+        for <renan.avila@btgpactual.com>; Sun, 09 Aug 2026 12:39:56 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1786304395; cv=none;
+        d=google.com; s=arc-20260327;
+        b=HFgjvfTnOwiF4O0LiD462ks2L+7yhZMPX86Ngb48N3VwOxwTlg4FCCiswGJTdGqd+U
+         ACvSDKSWHwZ+KAyCX3DvT7/AEucgRO8qvgp4tzzQIyHdHLt4+GjEyVrxHOAZYJTnayyM
+         HkAVvxTypX23TgZ9OYQJ0XOYWfSyjYKvXCwbFcYPKPrjfJ0yQniDriEZons/eHWMyNsg
+         EyE5H2o89d39hz26KJcQ5wfAl+MkfF6Kc2W5T2+YOOC3z8lAUMMVTrDXtAiDNkMrOkbB
+         XaNm6r12oXI42ZMhVpWg9IY9x7WmxtPGFfrCaNRo3B274dYmV9cS3BQnz0e+JysraJhs
+         JsdA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:dkim-signature;
+        bh=mqNKYR2fXpPZn0W4mReeo6M+y5O9AU9yOQwXMOyMiok=;
+        fh=uMXLkamLVD8jMW4dbbtMASZDJtUtzhhtlALnJCcTXec=;
+        b=YSJZPDX9JO1unzVQodpJrcdr/dzDIrJHezgdHrfCN2P+HtESL9TdSl1xT0io06Emf/
+         yrPsQKhWHlVCFmNAYcynMTNb35K/EcRRgOAHQPS28ixdRrGyX1ZrUyt83y653geTz9ZK
+         ZoCVBDVotqzi/dIh3W7M6xonh+mr6fH1DsHCln8OUyO08lTFx+HW5TYkB7o2A0AdXUum
+         btYCSv0n5RAJYdZNRXL/xoSc6n8VKnFT+Bl9UCLFE/N1pOxs2rPH0LzmJaP1PDI+M7eH
+         3irqbhcNpY3BW55+GWtnK7sqEl3wyrWtuNpoPeL6i40hu7vbmYffAvYHh8kz5qyFx0I0
+         NBiA==;
+        darn=btgpactual.com
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=usp.br; s=usp-google; t=1786304395; x=1786909195; darn=btgpactual.com;
+        h=content-type:cc:to:subject:message-id:date:from:in-reply-to
+         :references:mime-version:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=mqNKYR2fXpPZn0W4mReeo6M+y5O9AU9yOQwXMOyMiok=;
+        b=ysl3cLxjFH/5FtYZplkJ6vjnVsSRo2Xa/Pg9hUbVUeiJX4CeA3Hk7ogqF84g2Ev1Jk
+         4G5igWzcr+3fbdQb04lmXicKBOWlJ8qp3PqKD6Gh4IO4zvqI1kM7hhA70ROiY9MqPZVI
+         vgN6lxnqqiEWnFboRuH5Xvdr+gVm0zhpdcZjKH6RI88B03Hu0TD+bmZuIYTgXdCjFnGa
+         yXg0ZurHmOwL067ZP30JSbfV1BdoM2I9AXZferB2h2Qh1wdMJP1MYwfzbpiC9SDCeyuK
+         WJDgd+tsTYsdM4sLQsQUc7XpxX2NKitO35ngL1mkWfW14FJGNCaQX9isc8HFDhrHPLYQ
+         2EJQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1786304395; x=1786909195;
+        h=content-type:cc:to:subject:message-id:date:from:in-reply-to
+         :references:mime-version:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to:content-type;
+        bh=mqNKYR2fXpPZn0W4mReeo6M+y5O9AU9yOQwXMOyMiok=;
+        b=a5Nr3aIPY5CwD+Dc89UFkgz5bidXbVpoak5U+H2k2J8yM0vnoo6rQ/m+nwwfATCt0l
+         /b8Ezu9slttsUr4JHhVmg3sNKD6JaX0Lckd7wUW22FS24BDVci9tMFkhVMQfAkLfCPCZ
+         GI/x6EchjL+YnfTwKmiiPn5xS8OysaVXWR8iGTzVdq1zq3g8di+eqs4YOW7PAaMyXwcb
+         ZjrgqY380rnDQSJX3En67Bk07J90Qa3RfBqnfHalHylDagT7oxhpV6JpToHxbsxeBurA
+         XQmGYl8VtuoCBW4GspiW8ad5NshwPYNO7+rtQZaLQXOPrrvcuXlF5ftAtK+DRLeLuD+M
+         KBlg==
+X-Forwarded-Encrypted: i=1; AHgh+RppapTRBwc7bRJxElSVUDG1J8Xl5gx3+luBTHekjlJUQfFXkrfiS4ajAHlmM1rVBnxUmlFOBzbQRt1GPg==@btgpactual.com
+X-Gm-Message-State: AOJu0Yx66mOZOF9sJfTXFthYmdvg0hP5uy5G8/h2CTb3kVG7u6mQ/FD5
+	K4uYaeAoreUPHpzPJ2erZL/U0Tbdo+RbJXNPxddPqDYCAjyKcytD1Bb1/N8A8oc1V/EQpvQjFCd
+	8VhvktsAtNOwIreLzVU/ajZuHG/DeFkcD55/4IYsH6A==
+X-Gm-Gg: AR+sD12gigbR8Rh/QypbkuvZyroZk+ywWcQED3Aj9tBdPtOQo+fcX5unJ+gOcGxUxc5
+	Jbkmf8U+XNqwpguxSyKCKUGfwMhTfnUnyk/xFMMyvcxmP6i2C5oLGwuAaoJwynrAKxOpqC2pqbb
+	ae0Ny44dxX9jbmEanbNDmqKvELoKmqWE3E9b5LDBW5phd8oDjm29XIvndhMmBXqJGPj4qi3sUgx
+	cGmg5gVjHuwxpDBBxMSjz/ZCSVBBWtjfZJMXI8eEkU7yPvyJw9+UFIHI5fQstGR54r9Umh8OWz4
+	OmYSrdr48k7hzxUfBpXgBA45u11g7FtoUc11qFyhI1u7KucWSuQ3sCFWnXhR29I9Y9r51Dkhn/Y
+	934/KKwuJNAA=
+X-Received: by 2002:a05:600c:4595:b0:498:952:e276 with SMTP id
+ 5b1f17b1804b1-4994e79e377mr363064435e9.8.1786304395197; Sun, 09 Aug 2026
+ 12:39:55 -0700 (PDT)
+References: <CAPBb3mp43qpq9ceH+htka0YWV3RoJUrxx6u1qa+Sk+5of7rcnw@mail.gmail.com>
+ <CAPBb3mqLVWN2BswbO=6s=xWiLD92+3qoHAGiOyCT_veP6FWZVQ@mail.gmail.com> <CAPBb3mrK8M52hu-OMgQffcwAyP4+FMP5adVyigV7c+NL4UPXEg@mail.gmail.com>
+In-Reply-To: <CAPBb3mrK8M52hu-OMgQffcwAyP4+FMP5adVyigV7c+NL4UPXEg@mail.gmail.com>
+From: Leandro dos Santos Maciel <leandromaciel@usp.br>
+Date: Sun, 9 Aug 2026 16:39:19 -0300
+X-Gm-Features: AUfX_mwJEPJyffmhdocpQp1HCU__YBO9s_-ehp0csUtky8nltqOzeOIQ5TM0TL4
+Message-ID: <CAPBb3mp=BeG-9afubGEFcZhiHgpojR=RNz3xdMxEVHGVjNZOkQ@mail.gmail.com>
+Subject: =?UTF-8?Q?EAD6034_=7C_Aula_2_=2D_instru=C3=A7=C3=B5es?=
+To: camila.maria321@usp.br, msimonae@usp.br,
+        Alexandre Noguchi <alexnoguchi@usp.br>,
+        "karina.robial@gmail.com" <karina.robial@gmail.com>,
+        gabriel.salles@usp.br, pedro.alves@unifesp.br,
+        =?UTF-8?Q?Mario_Jos=C3=A9_Prado?= <marioprado1148@gmail.com>,
+        "Avila, Renan" <renan.avila@btgpactual.com>,
+        karina.robial@cafedascarpas.com
+Cc: Anderson Dias Brito <anderson.brito@uesb.edu.br>
+Content-Type: multipart/alternative; boundary="000000000000efd8410658a2664a"
+X-Proofpoint-Spam-Info: AW1haW4tMjYwODA5MDE3NyBTYWx0ZWRfX3Pgyr49Uw9nU
+ okMQHGIsD3VRDwilWmzjjyXQ4D8B4nX+4QMkOL1nowpIMJfU3OnMsFFiAzy2s7uqQ1n1hc3om8e
+ Jc0D/Q/kzTAdH7yCGJ7SuG3WkgmhRCaoTtV5b9TjxwR7ABZ1MofJ
+X-Proofpoint-GUID: 7TMtlaSHLBCi_zqBB11tFUQQ_HBwrTaB
+X-Proofpoint-ORIG-GUID: 7TMtlaSHLBCi_zqBB11tFUQQ_HBwrTaB
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwODA5MDE3NyBTYWx0ZWRfX0r1ZNbZOrEnU
+ bAH67oNvUYHoZT+u3OZwm6UUJ9s6oL8yjq04gsOghS6bk2mi0x2zdNinoU6yy2yF+vO99rVbz7q
+ 01Z9IZTZku7XXgxQr/GLzGGNZD3xE8+XQLbpvOCyTvWNfrR1dtzTBjZ//SezjxZppRsRs84w7KM
+ zglM0/B6GmOvYDsskWWFAnYJgHAsIfeIzABoYfrHbyyEZzV8msVjF94uGXr8aXHtAGgvXAB6dzd
+ g1pXcHzYgw4EdwKXPQwIvX7Myh5az1cDkNLI4csaH/1Zg7LIP0KT51/FzV9oWPYYnl2Mhsy2dxN
+ BPJiG3/ggwSJzus/DY4CPVN3VVAgp4rHuHQt7871jBalxLpC1yy/kpQ1NDX+eNyZ7g1cke9ZLbo
+ wE39q1/2pFyoddkeZNGP9xSVPA0dlKsndQYGoArznbQKqK5MBpjdlipku7GPHLP/2dUbRu/UafC
+ YqVwFWph/YvDeTIompSdq/ueVQxXT3IPPkWXJtgNToolfI9cCbWMiSGWdUz+2
+X-CLX-Shades: MLX
+X-CLX-Response: 1TFkXGxIYEQpMehcaEQpZRBdjQ38eG3BIBUR/RxEKWFgXbEhbExNQHXoaG14
+ RCnhOF29baW1OE0hrTgUeEQp5TBdibl1fZktwWGlBbhEKQ0gXBxwfEQpDWRcHExoRCkNJFxoEGh
+ oaEQpZTRdnZnIRCllJFxpxGhAadwYbHBhxEhgQGncGGBoGGhEKWV4XbGx5EQpJRhdIXk1aS0leX
+ 0tGSFhLUENGdRh1QkVZXk9OEQpJRxd4T00RCkNOFx1+Z15GS3liZmhpQ3VQW2hoGxtebH97e3Vi
+ aF1YfktoEQpYXBcfBBoEHhgaBRsaBBsaGgQbGR4EGR4QGx4aHxoRCl5ZF0JYRF1FEQpNXBcbHRk
+ RCkxaF2hpa01rEQpMRhdva2tsa2sRCkJPF2h9QWBDWn1zR0ETEQpDWhcYGhMEEh8EGxgSBB4fEQ
+ pCXhcbEQpEXhcbGhEKREkXGxEKQlwXGxEKXk4XGxEKQksXb1tpbU4TSGtOBR4RCkJJF29baW1OE
+ 0hrTgUeEQpCRRdvc0UTRhxrfUAeQhEKQk4Xb1tpbU4TSGtOBR4RCkJMF2xIWxMTUB16GhteEQpC
+ bBdhQ3xARRNiTBl/QBEKQkAXYHJEbEJ5fFx5eXoRCkJYF2VdTxxmTVpoZn5TEQpNXhcbEQpaWBc
+ eEQp5QxdnRF1DT0NTQ094chEKWUsXGxsfHhkRCnBoF2N/YmdDfH8aZ24ZEBkaEQpwaBdsRGFZHx
+ xDGh5dHhAZGhEKcGgXZmFJGwV6Hh9rYB4QGRoRCnBoF2RFcAVGZWFfWkFaEBkaEQpwaBduYkwaW
+ xl7e0ldbBAZGhEKcGgXZU5PWGZTQ3JhQkcQGRoRCnBoF2t4eRtBZ1JsGx1+EBkaEQpwaBdgGV5o
+ TEhaREdYZRAZGhEKcH0XZR8Se31kU08bTBgQGRoRCnB/F2B4fWh9ExsBYRhFEBsaHxEKcF8XYXJ
+ oXmsdQnoBT30QGxsdEQpwbBdiZ2tmY2lra0MYGhAZGhEKcEwXaXxNfh0BcnxYb28QGRoRCm1+Fx
+ sRClhNF0sRIA==
+X-Authority-Analysis: v=2.4 cv=X5li7mTe c=1 sm=1 tr=0 ts=6a78d78d cx=c_pps
+ a=/GxvU1TJFQsU0IldqSLl8A==:117 a=Sv0fKeRqtYgA:10 a=5KLPUuaC_9wA:10
+ a=4_u_rikb8joA:10 a=Kan8h273Bse8B8Jy5C1n:22 a=za_rGWGOF3AWoFelt4AN:22
+ a=n-M9ICNDD-pyTTDxCxGs:22 a=CEViPFreWnpmFY9fB40A:9 a=QEXdDO2ut3YA:10
+ a=fys2sDa9AAAA:8 a=YQtjNjummuTpWgZMZg0A:9 a=EojmTI3Vywd225Hs:21
+ a=lqcHg5cX4UMA:10 a=qKqpaXfEPYZ43A-B0Dy_:22 a=7YpECbvlQQReuXKdpsOb:22
+ a=RK0GbY_hQMlnmDZlLOY8:22
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1176,Hydra:6.1.134,FMLib:17.12.100.49
+ definitions=2026-08-09_06,2026-08-07_01,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=inbound_notspam policy=inbound score=0
+ clxscore=182 lowpriorityscore=0 bulkscore=0 suspectscore=0 spamscore=0
+ phishscore=0 adultscore=0 priorityscore=0 malwarescore=0 impostorscore=0
+ classifier=typeunknown authscore=0 authtc= authcc= route=inbound adjust=0
+ reason=mlx scancount=1 engine=8.22.0-2606150000 definitions=main-2608090177
+ domainage_hfrom=11543
+Return-Path: leandromaciel@usp.br
+X-MS-Exchange-Organization-ExpirationStartTime: 09 Aug 2026 19:39:58.9959
+ (UTC)
+X-MS-Exchange-Organization-ExpirationStartTimeReason: OriginalSubmit
+X-MS-Exchange-Organization-ExpirationInterval: 1:00:00:00.0000000
+X-MS-Exchange-Organization-ExpirationIntervalReason: OriginalSubmit
+X-MS-Exchange-Organization-Network-Message-Id: a7288f66-43cf-430b-720c-08def64dff56
+X-EOPAttributedMessage: 0
+X-EOPTenantAttributedMessage: 16e7cf3f-6af4-4e76-941e-aecafb9704e9:0
+X-MS-Exchange-Organization-MessageDirectionality: Incoming
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BN1PEPF0000468E:EE_|CP4P284MB2062:EE_|CP9P284MB4310:EE_
+X-MS-Exchange-Organization-AuthSource: BN1PEPF0000468E.namprd05.prod.outlook.com
+X-MS-Exchange-Organization-AuthAs: Anonymous
+X-MS-Office365-Filtering-Correlation-Id: a7288f66-43cf-430b-720c-08def64dff56
+X-MS-Exchange-Organization-SCL: -1
+X-Microsoft-Antispam: BCL:0;ARA:13230040|7149299003|82310400026|43022699015|69100299015|3109299003|11063799006|4143699003|5063699009|10067099003|19002099009|4133799003|18003699003|8096899003|4076899003|13003099007|57112099003|22082099003|16102099003|921020;
+X-Forefront-Antispam-Report: CIP:66.159.241.230;CTRY:US;LANG:pt;SCL:-1;SRV:;IPV:CAL;SFV:SKN;H:mx0a-0057a602.pphosted.com;PTR:mx0a-0057a602.pphosted.com;CAT:NONE;SFS:(13230040)(7149299003)(82310400026)(43022699015)(69100299015)(3109299003)(11063799006)(4143699003)(5063699009)(10067099003)(19002099009)(4133799003)(18003699003)(8096899003)(4076899003)(13003099007)(57112099003)(22082099003)(16102099003)(921020);DIR:INB;
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Aug 2026 19:39:58.7003
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: a7288f66-43cf-430b-720c-08def64dff56
+X-MS-Exchange-CrossTenant-Id: 16e7cf3f-6af4-4e76-941e-aecafb9704e9
+X-MS-Exchange-CrossTenant-AuthSource: BN1PEPF0000468E.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: Internet
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CP4P284MB2062
+X-MS-Exchange-Transport-EndToEndLatency: 00:00:38.2727517
+X-MS-Exchange-Processed-By-BccFoldering: 15.21.0292.011
+X-Microsoft-Antispam-Mailbox-Delivery:
+	ucf:0;jmr:0;auth:0;dest:I;ENG:(910005)(944506478)(944626604)(920097)(930201)(20251009189)(140003);
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?dXdsN1B6bDV6NUlCUlZxdDd3ZGpRaFRrVlNCd0ZYVjZaOFZyOFE5dTIxZFlh?=
+ =?utf-8?B?dEVIRlI5Z1B4ZWRqR0hVZTBkaERSeHpvaERWUlRLczQxU2o5K1BBSncxZzQ4?=
+ =?utf-8?B?MVhoWEk0UzBFYWtTWjNyMUphK2g1SDJybWpuazZ0R1V2V2pNSmd0MmpQbEdO?=
+ =?utf-8?B?RnlDOWdoMmtyM1BGQVRkdE92WGROcWNrbC9DUUdnOVphUEZVaERGaUtOcjZr?=
+ =?utf-8?B?a1dEK2w4cmZPbzcvQzdkVWgrcGpXVmpjZkplMHZXd1JSL1pBb1p5ZER2STlw?=
+ =?utf-8?B?RmZzKzhJWlhNWmw0NEVJS2pkL2lTKzhoTzFGemtqcnduSjRINlJjUVJkcXND?=
+ =?utf-8?B?WUhWMDhzQTZEOFpMeFBwQlBaTVg5aFBhMTFrRzU4ZVlIcmNFaUVzendiZXl4?=
+ =?utf-8?B?a1FuRXliMms4Z20zOCtSdWpudll6a2J6NnZoeVhzbkFSVmpRaldxZW10VEMr?=
+ =?utf-8?B?eC9LUGFMT2NvSmFSQmJQeXNZNFlJQjBJUDB2Q0ZEOXVIWFZOb0RHeEp4WDZ0?=
+ =?utf-8?B?T3ZCMkowOVA5dTNsMitqcHdJTmMraGRSb3JBM3ptY3RvdkszRStsZmNJWU9D?=
+ =?utf-8?B?RGRwczFnN3pUSlcyd2UrWS9FcWhYeUJ5SXdCbjk0djZYUk0ybE5HRGRsT21J?=
+ =?utf-8?B?RDlyUnUwQ1BtTGhlb2NuQmljZkQrNG5XSEdHcWJvdGdWVkt2NEVkTDRhd3Na?=
+ =?utf-8?B?V3lWQUFGSmZjMmJvN2d1ZlFaS09sWEx1dmFaNGIwZGJUL3NiZmU2djNLWTJZ?=
+ =?utf-8?B?em5LeWFkbEdxeUNuNnFaWHFpVXBoYTVEZHpYMFRvK3NFMlg0MVVvL2t2SVA0?=
+ =?utf-8?B?Ykl4d3hTeVhKY3hTT1NHUmRvT1kwNFRqek11dWxVWmFYYTg0ZEp1OFZlaDFR?=
+ =?utf-8?B?a3FmVGhDOWo5enl6SlZLdEZRNWY4WWtVa0syUUVWRnk4WG5IbGUvbVhVNlVn?=
+ =?utf-8?B?M0RmUnVtRzQ1R2U3QTdhUWxoZTRUMDRTQ1ExSUpobDF2WlhKTEs5NWt3emhp?=
+ =?utf-8?B?MTVGdUw5YjNwZVRSVU9BQ2duRmdWem1ETjFOMGU2YU1EMEdPb3krcE8zRFEx?=
+ =?utf-8?B?aFpTaGhlSUNUbXMrdW1XL3dqamNLSTlTWnpXT0FWSFVacHVTYUt4UTZackp0?=
+ =?utf-8?B?QUdlaU9FaG1UUjJXL0ZteXhtU1FIK1QxeWRMVFpRaDBmekJCWmtKcjgxc3A2?=
+ =?utf-8?B?NXlVTjNlOE90M3VqY1JuVXdpc1VPNE85RmNMTzZjT3dTVlJSdFBUYWl2am05?=
+ =?utf-8?B?alJTTDNkNFdFd1dBeWp0NUhnSDhrQnlmVVNuNzJXNTM4RnAwS3g3OHBGUnlr?=
+ =?utf-8?B?bG5WelJJUHRHOU5nVnA3WUF2TzJ5ZS81NW8wYVh1OG1LRG50ZlRiVXI0VW1v?=
+ =?utf-8?B?ZEQvcGxNT0Ftb0EvSVFWZ2tYT3dBRXI4NU14TzMvY2RqLy9SVWMxWnVBOWsx?=
+ =?utf-8?B?WDlMYWRsZ1Z2MnVIMkYyS2Jvd3Iwc3RUWlhRWlNQdGsyMFM4T0QxbFQzMEIz?=
+ =?utf-8?B?cjAybGhDNEMwYTJCTG9OSjVTcDN4VlFrcGI5Rk8ydlBMWG5sNTZQc0hYb29X?=
+ =?utf-8?B?MUFxaUxPN3Y5b3F0SURZR3RHdDlKUjZNalZXWWYvZ04wbVVzZURLUWgvTldy?=
+ =?utf-8?B?aStPSnM1MXN3aHRyQVdOOVllTGRXOE1yeTErVUdpaXQxOGRibWJrUTZPQWpw?=
+ =?utf-8?B?aHEvOUhUVCtZcEdqWFIxMzRKMmVJaExjZjc3aEZiZ0JNR3BML3BxbHhLNm5R?=
+ =?utf-8?B?RS9qVVZqLy9PVitBTEowMDNqVnRDMWJDb3liZjJPN1l2NmtIT2Noa3FKSjNZ?=
+ =?utf-8?B?d3p3alJXQzdTR05RMmRaMmorSVVlbURyYmJBeVRXUnpUc0JxVm84c0J5ZWFJ?=
+ =?utf-8?B?U2g1dWhzdkVSMENZTGhsYTFaUFhVd2xaaDhrWlVCVGI0OE80NTNLcitpK05S?=
+ =?utf-8?B?ZU5ZaS80T2hJR2k3aVY5aHNDbEVIQ0g2QXFVaExmWkRCTHRneFozQmUyK1Zn?=
+ =?utf-8?B?SVViSHZOSUxYWW1WODVFbzRxOU1QZWk3dG8xN0MyT2laZTRiNDZKQVMybksx?=
+ =?utf-8?B?WU5MTTlDdkFtM2p0TkN3Qml1YXY5ZHVDRy9RRE5qdlBVNlRFVXJueEU5dkVj?=
+ =?utf-8?B?bmEzS3lNMjRkWjZ5K1hNWS9tZTZST0V5eE4xMm8wcUI1TDVPN3lZWDI3bUx6?=
+ =?utf-8?B?d2lZUTNoWUpVTzgrcTMxNVV1MmFjUWVRbElCRnlYRlpPbW5jL2JFWXFhNkhU?=
+ =?utf-8?B?SUU4YUI0NThpeDRXYXk3eHAzQlFwS0czRElTMVZZVmwwR25ZRlF3Q2ZFQ1Ix?=
+ =?utf-8?B?WW1XcVZsQ0p4R0hRZjJ0dG55c1hCb043aUFsc0ZMbzd2bDVoMjJvNHMyY3NJ?=
+ =?utf-8?B?cFpSZ3gxb1gvbmc3N011WmkwZnFTQ2JuK2ttM1ViWTR1RkllaTFHeUNQL1BE?=
+ =?utf-8?B?dHRhK3BVeDNhdmlQVjBZRHlQdURrZmppS3l6UWVhWjdXUlpiRTgxZDFJSjBu?=
+ =?utf-8?B?eDk5a3RyaHNOWVlja2FQWm5qYVlyTnlmYk1ESldlaDk3TERONHRKaE50Q045?=
+ =?utf-8?B?V2JVQ0Jyay9nMmQrTmVJWXpDN3hDVEU0RVY1dUd4bGMxWGdIZWpVTko1dnNH?=
+ =?utf-8?B?ZHAra21JcDJESFdwZzV2QUxQYUk2Ymc0MmE0c0liV09NNlpPeWhSMnRJRFB5?=
+ =?utf-8?B?aC9zQ1pwa3B2elFyQXg0anlpY1B4SHdtSnJNSjhJc3RNQ25mbEozSmZpejRV?=
+ =?utf-8?B?N3FDazBHVG5Sak0zcHpUc0tCS2drajdZa0JuWm44WHVwdWh5Zm1QS3REWUxl?=
+ =?utf-8?B?YmJ6MXAyRkZ0S2U4clRxVUpOeFdMRzA4UWlkUEV2WlZyQ0FCb3VrYitJc1ZC?=
+ =?utf-8?B?U1lNbW5ic2Z2eEFQWkVTelVJRVpIcm44bXhtcGhCdk9tbk1vcXY2RlBUSmFs?=
+ =?utf-8?B?Tkg3VFNDRXQ2QW83bGo1WG5PejdqNXNwTjZhUjNDTkJjcHZzMTNId1BsZXZW?=
+ =?utf-8?B?bW10MGR0SXBzQWlYVXRTeWk2YnF5OXlmQS9IN0NORkZiVHBCWmU5M0Q5bVJL?=
+ =?utf-8?B?ZlFsdnpHY1lxQWR6bWlJTVFtVG5YeXJscUo3NUo0UmJQL0Z2R3lobjJkUVVX?=
+ =?utf-8?B?aXB0SFArTGNpV3ZXdmJTNmZzbzFZMjlRUlliSi90SXVudTIzYjVpb1ZCeFMw?=
+ =?utf-8?B?bkFmWHZMODN3d3ZnNVAvMzB6NjQ2aCt6QXF0OFZjV0NvMHJyTFJ1Ym9ocWQ5?=
+ =?utf-8?B?ZllJMEpFQ1RzRlBqWDFBVW9sU1BIZXFIZVRWZUN2eXdDMDQ3Rmh3Nk5mUjk2?=
+ =?utf-8?B?SzNJb3B4ZWJwSlZPdXlyY045NzJqRExBVjJJZ3BZZk1iUzlJOE5hTE5IWGRH?=
+ =?utf-8?B?R1ZncWRrMkNzL05Sd29acHkxVWM4RDhQM1liQlpJTnY0cVhPUGw2MTMvVGRQ?=
+ =?utf-8?Q?+7bFal0rpBbvkTRvCfQ=3D?=
+MIME-Version: 1.0
+
+--000000000000efd8410658a2664a
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+
+CAUTION: External email.
+
+Caro(a)s aluno(a)s,
+
+Um pouco sobre a din=C3=A2mica da aula da amanh=C3=A3...
+
+Ser=C3=A1 uma aula mais te=C3=B3rica. Em todas as aulas =C3=A9 fundamental =
+ler a bibliografia antecipadamente.
+
+Trabalharemos o conte=C3=BAdo do Slide da Aula 2 at=C3=A9 =C3=A0s 16h50 (co=
+m um pequeno intervalo nesse per=C3=ADodo).
+
+=C3=80s 17h voc=C3=AAs ir=C3=A3o para o laborat=C3=B3rio de inform=C3=A1tic=
+a 306 (3o andar do FEA 5, pr=C3=A9dio =C3=A0 esquerda do pr=C3=A9dio da bib=
+lioteca). No laborat=C3=B3rio, o monitor, Prof. Anderson, ir=C3=A1 desenvol=
+ver com voc=C3=AAs a parte computacional. Como estamos iniciando a discipli=
+na, amanh=C3=A3 o foco ser=C3=A1 importa=C3=A7=C3=A3o de dados, an=C3=A1lis=
+e de estat=C3=ADsticas b=C3=A1sicas e visualiza=C3=A7=C3=A3o via constru=C3=
+=A7=C3=A3o de gr=C3=A1ficos no R. Obviamente, os que j=C3=A1 possuem experi=
+=C3=AAncia com programa=C3=A7=C3=A3o, est=C3=A3o dispensados dessa parte fi=
+nal da aula, ao menos neste dia. Nos demais dias, o conte=C3=BAdo da parte =
+computacional conversar=C3=A1 com as aulas, portanto, mesmo tendo experi=C3=
+=AAncia, ser=C3=A1 =C3=BAtil a participa=C3=A7=C3=A3o.
+
+At=C3=A9 amanh=C3=A3!
+
+Abra=C3=A7os,
+
+Prof. Leandro dos Santos Maciel
+Professor de Finan=C3=A7as | Professor of Finance
+
+Universidade de S=C3=A3o Paulo | University of S=C3=A3o Paulo
+Faculdade de Economia, Administra=C3=A7=C3=A3o, Contabilidade e Atu=C3=A1ri=
+a | School of Economics, Business, Accounting and Actuary
+Departamento de Administra=C3=A7=C3=A3o | Department of Business Administra=
+tion
+Av. Prof. Luciano Gualberto, 908, FEA-1 Sala 168-G
+S=C3=A3o Paulo, SP, Brasil, 05508-010
+Tel.: +55 11 2648-6421
+[https://ci3.googleusercontent.com/mail-sig/AIorK4zS6SlQQGfalAn8dfNGcjUrVwc=
+iaO5xXptWcNb_4IoQs6bGOUtSrZCQxIRoDg2sX4AbtOflYDYTNWYC]
+
+
+
+Em seg., 3 de ago. de 2026 =C3=A0s 20:01, Leandro dos Santos Maciel <leandr=
+omaciel@usp.br<mailto:leandromaciel@usp.br>> escreveu:
+Caro(a)s aluno(a)s,
+
+Envio o material da Aula 2. Aproveito e envio o material da Aula 1 para os =
+que n=C3=A3o tiveram acesso.
+
+No final dos slides da aula 2 voc=C3=AAs encontram a refer=C3=AAncia da aul=
+a. Fa=C3=A7am a leitura antes da aula, por favor.
+
+Atenciosamente,
+
+Prof. Leandro dos Santos Maciel
+Professor de Finan=C3=A7as | Professor of Finance
+
+Universidade de S=C3=A3o Paulo | University of S=C3=A3o Paulo
+Faculdade de Economia, Administra=C3=A7=C3=A3o, Contabilidade e Atu=C3=A1ri=
+a | School of Economics, Business, Accounting and Actuary
+Departamento de Administra=C3=A7=C3=A3o | Department of Business Administra=
+tion
+Av. Prof. Luciano Gualberto, 908, FEA-1 Sala 168-G
+S=C3=A3o Paulo, SP, Brasil, 05508-010
+Tel.: +55 11 2648-6421
+[https://ci3.googleusercontent.com/mail-sig/AIorK4zS6SlQQGfalAn8dfNGcjUrVwc=
+iaO5xXptWcNb_4IoQs6bGOUtSrZCQxIRoDg2sX4AbtOflYDYTNWYC]
+
+--000000000000efd8410658a2664a
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<html><head>
+<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Dutf-8">
+</head>
+<body>
+<p><span style=3D"text-align: left; color: #800000; text-transform: none; t=
+ext-indent: 0px; letter-spacing: normal; font-family: Verdana,Arial,Helveti=
+ca,sans-serif; font-size: 9pt; font-style: normal; font-variant: normal; fo=
+nt-weight: 400; text-decoration: none; word-spacing: 0px; white-space: norm=
+al; orphans: 2; -webkit-text-stroke-width: 0px;"><strong>CAUTION:
+</strong>External email.</span></p>
+<div>
+<div dir=3D"ltr">
+<div dir=3D"ltr">
+<div>Caro(a)s aluno(a)s,</div>
+<div><br>
+</div>
+<div>Um pouco sobre a din=C3=A2mica da aula da amanh=C3=A3...</div>
+<div><br>
+</div>
+<div>Ser=C3=A1 uma aula mais te=C3=B3rica. Em todas as aulas =C3=A9 fundame=
+ntal ler a bibliografia antecipadamente.&nbsp;</div>
+<div><br>
+</div>
+<div>Trabalharemos o conte=C3=BAdo do Slide da Aula 2 at=C3=A9 =C3=A0s 16h5=
+0 (com um pequeno intervalo nesse per=C3=ADodo).&nbsp;</div>
+<div><br>
+</div>
+<div>=C3=80s 17h voc=C3=AAs ir=C3=A3o para o laborat=C3=B3rio de inform=C3=
+=A1tica 306 (3o andar do FEA 5, pr=C3=A9dio =C3=A0 esquerda do pr=C3=A9dio =
+da biblioteca). No laborat=C3=B3rio, o monitor, Prof. Anderson, ir=C3=A1 de=
+senvolver com voc=C3=AAs a parte computacional. Como estamos iniciando a di=
+sciplina, amanh=C3=A3
+ o foco ser=C3=A1 importa=C3=A7=C3=A3o de dados, an=C3=A1lise de estat=C3=
+=ADsticas b=C3=A1sicas e visualiza=C3=A7=C3=A3o via constru=C3=A7=C3=A3o de=
+ gr=C3=A1ficos no R. Obviamente, os que j=C3=A1 possuem experi=C3=AAncia co=
+m programa=C3=A7=C3=A3o, est=C3=A3o dispensados dessa parte final da aula, =
+ao menos neste dia. Nos demais dias, o
+ conte=C3=BAdo da parte computacional conversar=C3=A1 com as aulas, portant=
+o, mesmo tendo experi=C3=AAncia, ser=C3=A1 =C3=BAtil&nbsp;a participa=C3=A7=
+=C3=A3o.&nbsp;</div>
+<div><br>
+</div>
+<div>At=C3=A9 amanh=C3=A3!</div>
+<div><br>
+</div>
+<div>Abra=C3=A7os,</div>
+<div><br>
+</div>
+<div>
+<div dir=3D"ltr" class=3D"gmail_signature">
+<div dir=3D"ltr">
+<div>
+<div dir=3D"ltr"><b style=3D"font-family:Calibri,sans-serif;font-size:14.66=
+6667px"><span lang=3D"PT-BR" style=3D"margin:0px;padding:0px;border:0px;fon=
+t-family:Arial,sans-serif;font-size:10pt;font-style:inherit;font-weight:inh=
+erit;line-height:inherit;vertical-align:baseline"><font color=3D"#000000">P=
+rof.
+ Leandro dos Santos Maciel</font></span></b>
+<div><span style=3D"color:rgb(118,113,113);font-family:Arial,sans-serif;fon=
+t-size:12px">Professor de Finan=C3=A7as |&nbsp;</span><i style=3D"color:rgb=
+(118,113,113);font-family:Arial,sans-serif;font-size:12px">Professor of Fin=
+ance</i></div>
+<div><b style=3D"font-family:Calibri,sans-serif;font-size:14.666667px"><spa=
+n lang=3D"PT-BR" style=3D"margin:0px;padding:0px;border:0px;font-family:Ari=
+al,sans-serif;font-size:9pt;font-style:inherit;font-weight:inherit;line-hei=
+ght:inherit;vertical-align:baseline"><font color=3D"#666666"><br>
+</font></span></b></div>
+<div><b style=3D"font-family:Calibri,sans-serif;font-size:14.666667px"><spa=
+n lang=3D"PT-BR" style=3D"margin:0px;padding:0px;border:0px;font-family:Ari=
+al,sans-serif;font-size:9pt;font-style:inherit;font-weight:inherit;line-hei=
+ght:inherit;vertical-align:baseline"><font color=3D"#666666">Universidade
+ de S=C3=A3o Paulo |&nbsp;</font><i><font color=3D"#666666">University of S=
+=C3=A3o Paulo</font><br>
+</i></span></b><span lang=3D"PT-BR" style=3D"margin:0px;padding:0px;border:=
+0px;font-family:Arial,sans-serif;font-size:9pt;line-height:inherit;vertical=
+-align:baseline;color:rgb(118,113,113)">Faculdade de Economia, Administra=
+=C3=A7=C3=A3o, Contabilidade e Atu=C3=A1ria |
+<i>School of Economics, Business, Accounting and Actuary</i><br>
+Departamento de Administra=C3=A7=C3=A3o | <i>Department of Business Adminis=
+tration</i><br>
+Av. Prof. Luciano Gualberto, 908, FEA-1 Sala 168-G<br>
+S=C3=A3o Paulo, SP, Brasil, 05508-010</span><br>
+</div>
+<div><span lang=3D"PT-BR" style=3D"margin:0px;padding:0px;border:0px;font-f=
+amily:Arial,sans-serif;font-size:9pt;line-height:inherit;vertical-align:bas=
+eline;color:rgb(118,113,113)">Tel.: +55 11 2648-6421</span></div>
+<div><img width=3D"96" height=3D"33" src=3D"https://ci3.googleusercontent.c=
+om/mail-sig/AIorK4zS6SlQQGfalAn8dfNGcjUrVwciaO5xXptWcNb_4IoQs6bGOUtSrZCQxIR=
+oDg2sX4AbtOflYDYTNWYC"><br>
+</div>
+</div>
+</div>
+<br>
+</div>
+</div>
+</div>
+<br>
+</div>
+<br>
+<div class=3D"gmail_quote gmail_quote_container">
+<div dir=3D"ltr" class=3D"gmail_attr">Em seg., 3 de ago. de 2026 =C3=A0s 20=
+:01, Leandro dos Santos Maciel &lt;<a href=3D"mailto:leandromaciel@usp.br">=
+leandromaciel@usp.br</a>&gt; escreveu:<br>
+</div>
+<blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-=
+left:1px solid rgb(204,204,204);padding-left:1ex">
+<div dir=3D"ltr">
+<div dir=3D"ltr">
+<div>
+<div dir=3D"ltr">Caro(a)s aluno(a)s,</div>
+<div dir=3D"ltr"><br>
+</div>
+<div dir=3D"ltr">Envio o material da<span>&nbsp;</span><span>Aula</span><sp=
+an>&nbsp;</span><span>2</span>. Aproveito e envio o material da<span>&nbsp;=
+</span><span>Aula</span><span>&nbsp;</span>1 para os que n=C3=A3o tiveram a=
+cesso.</div>
+<div dir=3D"ltr"><br>
+</div>
+<div>No final dos slides da aula 2 voc=C3=AAs encontram a refer=C3=AAncia d=
+a aula. Fa=C3=A7am a leitura antes da aula, por favor.</div>
+<div dir=3D"ltr"><br>
+</div>
+<div dir=3D"ltr">Atenciosamente,</div>
+</div>
+<div dir=3D"ltr"><br>
+</div>
+<div>
+<div dir=3D"ltr" class=3D"gmail_signature">
+<div dir=3D"ltr">
+<div>
+<div dir=3D"ltr"><b style=3D"font-family:Calibri,sans-serif;font-size:14.66=
+6667px"><span lang=3D"PT-BR" style=3D"margin:0px;padding:0px;border:0px;fon=
+t-family:Arial,sans-serif;font-size:10pt;font-style:inherit;font-weight:inh=
+erit;line-height:inherit;vertical-align:baseline"><font color=3D"#000000">P=
+rof.
+ Leandro dos Santos Maciel</font></span></b>
+<div><span style=3D"color:rgb(118,113,113);font-family:Arial,sans-serif;fon=
+t-size:12px">Professor de Finan=C3=A7as |&nbsp;</span><i style=3D"color:rgb=
+(118,113,113);font-family:Arial,sans-serif;font-size:12px">Professor of Fin=
+ance</i></div>
+<div><b style=3D"font-family:Calibri,sans-serif;font-size:14.666667px"><spa=
+n lang=3D"PT-BR" style=3D"margin:0px;padding:0px;border:0px;font-family:Ari=
+al,sans-serif;font-size:9pt;font-style:inherit;font-weight:inherit;line-hei=
+ght:inherit;vertical-align:baseline"><font color=3D"#666666"><br>
+</font></span></b></div>
+<div><b style=3D"font-family:Calibri,sans-serif;font-size:14.666667px"><spa=
+n lang=3D"PT-BR" style=3D"margin:0px;padding:0px;border:0px;font-family:Ari=
+al,sans-serif;font-size:9pt;font-style:inherit;font-weight:inherit;line-hei=
+ght:inherit;vertical-align:baseline"><font color=3D"#666666">Universidade
+ de S=C3=A3o Paulo |&nbsp;</font><i><font color=3D"#666666">University of S=
+=C3=A3o Paulo</font><br>
+</i></span></b><span lang=3D"PT-BR" style=3D"margin:0px;padding:0px;border:=
+0px;font-family:Arial,sans-serif;font-size:9pt;line-height:inherit;vertical=
+-align:baseline;color:rgb(118,113,113)">Faculdade de Economia, Administra=
+=C3=A7=C3=A3o, Contabilidade e Atu=C3=A1ria |
+<i>School of Economics, Business, Accounting and Actuary</i><br>
+Departamento de Administra=C3=A7=C3=A3o | <i>Department of Business Adminis=
+tration</i><br>
+Av. Prof. Luciano Gualberto, 908, FEA-1 Sala 168-G<br>
+S=C3=A3o Paulo, SP, Brasil, 05508-010</span><br>
+</div>
+<div><span lang=3D"PT-BR" style=3D"margin:0px;padding:0px;border:0px;font-f=
+amily:Arial,sans-serif;font-size:9pt;line-height:inherit;vertical-align:bas=
+eline;color:rgb(118,113,113)">Tel.: +55 11 2648-6421</span></div>
+<div><img width=3D"96" height=3D"33" src=3D"https://ci3.googleusercontent.c=
+om/mail-sig/AIorK4zS6SlQQGfalAn8dfNGcjUrVwciaO5xXptWcNb_4IoQs6bGOUtSrZCQxIR=
+oDg2sX4AbtOflYDYTNWYC"><br>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</blockquote>
+</div>
+</div>
+</div>
+</body>
+</html>
+
+--000000000000efd8410658a2664a--
