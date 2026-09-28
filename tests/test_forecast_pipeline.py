@@ -52,7 +52,8 @@ def _cheap_grid(y, **kwargs):
     for name, (order, params) in specifications.items():
         result = ARIMA(y, order=order, trend="c").filter(params, cov_type="none")
         fitted[name] = result
-        record = dict(p=order[0], q=order[2], bic=float(result.bic), status="eligible")
+        record = dict(p=order[0], q=order[2], bic=float(result.bic), status="eligible",
+                      params_json=json.dumps(params))
         grid.append(record)
         selected.append(dict(model=name, **record))
     return pd.DataFrame(grid), fitted, pd.DataFrame(selected)

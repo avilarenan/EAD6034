@@ -15,7 +15,9 @@ import pandas as pd
 from scipy import stats
 from statsmodels.tsa.arima.model import ARIMA
 
-from .annual_models import annual_stationarity, correlogram, diagnose_mean, fit_annual_grid
+from .annual_models import (
+    annual_stationarity, correlogram, diagnose_mean, fit_annual_grid, select_ljungbox_passing_arma,
+)
 from .conditional_volatility import fit_volatility
 from .forecast_evaluation import evaluate_scale, forecast_fixed
 from .trading_time_data import SCALES, build_trading_time_data
@@ -23,7 +25,7 @@ from .trading_time_data import SCALES, build_trading_time_data
 MODULE_DIR = Path(__file__).resolve().parent
 SCALE_MINUTES = {"1min": 1, "5min": 5, "15min": 15, "30min": 30, "60min": 60}
 COMBINED_TABLES = (
-    "stationarity", "arma_grid", "selected_models", "coefficient_significance",
+    "stationarity", "arma_grid", "selected_models", "coefficient_significance", "ljungbox_gate",
     "mean_diagnostics", "return_acf_pacf",
     "residual_acf_pacf", "squared_residual_acf", "accuracy", "diebold_mariano",
     "variance_models", "variance_diagnostics", "descriptive", "time_band_description",
@@ -184,6 +186,53 @@ def process_scale(scale, output, max_order=5, resume=True):
                                              for name, result in fitted.items()}))
     if set(fitted) != {"ARMA_BIC", "AR_BIC", "MA_BIC"}:
         raise RuntimeError(f"{scale}: a required comparator has no eligible model; inspect the published grid")
+
+    # Professor's explicit requirement: the presented model must pass Ljung-Box,
+    # not merely win BIC. Re-select ARMA_BIC under that added, pre-registered
+    # gate (all diagnose_mean() horizons, not a cherry-picked one); replace the
+    # pure-BIC pick only when the gate is satisfied by a different candidate,
+    # and always publish the gating outcome, including when NO candidate
+    # in the searched grid satisfies it (an honest limitation, not hidden).
+    original_order = fitted["ARMA_BIC"].model.order
+    gated = select_ljungbox_passing_arma(train, grid, scale)
+    gate_changed_model = gated["gate_satisfied"] and (gated["p"], 0, gated["q"]) != original_order
+    if gate_changed_model:
+        fitted["ARMA_BIC"] = gated["result"]
+        replacement = grid.loc[(grid.p == gated["p"]) & (grid.q == gated["q"])].iloc[0].to_dict()
+        replacement.update(model="ARMA_BIC", delta_bic=gated["delta_bic_vs_unconstrained"])
+        selected = pd.concat([
+            selected.loc[selected.model != "ARMA_BIC"],
+            pd.DataFrame([replacement]),
+        ], ignore_index=True)
+        selected.to_csv(selection_path, index=False)
+        coefficient_rows = [row for row in pd.read_csv(coefficients_path).to_dict("records")
+                           if row["model"] != "ARMA_BIC"]
+        result = fitted["ARMA_BIC"]
+        for param, estimate, se, t, p_value in zip(
+                result.param_names, result.params, result.bse, result.tvalues, result.pvalues):
+            coefficient_rows.append(dict(
+                scale=scale, model="ARMA_BIC", parameter=param, estimate=float(estimate),
+                se=float(se), t_stat=float(t), p_value=float(p_value),
+                significant_5pct=bool(np.isfinite(t) and abs(t) > 1.96), cov_type=result.cov_type))
+        pd.DataFrame(coefficient_rows).to_csv(coefficients_path, index=False)
+        write_json(model_cache, dict(key=model_key, train_sha256=array_digest(train),
+                                     models={name: dict(p=result.model.order[0], q=result.model.order[2],
+                                                       params=np.asarray(result.params).tolist())
+                                             for name, result in fitted.items()}))
+    gate_row = dict(
+        scale=scale, professor_requirement="selected_model_must_pass_ljung_box",
+        original_bic_p=original_order[0], original_bic_q=original_order[2],
+        gate_satisfied_by_any_candidate=gated["gate_satisfied"],
+        candidates_checked=gated["candidates_checked"], candidates_total=gated["candidates_total"],
+        final_p=gated["p"] if gated["gate_satisfied"] else original_order[0],
+        final_q=gated["q"] if gated["gate_satisfied"] else original_order[2],
+        model_changed_from_unconstrained_bic=gate_changed_model,
+        delta_bic_vs_unconstrained=gated["delta_bic_vs_unconstrained"] if gated["gate_satisfied"] else float("nan"),
+        min_lb_pvalue_of_final_choice=gated["min_lb_pvalue"],
+        gate_rule="lb_pvalue > 0.05 at every diagnose_mean() horizon (10,12,20,24,60, sample-size permitting)",
+        search_space="eligible ARMA_BIC-family grid candidates only (same max_order as the main grid)",
+    )
+    pd.DataFrame([gate_row]).to_csv(tables / f"ljungbox_gate_{scale}.csv", index=False)
     max_lag = 60 if scale == "1min" else (20 if scale == "1d" else 24)
     return_corr = correlogram(train, scale, maxlag=max_lag)
     residual_parts, squared_parts, diagnostics = [], [], []

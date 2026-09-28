@@ -2,7 +2,15 @@
 
 Repositório do seminário **Previsibilidade linear em múltiplas escalas e classes de ativos**, desenvolvido para a disciplina EAD6034 da FEA-USP.
 
-## Entrega de 21/09/2026 — versão cumulativa atual
+## Seminário final (28/09/2026) — versão atual
+
+A fonte de verdade da análise atual é o [**relatório final**](RELATORIO_FINAL_SEMINARIO_1.md): dados, protocolo (divisão 80/20, classificação determinística), identificação/estimação/diagnóstico da média com um filtro adicional de Ljung–Box, modelagem da variância (ARCH/GARCH, com significância de coeficientes), previsão fora da amostra (RMSE/MAE/MAPE), uma seção central de **comparação da variância entre escalas e com modelos neurais (MLP, Chronos-2 zero-shot)**, comparação com o artigo de referência, e instruções para reconstruir a apresentação em Beamer a partir desse conteúdo. Ver também a [revisão crítica](REVISAO_CRITICA_SEMINARIO_1.md) que motivou as correções desta rodada e as [anotações dos requisitos do professor](context_resources/seminario_1_requisitos_do_professor.md).
+
+Os artefatos numéricos (tabelas públicas, figuras) desta rodada estão em `results/entrega_28_09/tables/` e `results/entrega_28_09/figures/`; os dados privados (retornos individuais, previsões por origem) em `results/entrega_28_09/private/` (não versionados). O PDF/`.tex` anteriores em `results/entrega_28_09/ENTREGA_28_09.{pdf,tex}` são uma versão preliminar **superada** por este relatório — mantidos apenas como referência de estilo visual, não de conteúdo; a apresentação final ainda será reconstruída a partir do relatório.
+
+As versões abaixo são **históricas**, com convenções metodológicas anteriores documentadas, e não foram sobrescritas.
+
+## Entrega de 21/09/2026
 
 Estudo empírico do **WIN nas seis escalas disponíveis**, com treino exclusivamente em 2024 e avaliação em 2025. A pergunta sobre maior previsibilidade horária é confrontada com os resultados, não imposta aos modelos. Esta versão incorpora e recalcula as etapas de 31/08 e 14/09 e acrescenta previsão, modelos alternativos, combinação, Diebold–Mariano e ARCH/GARCH, usando somente métodos das aulas.
 
@@ -58,8 +66,6 @@ python scripts/build_podcast.py \
 ```
 
 O script sintetiza apenas os diálogos delimitados no roteiro, adapta a pronúncia de siglas, intercala as vozes, acrescenta pausas e capítulos, normaliza o volume e verifica a decodificação completa e a duração final. Não utiliza música. Os pesos de voz e os intermediários ficam fora do repositório. A forma de onda pode variar entre versões do sintetizador; os hashes dos modelos efetivamente usados e do áudio entregue constam do manifesto.
-
-As versões abaixo são **históricas**, com convenções metodológicas anteriores documentadas, e não foram sobrescritas.
 
 ## Entrega de 14/09/2026
 

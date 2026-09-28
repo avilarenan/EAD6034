@@ -72,12 +72,12 @@ class TestConditionalVolatility(unittest.TestCase):
         )
 
     def test_all_candidate_outcomes_and_bic_counts(self):
-        self.assertEqual(self.grid.model.tolist(), ["constant", "arch1", "garch11", "gjr_garch"])
-        self.assertEqual(self.grid.variance_parameter_count.tolist(), [1, 2, 3, 4])
+        self.assertEqual(self.grid.model.tolist(), ["constant", "arch1", "garch11"])
+        self.assertEqual(self.grid.variance_parameter_count.tolist(), [1, 2, 3])
         self.assertEqual(int(self.grid.selected_bic.sum()), 1)
         for row in self.grid[self.grid.eligible].itertuples():
             self.assertAlmostEqual(row.bic, -2 * row.loglikelihood + row.variance_parameter_count * np.log(480))
-            self.assertTrue(variance_parameters_valid(row.omega, row.alpha, row.beta, row.gamma))
+            self.assertTrue(variance_parameters_valid(row.omega, row.alpha, row.beta))
 
     def test_original_unit_gaussian_likelihood(self):
         for row in self.grid[self.grid.eligible].itertuples():

@@ -1,7 +1,7 @@
 import numpy as np
 import unittest
 
-from ead6034.neural_baselines import _lag_features, mlp_native_forecast
+from ead6034.neural_baselines import _lag_features, mlp_native_forecast, mlp_variance_forecast
 
 
 class TestLagFeatures(unittest.TestCase):
@@ -58,6 +58,23 @@ class TestMLPNativeForecast(unittest.TestCase):
     def test_rejects_window_not_smaller_than_train_n(self):
         with self.assertRaises(ValueError):
             mlp_native_forecast(self.y, train_n=5, window=10)
+
+
+class TestMLPVarianceForecast(unittest.TestCase):
+    def test_targets_squared_series_and_is_nonnegative_predictable(self):
+        rng = np.random.default_rng(6034)
+        n = 400
+        y = np.zeros(n)
+        for t in range(1, n):
+            y[t] = .3 * y[t - 1] + rng.normal(scale=.1)
+        train_n = 300
+        matrix, summary = mlp_variance_forecast(y, train_n, window=10,
+                                                hidden_layer_candidates=((4,),), alpha_candidates=(1e-2,))
+        reference, _ = mlp_native_forecast(y ** 2, train_n, window=10,
+                                           hidden_layer_candidates=((4,),), alpha_candidates=(1e-2,))
+        np.testing.assert_allclose(matrix, reference, equal_nan=True)
+        self.assertEqual(summary["target"], "y_squared")
+        self.assertIn("squared", summary["method"])
 
 
 if __name__ == "__main__":

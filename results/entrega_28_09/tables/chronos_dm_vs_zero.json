@@ -1,0 +1,14 @@
+{
+  "n": 837,
+  "loss": "squared",
+  "q_requested": 0,
+  "q": 0,
+  "h_loss": 1,
+  "mean_loss_difference": 0.00846091195463809,
+  "long_run_variance": 0.006652249391427533,
+  "statistic": 2.999411506738993,
+  "p_value": 0.0027852553241814737,
+  "status": "computed_approximate",
+  "lrv_estimator": "rectangular_autocovariance_sum",
+  "reference_distribution": "Student_t_n_minus_1_with_HLN_correction"
+}

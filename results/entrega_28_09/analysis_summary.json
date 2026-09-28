@@ -83,7 +83,7 @@
   "gap_group_convention": "low_at_or_below_training_included_days_median_absolute_observed_gap_high_above",
   "minute_profile_minimum_returns_for_statistics": 10,
   "private_columns_warning": "frames and daily_context include proprietary prices/returns; do not publish",
-  "created_utc": "2026-09-27T20:34:35.843975+00:00",
+  "created_utc": "2026-09-28T02:21:54.925235+00:00",
   "python": "3.12.3",
   "versions": {
     "numpy": "2.5.0",
@@ -120,8 +120,7 @@
         "eligible_models": [
           "constant",
           "arch1",
-          "garch11",
-          "gjr_garch"
+          "garch11"
         ],
         "diagnostic_lags": [
           10,
@@ -143,7 +142,7 @@
         "notes": [
           "Fitting, scaling, lag choices and BIC selection do not use test observations.",
           "OOS recursion uses the previous actual innovation, never the current/future one.",
-          "No Diebold-Mariano test between these candidates: constant subset ARCH(1) subset GARCH(1,1) subset GJR-GARCH(1,1,1) are all nested in each other (each is the next with one more coefficient set to zero), and Aula 4 explicitly teaches DM is not appropriate for nested models.",
+          "No Diebold-Mariano test between these candidates: constant subset ARCH(1) subset GARCH(1,1) are all nested in each other (each is the next with one more coefficient set to zero), and Aula 4 explicitly teaches DM is not appropriate for nested models.",
           "A better variance forecast is not a better point forecast of returns.",
           "A rejected standardized-residual Ljung-Box still indicates limitations of the mean equation."
         ]
@@ -173,8 +172,7 @@
         "eligible_models": [
           "constant",
           "arch1",
-          "garch11",
-          "gjr_garch"
+          "garch11"
         ],
         "diagnostic_lags": [
           10,
@@ -196,7 +194,7 @@
         "notes": [
           "Fitting, scaling, lag choices and BIC selection do not use test observations.",
           "OOS recursion uses the previous actual innovation, never the current/future one.",
-          "No Diebold-Mariano test between these candidates: constant subset ARCH(1) subset GARCH(1,1) subset GJR-GARCH(1,1,1) are all nested in each other (each is the next with one more coefficient set to zero), and Aula 4 explicitly teaches DM is not appropriate for nested models.",
+          "No Diebold-Mariano test between these candidates: constant subset ARCH(1) subset GARCH(1,1) are all nested in each other (each is the next with one more coefficient set to zero), and Aula 4 explicitly teaches DM is not appropriate for nested models.",
           "A better variance forecast is not a better point forecast of returns.",
           "A rejected standardized-residual Ljung-Box still indicates limitations of the mean equation."
         ]
@@ -212,9 +210,9 @@
       "train_sha256": "1f7226ce60ea65e88278215f27aa7eb8cefb58b144857b4f7f1616e4405eb1c1",
       "full_sequence_sha256": "9f8df7a689bd4ad3f48a69d758fe8ab7ac80265c2eeeaa4c63f3343d87788cff",
       "model": {
-        "p": 0,
-        "q": 0,
-        "bic": -16687.645665087977
+        "p": 3,
+        "q": 3,
+        "bic": -16653.08548519851
       },
       "variance": {
         "scale": "15min",
@@ -222,12 +220,11 @@
         "nobs_test": 3348,
         "selected_model": "garch11",
         "selected_model_label": "GARCH(1,1)",
-        "selected_bic": -18057.28015444749,
+        "selected_bic": -18057.684642301534,
         "eligible_models": [
           "constant",
           "arch1",
-          "garch11",
-          "gjr_garch"
+          "garch11"
         ],
         "diagnostic_lags": [
           10,
@@ -249,7 +246,7 @@
         "notes": [
           "Fitting, scaling, lag choices and BIC selection do not use test observations.",
           "OOS recursion uses the previous actual innovation, never the current/future one.",
-          "No Diebold-Mariano test between these candidates: constant subset ARCH(1) subset GARCH(1,1) subset GJR-GARCH(1,1,1) are all nested in each other (each is the next with one more coefficient set to zero), and Aula 4 explicitly teaches DM is not appropriate for nested models.",
+          "No Diebold-Mariano test between these candidates: constant subset ARCH(1) subset GARCH(1,1) are all nested in each other (each is the next with one more coefficient set to zero), and Aula 4 explicitly teaches DM is not appropriate for nested models.",
           "A better variance forecast is not a better point forecast of returns.",
           "A rejected standardized-residual Ljung-Box still indicates limitations of the mean equation."
         ]
@@ -267,7 +264,7 @@
       "model": {
         "p": 0,
         "q": 0,
-        "bic": -3770.2494554894024
+        "bic": -3770.2494554894015
       },
       "variance": {
         "scale": "30min",
@@ -279,8 +276,7 @@
         "eligible_models": [
           "constant",
           "arch1",
-          "garch11",
-          "gjr_garch"
+          "garch11"
         ],
         "diagnostic_lags": [
           10,
@@ -302,7 +298,7 @@
         "notes": [
           "Fitting, scaling, lag choices and BIC selection do not use test observations.",
           "OOS recursion uses the previous actual innovation, never the current/future one.",
-          "No Diebold-Mariano test between these candidates: constant subset ARCH(1) subset GARCH(1,1) subset GJR-GARCH(1,1,1) are all nested in each other (each is the next with one more coefficient set to zero), and Aula 4 explicitly teaches DM is not appropriate for nested models.",
+          "No Diebold-Mariano test between these candidates: constant subset ARCH(1) subset GARCH(1,1) are all nested in each other (each is the next with one more coefficient set to zero), and Aula 4 explicitly teaches DM is not appropriate for nested models.",
           "A better variance forecast is not a better point forecast of returns.",
           "A rejected standardized-residual Ljung-Box still indicates limitations of the mean equation."
         ]
@@ -332,8 +328,7 @@
         "eligible_models": [
           "constant",
           "arch1",
-          "garch11",
-          "gjr_garch"
+          "garch11"
         ],
         "diagnostic_lags": [
           10,
@@ -355,7 +350,7 @@
         "notes": [
           "Fitting, scaling, lag choices and BIC selection do not use test observations.",
           "OOS recursion uses the previous actual innovation, never the current/future one.",
-          "No Diebold-Mariano test between these candidates: constant subset ARCH(1) subset GARCH(1,1) subset GJR-GARCH(1,1,1) are all nested in each other (each is the next with one more coefficient set to zero), and Aula 4 explicitly teaches DM is not appropriate for nested models.",
+          "No Diebold-Mariano test between these candidates: constant subset ARCH(1) subset GARCH(1,1) are all nested in each other (each is the next with one more coefficient set to zero), and Aula 4 explicitly teaches DM is not appropriate for nested models.",
           "A better variance forecast is not a better point forecast of returns.",
           "A rejected standardized-residual Ljung-Box still indicates limitations of the mean equation."
         ]
@@ -385,8 +380,7 @@
         "eligible_models": [
           "constant",
           "arch1",
-          "garch11",
-          "gjr_garch"
+          "garch11"
         ],
         "diagnostic_lags": [
           10,
@@ -407,7 +401,7 @@
         "notes": [
           "Fitting, scaling, lag choices and BIC selection do not use test observations.",
           "OOS recursion uses the previous actual innovation, never the current/future one.",
-          "No Diebold-Mariano test between these candidates: constant subset ARCH(1) subset GARCH(1,1) subset GJR-GARCH(1,1,1) are all nested in each other (each is the next with one more coefficient set to zero), and Aula 4 explicitly teaches DM is not appropriate for nested models.",
+          "No Diebold-Mariano test between these candidates: constant subset ARCH(1) subset GARCH(1,1) are all nested in each other (each is the next with one more coefficient set to zero), and Aula 4 explicitly teaches DM is not appropriate for nested models.",
           "A better variance forecast is not a better point forecast of returns.",
           "A rejected standardized-residual Ljung-Box still indicates limitations of the mean equation."
         ]
@@ -424,31 +418,32 @@
   "mean_order_selection": "BIC within each candidate family on the train partition (through 2025-07-15)",
   "approved_protocol": "docs/PROTOCOL_21_09.md",
   "code_sha256": {
-    "neural_baselines.py": "c7e2ceb61afe83bd7259cf674e058c17bab92fdc927ff0150f166c4bac94a955",
+    "neural_baselines.py": "ea448485200480e8de5d5270e1cfbe12c7e30c84117112684ab80b939748d240",
     "multiscale_pipeline.py": "ae5dfd46cc14ca48f23cc5d7fc456e568ad70fe37760f596e5ff9fe7d9fbac68",
-    "forecast_figures.py": "93ebe90c9a5dc83943d2259c516439b98cf501682db2a9ebd438cab70e2957dd",
+    "forecast_figures.py": "5a08ba8e75c546c0de6653beb31699309e6b6974d4640fa6edebfba50064aa1e",
     "forecast_report.py": "5e768e0ef4df5ea82b9e89cb6e947f7e271d65d1876fddb5db54b37b02173ed1",
-    "forecast_evaluation.py": "ed878d4e950c1faa982c6a5bbec6c2285d663320c8515e406f59228b8f9357cf",
+    "forecast_evaluation.py": "bc32fea495d8da8ad5d7523cfd71bda922e07088ccd8a54e30c63fc0069bb76f",
     "__init__.py": "8f62b5ce7c2c2f107c2b331d0817f876e17ff9e87b94b1cd381498b906353f50",
     "segmented_arma.py": "103e0ba9466108ceb6b333182b322fbf162444305eab9f2711a15d2720ade7b7",
-    "annual_models.py": "198009279e4a165e7230c92c4acb2b0318035504284f0cead01278fcbdd2e6bd",
+    "annual_models.py": "a1575febf7fb22726e0cb2d32bc382c1f4252efa453404547d7db78561e8e9f3",
     "report.py": "7408db2cd46f25d927e6468e3d3ec5e8390a8521ec4b66290a8c3179b2cd376e",
     "multiscale.py": "89d367151c8d25b860826438fef5dc1e43324a33da1742f5b76bd0a1803cb0ea",
     "box_jenkins_report.py": "2688c50fc029fc4965cd80f42f19874b500f2b35f658289a97f7745adbb6e3aa",
     "pipeline.py": "66ae5beca728d2ba951c21145549973bc427b1c434fa56d1d64481334b1c482a",
     "plots.py": "7ac0dfaa5b718eb0edf207d35c05daa56b3a4dbd9fbe0023f80988defb0c55c3",
     "box_jenkins_diagnostics.py": "7cbe64f7790276091391e0465ec80bdededeafd92a3d85050b03788560d37d7d",
+    "variance_evaluation.py": "1a3f5299b21d619873fecb53f5022346edeabe2baceaa26b411a0c514167aa93",
     "analysis.py": "687ee5f8b8a011c4b0bb39b0ce03a3087d235749ba38aa878d33eb315d42878d",
     "multiscale_report.py": "591d29d7f74968186767ab2f65ac273d3576ef30bddc53376fac891223060fbc",
     "data.py": "dc46ad1b01f853f373d0e25ba89ca304a339674b54136b3899fdcf5b257ec604",
-    "conditional_volatility.py": "02d701d1b79900885b80bc8abc4fd3a4d750be25b14f4f7c85216d3667bd51ab",
+    "conditional_volatility.py": "f67516aae784fe7e3cc892ec67dcef22f67855d6ee53c4ed7e4f86755c5e2355",
     "multiscale_plots.py": "2a9c6a06903669686e9c001f73ae85b210ee8b90d951ecda23da5c50eeea3dee",
-    "series_overview.py": "166ae9e5c9cb93e2b6813465eda285979fb9d76741bef3e82fb3c0aac0ae9e0e",
+    "series_overview.py": "f5bd5ce541e0dfa261ff01e745883b6c0a002c7f0ae385fd52f8dc6d2287a22b",
     "stationarity.py": "64f2b473dd0dec11a72106811b75bb4d118de782f34d3b88aa0850b54e3a7e1c",
     "forecast_narrative.py": "5840916be19fafdb99e9c1fd9425cb66cb88c4f515d590521c00ce1aee9451a7",
     "box_jenkins.py": "ce2519f733c254b70ef1c58d8040838ebe1cc377b4cffe156eed07694944ff1c",
     "trading_time_data.py": "cf09cd15ffc859773d4bbbd3ff7ec07dea0b8378e7849bc7815deab95b3966e2",
-    "forecast_pipeline.py": "e7883351e232f2678bf936ed703c31c8e008133a44faafe56a3494682a64cc8f"
+    "forecast_pipeline.py": "c5d7165eaaeff0fceb5800ff9acdd12c2a146186ca4d9abdcb11bed7fc55c42c"
   },
   "sources": {
     "course": "Aulas 3,4,5,6 supplied by user",

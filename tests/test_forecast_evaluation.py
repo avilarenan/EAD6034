@@ -161,6 +161,23 @@ class TestDieboldMariano(unittest.TestCase):
         self.assertTrue(np.isnan(result["p_value"]))
         self.assertEqual(result["q"], 1)
 
+    def test_precomputed_loss_uses_raw_difference_not_squared(self):
+        a = np.array([.1, .2, -.8, .3, .1, -.2])  # e.g. QLIKE values, not errors
+        b = np.array([.2, .3, -.2, .5, .6, .1])
+        result = diebold_mariano(a, b, loss="precomputed", q=0)
+        d = a - b
+        expected = d.mean() * np.sqrt((len(d) - 1) / d.var())
+        self.assertAlmostEqual(result["statistic"], expected)
+        self.assertAlmostEqual(result["mean_loss_difference"], float(d.mean()))
+
+    def test_precomputed_allows_any_real_valued_loss(self):
+        # No special validation beyond the usual finite/shape checks --
+        # precomputed losses (e.g. QLIKE) are allowed to be any real number,
+        # unlike raw errors squared/abs'd internally by the other two modes.
+        result = diebold_mariano(np.array([-1., -2., -3., -4.]), np.array([1., 2., 3., 4.]), loss="precomputed")
+        self.assertEqual(result["status"], "computed_approximate")
+        self.assertAlmostEqual(result["mean_loss_difference"], -5.0)
+
 
 if __name__ == "__main__":
     unittest.main()

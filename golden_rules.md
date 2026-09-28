@@ -25,11 +25,26 @@ not folded silently into the core taught-methodology narrative.
 ## 1a. Diebold-Mariano and nested models
 Aula 4 explicitly teaches that DM is **not appropriate for nested models** (its own
 example: ARMA(1,1) vs ARMA(2,1)). Check nesting before adding any DM comparison — e.g.
-volatility candidates built as constant ⊂ ARCH(1) ⊂ GARCH(1,1) ⊂ GJR-GARCH are all
-nested in each other, so no pairwise DM test between them is valid; say so explicitly
-rather than silently omitting it. Prefer DM between genuinely non-nested families (e.g.
-a pure-AR vs. a pure-MA restriction of the same general model — neither is a special
-case of the other).
+volatility candidates built as constant ⊂ ARCH(1) ⊂ GARCH(1,1) are all nested in each
+other, so no pairwise DM test between them is valid; say so explicitly rather than
+silently omitting it. Prefer DM between genuinely non-nested families (e.g. a pure-AR
+vs. a pure-MA restriction of the same general model, or two genuinely different model
+classes like GARCH vs. a neural-network variance forecast — neither is a special case
+of the other).
+
+## 1b. Verify "taught in class" against the actual slide deck, not a summary of it
+A sub-agent (or your own memory) reporting "the R script for Aula X fits model Y" is
+not the same claim as "Aula X's slides teach model Y" — a course's computational script
+can go further than its theoretical exposition (or vice versa). Before adding a method
+to the core defensible analysis on the strength of "it's in the aula," read the actual
+slide deck yourself. Case in point: GJR-GARCH was added to this project's variance
+model, justified as "Aula 6 content," on the basis of a sub-agent's read of only
+`ScriptAula6.R` (which does fit a `gjrGARCH` spec, incompletely). Reading `Aula6.pdf`
+directly showed the theoretical slides cover only symmetric ARCH(1)/GARCH(1,1) (Engle
+1982; Bollerslev 1986) — GJR-GARCH appears nowhere in the slide content. It was removed
+from the analysis once this was checked directly. The general lesson: "taught in the
+script" and "taught in the slides" are different claims; verify the one you're
+actually relying on.
 
 ## 2. Holdout integrity — mechanical changes only
 Once a test period's results have been reported/examined, never reuse that data to pick

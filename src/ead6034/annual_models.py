@@ -158,6 +158,29 @@ def _fit_candidate(z, p, q):
     return result, converged, method, attempts
 
 
+def _filter_with_best_available_cov_type(y, p, q, params, label):
+    """Construct a filtered ARIMAResults with a real covariance type when possible.
+
+    Grid search fits (_fit_candidate) deliberately keep cov_type="none" for
+    speed/stability over dozens of candidates; only models actually selected
+    for presentation need a real covariance type, so coefficient
+    t-statistics are available (result.cov_type/.bse/.tvalues/.pvalues are
+    standard statsmodels attributes once a real cov_type is used). Tries
+    "robust" then "opg" then falls back to "none" (no SEs) if both fail.
+    """
+    for candidate_cov_type in ("robust", "opg", "none"):
+        try:
+            candidate = ARIMA(y, order=(p, 0, q), trend="c", enforce_stationarity=True,
+                              enforce_invertibility=True).filter(params, cov_type=candidate_cov_type)
+            if candidate_cov_type != "none" and not np.all(np.isfinite(np.asarray(candidate.bse, float))):
+                raise ValueError("non-finite standard errors")
+            return candidate
+        except (ValueError, np.linalg.LinAlgError) as exc:
+            if candidate_cov_type == "none":
+                raise RuntimeError(f"{label}: could not construct even a cov_type='none' result") from exc
+            continue
+
+
 def fit_annual_grid(y, max_order=5, progress=None):
     """Return (public grid, selected statsmodels results, public selections).
 
@@ -220,25 +243,7 @@ def fit_annual_grid(y, max_order=5, progress=None):
         best = candidates.iloc[0]
         p, q = int(best.p), int(best.q)
         # Construct only selected filter results in original percentage units.
-        # Grid search fits (_fit_candidate) deliberately keep cov_type="none" for
-        # speed/stability over 216 candidates; only these ~3 selected-per-scale
-        # models get a real covariance type, so coefficient t-statistics are
-        # available (result.cov_type/.bse/.tvalues/.pvalues are standard
-        # statsmodels attributes once a real cov_type is used).
-        result = None
-        for candidate_cov_type in ("robust", "opg", "none"):
-            try:
-                candidate = ARIMA(y, order=(p, 0, q), trend="c", enforce_stationarity=True,
-                                  enforce_invertibility=True).filter(
-                                      params_by_order[p, q], cov_type=candidate_cov_type)
-                if candidate_cov_type != "none" and not np.all(np.isfinite(np.asarray(candidate.bse, float))):
-                    raise ValueError("non-finite standard errors")
-                result = candidate
-                break
-            except (ValueError, np.linalg.LinAlgError) as exc:
-                if candidate_cov_type == "none":
-                    raise RuntimeError(f"{label}: could not construct even a cov_type='none' result") from exc
-                continue
+        result = _filter_with_best_available_cov_type(y, p, q, params_by_order[p, q], label)
         if not np.isclose(result.llf, best.llf, rtol=1e-8, atol=1e-5):
             raise RuntimeError("Scaled innovations likelihood disagrees with original-unit Kalman likelihood.")
         selected_results[label] = result
@@ -280,6 +285,17 @@ def diagnose_mean(result, scale):
     z = z[np.isfinite(z)]
     n = len(z)
     horizons = sorted(set(h for h in (10, 12, 20, 24, 60) if h < n // 5))
+    if not horizons:
+        # Sample too small for any pre-registered horizon (n < 55): return an
+        # empty-but-valid table rather than crash. Never occurs on real
+        # trading-time data (thousands of observations per scale); only
+        # reachable with tiny synthetic/test series.
+        columns = ("scale", "p", "q", "nobs", "h", "df", "principal_horizon",
+                  "lb_stat", "lb_pvalue", "lb_df_software", "lb_pvalue_software",
+                  "lb_squared_stat", "lb_squared_pvalue", "arch_lags", "arch_lm",
+                  "arch_lm_pvalue", "arch_f", "arch_f_pvalue", "jb_stat", "jb_pvalue",
+                  "residual_type", "main_df_rule", "calibration")
+        return pd.DataFrame(columns=columns)
     # statsmodels.acorr_ljungbox currently computes a direct non-FFT ACF,
     # quadratic in N. FFT ACF plus its ordinary q_stat implements exactly
     # the same conventional statistic, with no boundary correction.
@@ -308,3 +324,51 @@ def diagnose_mean(result, scale):
                          main_df_rule="Aula4_h_minus_p_minus_q_minus_constant",
                          calibration="conventional_asymptotic_not_heteroskedasticity_robust"))
     return pd.DataFrame(rows)
+
+
+def select_ljungbox_passing_arma(y, grid, scale):
+    """Among eligible ARMA_BIC-family candidates, select the lowest-BIC one
+    whose residuals pass Ljung-Box at EVERY diagnose_mean() horizon (not
+    just the scale's principal one) -- a pre-registered, non-cherry-picked
+    residual-adequacy gate applied in ADDITION to BIC, per the professor's
+    explicit requirement that the selected model pass Ljung-Box.
+
+    This does not search for a lag that happens to pass; it requires
+    lb_pvalue > 0.05 at every horizon diagnose_mean() already tests. If no
+    eligible candidate in the grid satisfies the gate, the pure-BIC
+    candidate is returned with gate_satisfied=False -- never silently
+    disguised as passing.
+    """
+    eligible = grid.loc[grid.status.eq("eligible")].sort_values("bic").reset_index(drop=True)
+    if eligible.empty:
+        raise RuntimeError(f"{scale}: no eligible ARMA candidate to gate")
+    unconstrained_bic = float(eligible.iloc[0].bic)
+    checked = 0
+    chosen_row, chosen_diagnostics, satisfied = None, None, False
+    for _, row in eligible.iterrows():
+        p, q = int(row.p), int(row.q)
+        params = np.asarray(json.loads(row.params_json), dtype=float)
+        # cov_type="none" here: only residuals/p-values matter while scanning
+        # candidates; a real covariance type is computed once, below, only
+        # for whichever single candidate is ultimately chosen.
+        scan_result = ARIMA(y, order=(p, 0, q), trend="c", enforce_stationarity=True,
+                            enforce_invertibility=True).filter(params, cov_type="none")
+        checked += 1
+        diagnostics = diagnose_mean(scan_result, scale)
+        if bool((diagnostics.lb_pvalue > 0.05).all()):
+            chosen_row, chosen_diagnostics, satisfied = row, diagnostics, True
+            break
+    if chosen_row is None:
+        chosen_row = eligible.iloc[0]
+        params = np.asarray(json.loads(chosen_row.params_json), dtype=float)
+        scan_result = ARIMA(y, order=(int(chosen_row.p), 0, int(chosen_row.q)), trend="c",
+                            enforce_stationarity=True, enforce_invertibility=True).filter(
+                                params, cov_type="none")
+        chosen_diagnostics = diagnose_mean(scan_result, scale)
+    p, q = int(chosen_row.p), int(chosen_row.q)
+    params = np.asarray(json.loads(chosen_row.params_json), dtype=float)
+    result = _filter_with_best_available_cov_type(y, p, q, params, "ARMA_LB_BIC")
+    return dict(p=p, q=q, result=result, gate_satisfied=satisfied,
+               candidates_checked=checked, candidates_total=len(eligible),
+               bic=float(chosen_row.bic), min_lb_pvalue=float(chosen_diagnostics.lb_pvalue.min()),
+               delta_bic_vs_unconstrained=float(chosen_row.bic - unconstrained_bic) if satisfied else 0.0)

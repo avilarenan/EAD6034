@@ -155,3 +155,34 @@ def chronos_common_60min_forecast(
         batch_size=batch_size, fitted=False,
     )
     return matrix, summary
+
+
+def mlp_variance_forecast(y: np.ndarray, train_n: int, **kwargs) -> tuple[np.ndarray, dict]:
+    """MLP variance forecast: identical machinery to mlp_native_forecast(),
+    applied to the squared-return series instead of returns.
+
+    Predicting y[t]**2 from lagged y[t-window:t]**2 is the ML analogue of an
+    ARCH-family model (which forecasts conditional variance from lagged
+    squared innovations) -- no new training/validation logic is needed, only
+    a different target series. Output units are variance (return_pct**2),
+    directly comparable to a GARCH h_t path and to the realized-variance
+    target used in the cross-scale common-horizon comparison.
+    """
+    matrix, summary = mlp_native_forecast(np.asarray(y, dtype=float) ** 2, train_n, **kwargs)
+    summary["method"] = "MLPRegressor_lagged_squared_returns_as_variance_proxy"
+    summary["target"] = "y_squared"
+    return matrix, summary
+
+
+def chronos_variance_forecast(y: np.ndarray, frame, scale: str, **kwargs) -> tuple[np.ndarray, dict]:
+    """Chronos-2 zero-shot variance forecast: identical machinery to
+    chronos_common_60min_forecast(), applied to the squared-return series.
+
+    The summed forecast over a horizon is then directly comparable to the
+    realized-variance target (also a sum of squared returns over the same
+    horizon) used in the cross-scale common-horizon variance comparison.
+    """
+    matrix, summary = chronos_common_60min_forecast(np.asarray(y, dtype=float) ** 2, frame, scale, **kwargs)
+    summary["method"] = "chronos2_zero_shot_on_squared_returns"
+    summary["target"] = "y_squared"
+    return matrix, summary

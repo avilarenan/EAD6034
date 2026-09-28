@@ -1,0 +1,44 @@
+{
+  "GARCH(1,1)_vs_MLP": {
+    "n": 837.0,
+    "loss": "precomputed",
+    "q_requested": 0.0,
+    "q": 0.0,
+    "h_loss": 1.0,
+    "mean_loss_difference": -0.11909168351326649,
+    "long_run_variance": 0.020871492583693207,
+    "statistic": -23.834597340029976,
+    "p_value": 3.2197942791242285e-96,
+    "status": "computed_approximate",
+    "lrv_estimator": "rectangular_autocovariance_sum",
+    "reference_distribution": "Student_t_n_minus_1_with_HLN_correction"
+  },
+  "GARCH(1,1)_vs_Chronos_zeroshot": {
+    "n": 837.0,
+    "loss": "precomputed",
+    "q_requested": 0.0,
+    "q": 0.0,
+    "h_loss": 1.0,
+    "mean_loss_difference": -9.379175152601158,
+    "long_run_variance": 15731.303469659419,
+    "statistic": -2.1621480604344008,
+    "p_value": 0.030889814149046048,
+    "status": "computed_approximate",
+    "lrv_estimator": "rectangular_autocovariance_sum",
+    "reference_distribution": "Student_t_n_minus_1_with_HLN_correction"
+  },
+  "MLP_vs_Chronos_zeroshot": {
+    "n": 837.0,
+    "loss": "precomputed",
+    "q_requested": 0.0,
+    "q": 0.0,
+    "h_loss": 1.0,
+    "mean_loss_difference": -9.260083469087892,
+    "long_run_variance": 15733.835671657489,
+    "statistic": -2.1345224903732185,
+    "p_value": 0.03309031998662084,
+    "status": "computed_approximate",
+    "lrv_estimator": "rectangular_autocovariance_sum",
+    "reference_distribution": "Student_t_n_minus_1_with_HLN_correction"
+  }
+}

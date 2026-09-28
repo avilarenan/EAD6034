@@ -1,0 +1,80 @@
+{
+  "method": "MLPRegressor_lagged_squared_returns_as_variance_proxy",
+  "window": 30,
+  "validation_fraction": 0.15,
+  "fit_n": 171666,
+  "val_n": 30294,
+  "hyperparameter_trials": [
+    {
+      "hidden_layer_sizes": [
+        8
+      ],
+      "alpha": 0.0001,
+      "val_mse": 1.1388460007238683e-05
+    },
+    {
+      "hidden_layer_sizes": [
+        8
+      ],
+      "alpha": 0.001,
+      "val_mse": 1.188219530279222e-05
+    },
+    {
+      "hidden_layer_sizes": [
+        8
+      ],
+      "alpha": 0.01,
+      "val_mse": 1.0850831567134892e-05
+    },
+    {
+      "hidden_layer_sizes": [
+        16
+      ],
+      "alpha": 0.0001,
+      "val_mse": 2.6583556283358122e-05
+    },
+    {
+      "hidden_layer_sizes": [
+        16
+      ],
+      "alpha": 0.001,
+      "val_mse": 1.540762594716979e-05
+    },
+    {
+      "hidden_layer_sizes": [
+        16
+      ],
+      "alpha": 0.01,
+      "val_mse": 1.1256298467868561e-05
+    },
+    {
+      "hidden_layer_sizes": [
+        32
+      ],
+      "alpha": 0.0001,
+      "val_mse": 1.1286988411098428e-05
+    },
+    {
+      "hidden_layer_sizes": [
+        32
+      ],
+      "alpha": 0.001,
+      "val_mse": 1.1398843007107355e-05
+    },
+    {
+      "hidden_layer_sizes": [
+        32
+      ],
+      "alpha": 0.01,
+      "val_mse": 1.0310425834425711e-05
+    }
+  ],
+  "selected_hidden_layer_sizes": [
+    32
+  ],
+  "selected_alpha": 0.01,
+  "selected_validation_mse": 1.0310425834425711e-05,
+  "refit_on_train_plus_validation": true,
+  "random_state": 6034,
+  "target": "y_squared"
+}

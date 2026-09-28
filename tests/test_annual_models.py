@@ -8,6 +8,7 @@ from statsmodels.tsa.stattools import acf
 
 from ead6034.annual_models import (
     _fit_candidate, annual_stationarity, correlogram, diagnose_mean, fit_annual_grid,
+    select_ljungbox_passing_arma,
 )
 
 
@@ -121,6 +122,37 @@ class TestAnnualModels(unittest.TestCase):
         for y in (np.ones(30), np.r_[np.arange(30), np.nan], np.arange(10)):
             with self.assertRaises(ValueError):
                 fit_annual_grid(y, max_order=1)
+
+
+class TestLjungBoxGatedSelection(unittest.TestCase):
+    def test_white_noise_gate_satisfied_by_zero_zero(self):
+        rng = np.random.default_rng(6034)
+        y = rng.normal(loc=0.01, scale=0.03, size=3000)
+        grid, _, _ = fit_annual_grid(y, max_order=2)
+        gated = select_ljungbox_passing_arma(y, grid, "5min")
+        self.assertTrue(gated["gate_satisfied"])
+        self.assertEqual((gated["p"], gated["q"]), (0, 0))
+        self.assertGreater(gated["min_lb_pvalue"], 0.05)
+        self.assertEqual(gated["delta_bic_vs_unconstrained"], 0.0)
+
+    def test_no_candidate_passes_returns_pure_bic_with_flag(self):
+        # A strong, slowly-decaying dependence that a max_order=1 search
+        # cannot whiten: residual autocorrelation must survive at some
+        # pre-registered horizon for every eligible (p<=1,q<=1) candidate.
+        rng = np.random.default_rng(11)
+        n = 2000
+        innovations = rng.normal(size=n)
+        y = np.zeros(n)
+        for t in range(3, n):
+            y[t] = 0.5 * innovations[t] + 0.4 * innovations[t - 1] + 0.35 * innovations[t - 2] + 0.3 * innovations[t - 3]
+        grid, _, _ = fit_annual_grid(y, max_order=1)
+        gated = select_ljungbox_passing_arma(y, grid, "5min")
+        self.assertFalse(gated["gate_satisfied"])
+        self.assertEqual(gated["candidates_checked"], gated["candidates_total"])
+        self.assertLessEqual(gated["min_lb_pvalue"], 0.05)
+        # Must still return the pure-BIC candidate, not silently pick worse.
+        best_bic = grid.loc[grid.status.eq("eligible"), "bic"].min()
+        self.assertAlmostEqual(gated["bic"], best_bic)
 
 
 if __name__ == "__main__":

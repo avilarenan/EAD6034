@@ -88,14 +88,21 @@ def diebold_mariano(
     bar units. Native one-step and hourly, nonoverlapping 60-minute targets
     both use h_loss=1. Serial dependence beyond overlap is handled by q.
 
+    ``loss="precomputed"``: ``errors_a``/``errors_b`` are already
+    per-observation loss VALUES (e.g. QLIKE, which is not expressible as a
+    function of a raw additive error), so d = a - b directly, with no
+    squared/absolute transform. Used for variance-forecast comparisons
+    (see variance_evaluation.qlike()), where "errors" in the return-forecast
+    sense do not apply.
+
     Inference is approximate and assumes a suitable stationary loss process;
     no robustness to arbitrary heteroskedasticity/nonstationarity is claimed.
     """
     a, b = np.asarray(errors_a, float), np.asarray(errors_b, float)
     if a.ndim != 1 or b.shape != a.shape or not np.isfinite(a).all() or not np.isfinite(b).all():
         raise ValueError("DM errors must be aligned finite one-dimensional arrays.")
-    if loss not in {"squared", "absolute"}:
-        raise ValueError("loss must be squared or absolute.")
+    if loss not in {"squared", "absolute", "precomputed"}:
+        raise ValueError("loss must be squared, absolute or precomputed.")
     if q < 0 or h_loss < 1:
         raise ValueError("q must be nonnegative and h_loss positive.")
     n = len(a)
@@ -109,7 +116,10 @@ def diebold_mariano(
     }
     if n < 3:
         return answer
-    d = a * a - b * b if loss == "squared" else np.abs(a) - np.abs(b)
+    if loss == "precomputed":
+        d = a - b
+    else:
+        d = a * a - b * b if loss == "squared" else np.abs(a) - np.abs(b)
     mean = float(d.mean())
     answer["mean_loss_difference"] = mean
     if np.all(d == 0):
@@ -289,12 +299,24 @@ def evaluate_scale(
                 mse, mae = float(np.mean(error ** 2)), float(np.mean(np.abs(error)))
                 zero_mse = float(np.mean(errors["ZERO"][mask] ** 2))
                 ratio = mse / zero_mse if zero_mse > 0 else np.nan
+                # MAPE = mean(|error/actual|)*100 is undefined when actual==0
+                # (a substantial share of near-zero returns here). Reported
+                # only over the subset with actual!=0, with that subset's
+                # size published alongside -- never silently dropped, never
+                # patched with an arbitrary epsilon, per the explicit MAPE
+                # requirement (professor's notes; checklist).
+                group_actual = base["actual"].to_numpy()[mask]
+                nonzero = group_actual != 0
+                mape = (float(np.mean(np.abs(error[nonzero] / group_actual[nonzero])) * 100)
+                       if nonzero.any() else np.nan)
                 metric_rows.append({
                     "scale": scale, "evaluation": evaluation, "horizon_bars": horizon,
                     "horizon_minutes": np.nan if scale == "1d" else horizon * SCALE_MINUTES[scale],
                     "model": model, "group_type": group_type, "group": group, "n": len(error),
                     "mse": mse, "mae": mae, "rmse": float(np.sqrt(mse)),
                     "mse_ratio_vs_zero": ratio, "mse_gain_vs_zero": 1 - ratio,
+                    "mape_pct": mape, "mape_n_used": int(nonzero.sum()),
+                    "mape_n_undefined_zero_actual": int((~nonzero).sum()),
                     "n_candidate_origins_all": n_candidate_origins,
                     "n_dropped_nonfinite_all": n_candidate_origins - len(origins),
                 })
