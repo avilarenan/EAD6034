@@ -19,6 +19,8 @@ DUMMIES = True                  # Pulsos isolam episódios extremos sem apagar m
 MESES_ATIPICOS = ["2018-05", "2018-06", "2020-03", "2020-04", "2020-05", "2020-06"]
 EXCLUIR_2020 = False            # Retira equações/defasagens que tocam 2020; não cola 2019 em 2021.
 DIFERENCIAR_SELIC = False       # Nível segue a aula. True testa sensibilidade à raiz unitária.
+INCLUIR_SELIC = True            # False estima o VAR sem a Selic, fonte da autocorrelação residual.
+RESTRICOES = {}                 # Zeros nas defasagens. Ex.: {"brent": ["cambio", "ipa", "ipca", "selic"]}.
 H = 24                         # Horizonte IRF. Aumentar amplia incerteza e custo.
 H_REPASSE = 12                  # Acumulação h=0 até h=12, inclusive.
 CHOQUE_PCT = 10.0               # Alta exata de 10%: impacto em log = 100*log(1.10).
@@ -52,6 +54,7 @@ SIM_P = [[1, 0, 0], [0.3, 0.7, 0], [0.5, 0.4, 0.6]]  # Impacto recursivo, zeros 
 PAUSAR = True                  # Enter entre blocos; --lote desliga pausas e janelas.
 MOSTRAR = True                 # Feche cada janela de gráfico para continuar.
 PASTA_SAIDA = "resultados"      # Use resultados_teste para preservar os resultados de referência.
+EXIBIR_TUDO = False             # No notebook, True também mostra itens secundários; todos são gravados.
 DPI = 150                      # Qualidade PNG, sem efeito estatístico.
 FONT_SIZE = 11                 # Letras dos gráficos, sem efeito estatístico.
 MAX_LINHAS_TELA = 24           # Limita tabelas longas no terminal; CSV sempre contém tudo.
@@ -71,19 +74,21 @@ import pandas as pd
 from scipy import stats
 import statsmodels.api as sm
 from statsmodels.tsa.stattools import adfuller, kpss
-from statsmodels.stats.diagnostic import het_arch, recursive_olsresiduals
+from statsmodels.stats.diagnostic import acorr_ljungbox, breaks_cusumolsresid, het_arch, recursive_olsresiduals
 from statsmodels.tools.sm_exceptions import InterpolationWarning
 import matplotlib
 if "--lote" in sys.argv:
     MOSTRAR = PAUSAR = False
     matplotlib.use("Agg")
 import matplotlib.pyplot as plt
+from matplotlib.lines import Line2D
 
 BASE = Path(__file__).resolve().parent if "__file__" in globals() else Path.cwd()
 OUT = BASE / PASTA_SAIDA
 OUT.mkdir(exist_ok=True)
 EM_NOTEBOOK = False
-NOMES = ["brent", "cambio", "ipa", "ipca", "selic"]
+TODAS = ["brent", "cambio", "ipa", "ipca", "selic"]
+NOMES = list(TODAS)             # Variáveis do VAR; configurar() retira a Selic se pedido.
 CORES = ["#166a8f", "#d78222", "#55a39b", "#8b659d", "#687786"]
 plt.rcParams.update({"font.size": FONT_SIZE, "axes.spines.top": False,
                      "axes.spines.right": False, "figure.figsize": (10, 5)})
@@ -98,7 +103,16 @@ assert H >= max(H_REPASSE, max(FEVD_H)) and BOOT >= 39
 assert sorted(ORDEM) == sorted(ORDEM_ALT) == sorted(NOMES)
 
 
-def tabela(nome, df):
+# Gravados sempre; no notebook enxuto, aparecem só no anexo para a apresentação caber em 5 minutos.
+SECUNDARIAS = ["02_residuos_antes", "02_residuos_depois", "02_ciclos", "02_raizes", "04_razao_antes", "04_razao_depois"]
+
+
+def tabela(nome, df, tela=None):
+    """Mostra e grava. tela: colunas exibidas; o CSV mantém todas."""
+    df.to_csv(OUT / (nome + ".csv"), encoding="utf-8-sig", lineterminator="\n")  # Mesmo arquivo em Windows e Linux.
+    if EM_NOTEBOOK and not EXIBIR_TUDO and nome in SECUNDARIAS:
+        return
+    df = df if tela is None else df[tela]
     visivel = df if len(df)<=MAX_LINHAS_TELA else pd.concat([df.head(MAX_LINHAS_TELA//2),df.tail(MAX_LINHAS_TELA//2)])
     if EM_NOTEBOOK:
         from IPython.display import display, Markdown
@@ -108,15 +122,28 @@ def tabela(nome, df):
         print("\n" + nome + "\n" + visivel.round(CASAS).to_string())
     if len(df)>MAX_LINHAS_TELA:
         print("[Linhas intermediárias omitidas na tela; arquivo CSV completo.]")
-    df.to_csv(OUT / (nome + ".csv"), encoding="utf-8-sig")
 
 
 def figura(nome):
     plt.tight_layout()
     plt.savefig(OUT / (nome + ".png"), dpi=DPI)
-    if MOSTRAR:
+    if MOSTRAR and not (EM_NOTEBOOK and not EXIBIR_TUDO and nome in SECUNDARIAS):
         plt.show()
     plt.close()
+
+
+def mostrar_secundarias():
+    """No notebook enxuto, exibe no anexo os itens que as células de apresentação só gravaram."""
+    if not EM_NOTEBOOK or EXIBIR_TUDO:
+        return
+    from IPython.display import display, Markdown, Image
+    etapa("A1. Itens secundários dos passos 2 e 3: resíduos por regime, raízes, ciclos e razões")
+    for nome in SECUNDARIAS:
+        display(Markdown("**"+nome.replace("_", " ")+"**"))
+        if (OUT/(nome+".png")).exists():
+            display(Image(filename=str(OUT/(nome+".png"))))
+        else:
+            display(pd.read_csv(OUT/(nome+".csv"),index_col=0,encoding="utf-8-sig").round(CASAS))
 
 
 def etapa(texto):
@@ -132,22 +159,24 @@ def etapa(texto):
 def deterministicas(datas, sazonais=None, pulsos=None):
     sazonais = SAZONAIS if sazonais is None else sazonais
     pulsos = DUMMIES if pulsos is None else pulsos
-    d = pd.DataFrame({"const": 1.0}, index=datas)
+    d = {"const": np.ones(len(datas))}  # Montado de uma vez: o bootstrap chama milhares de vezes.
     if sazonais:
         for mes in range(2, 13):  # Janeiro é referência: evita colinearidade com a constante.
             d[f"mes_{mes}"] = (datas.month == mes).astype(float)
     if pulsos:
+        rotulos = datas.strftime("%Y-%m")
         for mes in MESES_ATIPICOS:
-            d[mes] = (datas.strftime("%Y-%m") == mes).astype(float)
-    return d
+            d[mes] = (rotulos == mes).astype(float)
+    return pd.DataFrame(d, index=datas)
 
 
-def ajusta(y, p, sazonais=None, pulsos=None, excluir=None):
+def ajusta(y, p, sazonais=None, pulsos=None, excluir=None, d=None):
     """VAR por MQO. lstsq evita inverter para estimar.
     Criar lags ANTES das exclusões garante que um lag continue sendo um mês.
+    d: determinísticas já montadas para y.index; o bootstrap as reaproveita.
     """
     excluir = EXCLUIR_2020 if excluir is None else excluir
-    d = deterministicas(y.index, sazonais, pulsos)
+    d = deterministicas(y.index, sazonais, pulsos) if d is None else d
     x = pd.concat([d] + [y.shift(j).add_suffix(f"_L{j}") for j in range(1, p + 1)], axis=1)
     ok = x.notna().all(axis=1)
     if excluir:
@@ -160,6 +189,12 @@ def ajusta(y, p, sazonais=None, pulsos=None, excluir=None):
     if n <= k + MIN_GRAUS_LIVRES or np.linalg.matrix_rank(X) < k:
         raise ValueError(f"Amostra insuficiente/colinear: n={n}, k={k}, p={p}. Reduza p.")
     b = np.linalg.lstsq(X, Y, rcond=None)[0]
+    origem = [c.rsplit("_L",1)[0] if "_L" in c else None for c in x.columns]  # Variável de cada defasagem.
+    for eq,excluidas in RESTRICOES.items():  # Restrição de zero: reestima a equação só com os regressores livres.
+        if eq in y.columns:
+            j, livres = y.columns.get_loc(eq), [c for c,o in enumerate(origem) if o not in excluidas]
+            b[:,j] = 0
+            b[livres,j] = np.linalg.lstsq(X[:,livres],Y[:,j],rcond=None)[0]
     e = Y - X @ b
     a = b[-p*m:].reshape(p, m, m).transpose(0, 2, 1)
     F = np.zeros((p*m, p*m)); F[:m] = np.concatenate(a, axis=1)
@@ -170,13 +205,17 @@ def ajusta(y, p, sazonais=None, pulsos=None, excluir=None):
                            det=list(x.columns[:k-p*m]), raizes=np.linalg.eigvals(F))
 
 
+def trecho_continuo(r):
+    """Resíduos do maior trecho de meses consecutivos. Só difere de r.e ao excluir 2020."""
+    meses = r.datas.to_period("M").asi8
+    cortes = np.r_[0, np.flatnonzero(np.diff(meses) != 1)+1, len(r.e)]
+    trecho = np.argmax(np.diff(cortes))
+    return r.e[cortes[trecho]:cortes[trecho+1]]
+
+
 def portmanteau(r):
     """Teste multivariado ajustado. Com buracos, usa o maior trecho contínuo."""
-    e = r.e
-    meses = r.datas.to_period("M").asi8
-    cortes = np.r_[0, np.flatnonzero(np.diff(meses) != 1)+1, len(e)]
-    if len(cortes) > 2:
-        trecho = np.argmax(np.diff(cortes)); e = e[cortes[trecho]:cortes[trecho+1]]
+    e = trecho_continuo(r)
     n = len(e); L = max(LAG_DIAG, r.p + 1)
     if n <= L + r.m:
         return np.nan
@@ -236,14 +275,15 @@ def bootstrap(r, seed):
     rng = np.random.default_rng(seed)
     bandas, razoes, denominadores, instaveis = [], [], [], 0
     pos = r.y.index.get_indexer(r.datas)
-    d = deterministicas(r.y.index).reindex(columns=r.det, fill_value=0).to_numpy()
+    todas = deterministicas(r.y.index)  # Mesmas datas em todas as réplicas: monta uma vez.
+    d = todas.reindex(columns=r.det, fill_value=0).to_numpy()
     for _ in range(BOOT):
         ys = r.y.to_numpy().copy()
         erros = (r.e-r.e.mean(axis=0)) * np.sqrt(r.n/(r.n-r.k))
         erros *= rng.choice([-1.0, 1.0], size=(r.n, 1))
         for i, t in enumerate(pos):
             ys[t] = d[t]@r.b[:len(r.det)] + sum(r.A[j-1]@ys[t-j] for j in range(1,r.p+1)) + erros[i]
-        b = ajusta(pd.DataFrame(ys, index=r.y.index, columns=r.y.columns), r.p)
+        b = ajusta(pd.DataFrame(ys, index=r.y.index, columns=r.y.columns), r.p, d=todas)
         instaveis += max(abs(b.raizes)) >= 1
         bandas.append(resposta(b)); razoes.append(repasse(b))
         denominadores.append(np.diag(irf(b,ORDEM,horizonte=H_REPASSE).sum(axis=0))[:2])
@@ -296,16 +336,20 @@ def teste_media(x, h, unilateral=False):
 
 
 
-PARAMETROS_PADRAO = deepcopy({nome: globals()[nome] for nome in ["INICIO","FIM","QUEBRA","ORDEM","ORDEM_ALT","P_FIXO","P_MAX","CRITERIO","AJUSTAR_P_RESIDUOS","SAZONAIS","DUMMIES","MESES_ATIPICOS","EXCLUIR_2020","DIFERENCIAR_SELIC","H","H_REPASSE","CHOQUE_PCT","CONFIANCA","BOOT","SEMENTE","ALFA","LAG_DIAG","LAG_ARCH","LAG_HAC","CUSUM_INICIAL","REG_TESTES","ADF_CRITERIO","KPSS_LAGS","MIN_GRAUS_LIVRES","THREADS","ADF_MAX","D_MAX","JANELA","PASSO_JANELA","FEVD_H","EPISODIO","INICIO_PREV","H_PREV","SIM_N","SIM_DESCARTE","SIM_A","SIM_P","PAUSAR","MOSTRAR","PASTA_SAIDA","DPI","FONT_SIZE","MAX_LINHAS_TELA","CASAS","TOL"]})
+PARAMETROS_PADRAO = deepcopy({nome: globals()[nome] for nome in ["INICIO","FIM","QUEBRA","ORDEM","ORDEM_ALT","P_FIXO","P_MAX","CRITERIO","AJUSTAR_P_RESIDUOS","SAZONAIS","DUMMIES","MESES_ATIPICOS","EXCLUIR_2020","DIFERENCIAR_SELIC","INCLUIR_SELIC","RESTRICOES","H","H_REPASSE","CHOQUE_PCT","CONFIANCA","BOOT","SEMENTE","ALFA","LAG_DIAG","LAG_ARCH","LAG_HAC","CUSUM_INICIAL","REG_TESTES","ADF_CRITERIO","KPSS_LAGS","MIN_GRAUS_LIVRES","THREADS","ADF_MAX","D_MAX","JANELA","PASSO_JANELA","FEVD_H","EPISODIO","INICIO_PREV","H_PREV","SIM_N","SIM_DESCARTE","SIM_A","SIM_P","PAUSAR","MOSTRAR","PASTA_SAIDA","EXIBIR_TUDO","DPI","FONT_SIZE","MAX_LINHAS_TELA","CASAS","TOL"]})
 
 def configurar(parametros=None, notebook=False):
     """Reinicia as opções para permitir comparar cenários sem herdar alterações anteriores."""
-    global OUT, EM_NOTEBOOK, PAUSAR, MOSTRAR, inicio_execucao
+    global OUT, EM_NOTEBOOK, PAUSAR, MOSTRAR, inicio_execucao, NOMES, ORDEM, ORDEM_ALT
     parametros = parametros or {}
     desconhecidos = set(parametros)-set(PARAMETROS_PADRAO)
     if desconhecidos:
         raise ValueError(f"Parâmetros desconhecidos: {desconhecidos}")
     globals().update(deepcopy(PARAMETROS_PADRAO | parametros))
+    NOMES = [n for n in TODAS if INCLUIR_SELIC or n != "selic"]
+    # Sem a Selic, ela sai das ordens; incluída mas ausente de uma ordem, entra por último.
+    ORDEM, ORDEM_ALT = ([n for n in o if INCLUIR_SELIC or n != "selic"]+(["selic"] if INCLUIR_SELIC and "selic" not in o else [])
+                        for o in (ORDEM, ORDEM_ALT))
     EM_NOTEBOOK = notebook
     if notebook:
         PAUSAR, MOSTRAR = False, True  # A célula é a pausa; o backend inline integra o gráfico.
@@ -318,12 +362,13 @@ def configurar(parametros=None, notebook=False):
     assert H >= max(H_REPASSE,max(FEVD_H)) and BOOT >= 39
     assert 0 < CONFIANCA < 1 and CHOQUE_PCT > 0
     assert sorted(ORDEM) == sorted(ORDEM_ALT) == sorted(NOMES)
+    assert all(n in TODAS for k,v in RESTRICOES.items() for n in [k,*v]), "RESTRICOES: use os nomes das variáveis."
     inicio_execucao = time.perf_counter()
 
 
 
-def carregar_dados():
-    etapa("1. Dados: cinco séries mensais, públicas e salvas no repositório")
+def preparar_dados():
+    """Lê e transforma as séries, sem tela nem gravação: as variantes reutilizam esta etapa."""
     partes = []
     for nome in ["cambio", "ipa", "ipca", "selic"]:
         d = pd.read_json(BASE/"dados"/(nome+".json"))
@@ -331,7 +376,7 @@ def carregar_dados():
                                index=pd.to_datetime(d["data"],dayfirst=True),name=nome))
     d = pd.read_csv(BASE/"dados"/"brent.csv",index_col=0,parse_dates=True)
     partes.append(d.iloc[:,0].rename("brent"))
-    brutos = pd.concat(partes,axis=1).sort_index()[NOMES]
+    brutos = pd.concat(partes,axis=1).sort_index()[TODAS]
     brutos.index.name = "data"
     assert not brutos.index.duplicated().any() and not brutos.isna().any().any()
     assert np.all(np.diff(brutos.index.to_period("M").asi8) == 1)
@@ -340,12 +385,20 @@ def carregar_dados():
     dados[["brent","cambio"]] = 100*np.log(brutos[["brent","cambio"]]).diff()
     if DIFERENCIAR_SELIC:
         dados["selic"] = brutos["selic"].diff()
-    dados = dados.loc[INICIO:FIM].dropna()
+    dados = dados.loc[INICIO:FIM, NOMES].dropna()
     assert len(dados)>JANELA and dados.index.min()<pd.Timestamp(QUEBRA)<dados.index.max()
-    brutos.to_csv(BASE/"dados"/"mensal.csv")
-    dados.to_csv(OUT/"dados_transformados.csv")
+    return brutos, dados
+
+
+def carregar_dados():
+    etapa(f"1. Dados: {len(NOMES)} séries mensais, públicas e salvas no repositório")
+    brutos, dados = preparar_dados()
+    consolidado, destino = brutos.to_csv(lineterminator="\n"), BASE/"dados"/"mensal.csv"
+    if not destino.exists() or destino.read_text(encoding="utf-8") != consolidado:
+        destino.write_text(consolidado, encoding="utf-8", newline="\n")  # Só regrava se os dados mudarem.
+    dados.to_csv(OUT/"dados_transformados.csv", lineterminator="\n")
     print(f"{dados.index[0]:%m/%Y} a {dados.index[-1]:%m/%Y}: {len(dados)} meses. Ordem: {ORDEM}")
-    fig,axs = plt.subplots(5,1,figsize=(11,10),sharex=True)
+    fig,axs = plt.subplots(len(NOMES),1,figsize=(11,2*len(NOMES)),sharex=True)
     rotulos = ["Brent (petróleo em US$)","Câmbio (reais por dólar)","IPA-DI (produtor)","IPCA (consumidor)","Selic"]
     unidades = ["100 × Δlog\n(% aprox.)","100 × Δlog\n(% aprox.)","% no mês","% no mês","Variação (p.p.)" if DIFERENCIAR_SELIC else "% ao ano"]
     for ax,nome,titulo,unidade,cor in zip(axs,NOMES,rotulos,unidades,CORES):
@@ -366,23 +419,37 @@ def carregar_dados():
     return dados
 
 
-def estimar_modelos(dados):
-    etapa("2. Escolha de p, resíduos e estabilidade dinâmica")
-    ic = criterios(dados); tabela("02_defasagens",ic)
+def escolher_p(dados):
+    """Critério de informação; se pedido, o primeiro p maior ou igual que passa o Portmanteau."""
+    ic = criterios(dados)
     p_ic = int(ic[CRITERIO].idxmin())
     candidatos = ic.loc[ic.index >= p_ic]
     aceitos = candidatos.index[candidatos.p_autocorr > ALFA]
     p = int(P_FIXO) if P_FIXO is not None else (int(aceitos[0]) if AJUSTAR_P_RESIDUOS and len(aceitos) else p_ic)
+    return p, ic
+
+
+def separar_regimes(dados, p):
+    """Mesmo p antes e depois; cada regime usa seus primeiros p meses como condição inicial."""
+    return {"antes":ajusta(dados.loc[dados.index < QUEBRA],p),
+            "depois":ajusta(dados.loc[dados.index >= QUEBRA],p)}
+
+
+def estimar_modelos(dados):
+    etapa("2. Escolha de p, resíduos e estabilidade dinâmica")
+    p, ic = escolher_p(dados); tabela("02_defasagens",ic)
     modelo = ajusta(dados,p)
-    regimes = {"antes":ajusta(dados.loc[dados.index < QUEBRA],p),
-               "depois":ajusta(dados.loc[dados.index >= QUEBRA],p)}
-    diagnosticos = []
+    regimes = separar_regimes(dados,p)
+    diagnosticos, autocorrelacionadas = [], {}
     for nome,r in {"completa":modelo,**regimes}.items():
         raio = max(abs(r.raizes))
         meia = np.log(0.5)/np.log(raio) if 0 < raio < 1 else np.nan
         diagnosticos.append([nome,r.n,r.k,p,raio,meia,portmanteau(r)])
-        eq = pd.DataFrame({"JB_p":[stats.jarque_bera(r.e[:,j]).pvalue for j in range(r.m)],
+        e = trecho_continuo(r)  # Ljung-Box por equação localiza a autocorrelação do Portmanteau.
+        eq = pd.DataFrame({"LB_p":[acorr_ljungbox(e[:,j],lags=[LAG_DIAG])["lb_pvalue"].iloc[0] for j in range(r.m)],
+                           "JB_p":[stats.jarque_bera(r.e[:,j]).pvalue for j in range(r.m)],
                            "ARCH_p":[het_arch(r.e[:,j],nlags=LAG_ARCH,ddof=r.k)[1] for j in range(r.m)]},index=NOMES)
+        autocorrelacionadas[nome] = list(eq.index[eq.LB_p <= ALFA])
         tabela("02_residuos_"+nome,eq)
         inv = np.linalg.inv(r.X.T@r.X)
         coef = []
@@ -392,7 +459,7 @@ def estimar_modelos(dados):
             se_hac = np.sqrt(np.maximum(np.diag(robusta),0))
             for k,regressor in enumerate(r.colunas):
                 coef.append([variavel,regressor,r.b[k,j],usual[k],r.b[k,j]/usual[k],se_hac[k],r.b[k,j]/se_hac[k]])
-        pd.DataFrame(coef,columns=["equacao","regressor","coef","se_usual","t_usual","se_HAC","z_HAC"]).to_csv(OUT/("02_coeficientes_"+nome+".csv"),index=False)
+        pd.DataFrame(coef,columns=["equacao","regressor","coef","se_usual","t_usual","se_HAC","z_HAC"]).to_csv(OUT/("02_coeficientes_"+nome+".csv"),index=False,lineterminator="\n")
         if raio >= 1:
             print("ATENÇÃO:",nome,"instável: não interpretar meia-vida nem respostas como convergentes.")
     diag = pd.DataFrame(diagnosticos,columns=["amostra","n","k_por_eq","p","raio","meia_vida","Portmanteau_p"]).set_index("amostra")
@@ -402,6 +469,7 @@ def estimar_modelos(dados):
     print("Meia-vida: modo dominante, não necessariamente a meia-vida de cada IRF.")
     if (diag.Portmanteau_p <= ALFA).any():
         print("RESSALVA: autocorrelação residual. Bootstrap e p-valores exigem cautela; teste outro p.")
+        print("Equações com Ljung-Box <= ALFA:", ", ".join(f"{k}: {v or 'nenhuma'}" for k,v in autocorrelacionadas.items()))
     
     fig,ax = plt.subplots(figsize=(5,5))
     ang = np.linspace(0,2*np.pi,300)  # 300 pontos apenas desenham o círculo unitário.
@@ -413,11 +481,11 @@ def estimar_modelos(dados):
 
 
 def testar_granger(dados, p):
-    etapa("3. Granger condicional, usual e robusto HAC")
+    etapa("A2. Granger condicional, usual e robusto HAC")
     g = ajusta(dados,p+D_MAX)  # Toda-Yamamoto: só os p primeiros lags são testados.
     linhas = []
-    for causa in range(5):
-        for destino in range(5):
+    for causa in range(len(NOMES)):
+        for destino in range(len(NOMES)):
             if causa != destino:
                 linhas.append([NOMES[causa],NOMES[destino],*wald_granger(g,[causa],[destino],p)])
     linhas.append(["Brent+câmbio","IPA+IPCA",*wald_granger(g,[0,1],[2,3],p)])
@@ -428,7 +496,7 @@ def testar_granger(dados, p):
 
 
 def comparar_choques(regimes):
-    etapa("4. Resposta do IPCA ao Brent e ao câmbio, antes e depois da quebra")
+    etapa("3. Experimento: resposta do IPCA ao Brent e ao câmbio, antes e depois da quebra")
     q = [(1-CONFIANCA)/2,(1+CONFIANCA)/2]
     boots,ratios,denominadores,fracao_instavel = {},{},{},{}
     for i,(nome,r) in enumerate(regimes.items()):
@@ -442,12 +510,14 @@ def comparar_choques(regimes):
             lo,hi = np.quantile(boots[nome][:,:,j],q,axis=0)
             axes[j].plot(range(H+1),ponto,label=nome,color=cor)
             axes[j].fill_between(range(H+1),lo,hi,alpha=.15,color=cor)
-            linhas.append([choque,nome,ponto[H_REPASSE],lo[H_REPASSE],hi[H_REPASSE]])
+            s = regimes[nome].sigma  # Correlação, no mesmo mês, entre as surpresas da origem e do IPCA.
+            linhas.append([choque,nome,ponto[H_REPASSE],lo[H_REPASSE],hi[H_REPASSE],ponto[0],s[3,j]/np.sqrt(s[3,3]*s[j,j])])
         axes[j].axhline(0,color="gray",lw=1); axes[j].set_title(f"{choque.capitalize()}: +{CHOQUE_PCT:g}% no impacto")
         axes[j].set(xlabel="Meses após o choque",ylabel="IPCA acumulado (p.p., aprox.)"); axes[j].legend()
     figura("04_irf_antes_depois")
-    resumo = pd.DataFrame(linhas,columns=["choque","amostra","resposta","inferior","superior"])
+    resumo = pd.DataFrame(linhas,columns=["choque","amostra","resposta","inferior","superior","impacto_h0","corr_residuo_ipca"])
     tabela("04_respostas_12m",resumo)
+    print(f"impacto_h0: resposta no próprio mês do choque, já incluída na soma até h={H_REPASSE}.")
     delta = boots["depois"][:,H_REPASSE,:]-boots["antes"][:,H_REPASSE,:]
     mudanca = resposta(regimes["depois"])[H_REPASSE]-resposta(regimes["antes"])[H_REPASSE]
     limites = np.quantile(delta,q,axis=0)
@@ -457,27 +527,69 @@ def comparar_choques(regimes):
     for nome,r in regimes.items():
         d_lo,d_hi = np.quantile(denominadores[nome],q,axis=0)
         fragil = (d_lo <= 0) & (d_hi >= 0)
+        t = irf(r,ORDEM,horizonte=H_REPASSE)  # Alta acumulada da própria origem após o mesmo choque inicial.
+        origem = np.diag(t.sum(axis=0))[:2]*100*np.log1p(CHOQUE_PCT/100)/np.diag(t[0])[:2]
         tabela("04_razao_"+nome,pd.DataFrame({"elasticidade_aprox":repasse(r),
                "inferior":np.quantile(ratios[nome],q[0],axis=0),
-               "superior":np.quantile(ratios[nome],q[1],axis=0),"denominador_cruza_zero":fragil},index=NOMES[:2]))
+               "superior":np.quantile(ratios[nome],q[1],axis=0),"denominador_cruza_zero":fragil,
+               "origem_acumulada":origem},index=NOMES[:2]))
         if fragil.any():
             print("ATENÇÃO: razão frágil, denominador compatível com zero. Priorize resposta normalizada.")
+    print(f"origem_acumulada: 100×log da própria origem em h={H_REPASSE}. Mesmo choque inicial, trajetórias diferentes.")
     return {"respostas":resumo,"diferenca":dif,"bootstrap_instavel":fracao_instavel}
+
+
+def identificacao(regimes):
+    """Ordem dos choques e repasse no mesmo mês. Rápido: reaproveita os dois VARs, sem bootstrap."""
+    ordens = [list(o) for o in permutations(NOMES)]
+    etapa(f"4. Identificação: {len(ordens)} ordens e mesmo mês versus defasagens")
+    mudancas_ordens = np.array([resposta(regimes["depois"],o)[H_REPASSE]-resposta(regimes["antes"],o)[H_REPASSE] for o in ordens])
+    base = resposta(regimes["depois"])[H_REPASSE]-resposta(regimes["antes"])[H_REPASSE]
+    ipca_antes = np.array([[o.index("ipca") < o.index(v) for v in NOMES[:2]] for o in ordens])  # IPCA não reage no mês.
+    envelope = pd.DataFrame({"min_delta":mudancas_ordens.min(axis=0),
+           "max_delta":mudancas_ordens.max(axis=0),"fracao_delta_positivo":(mudancas_ordens>0).mean(axis=0),
+           "base":base,"quantil_base":(mudancas_ordens <= base+TOL).mean(axis=0),
+           "min_IPCA_antes":np.where(ipca_antes,mudancas_ordens,np.inf).min(axis=0),
+           "max_IPCA_antes":np.where(ipca_antes,mudancas_ordens,-np.inf).max(axis=0)},index=NOMES[:2])
+    tabela(f"05_mudanca_{len(ordens)}_ordens",envelope)
+    print("quantil_base = fração das ordens com diferença <= base; 1 indica a ordem-base no topo do envelope.")
+    print("IPCA_antes: ordens com o IPCA antes da origem do choque, isto é, sem repasse no mesmo mês.")
+    # Linhas trocam A (propagação pelas defasagens); colunas trocam Sigma (relações no mesmo mês).
+    # Decomposição descritiva e não única; não identifica a Petrobras.
+    grade = pd.DataFrame([[choque,nome,*[resposta(ra,sigma=rs.sigma)[H_REPASSE,j] for rs in regimes.values()]]
+                          for j,choque in enumerate(NOMES[:2]) for nome,ra in regimes.items()],
+                         columns=["choque","A_defasagens","Sigma_antes","Sigma_depois"]).set_index(["choque","A_defasagens"])
+    tabela("05_impacto_vs_propagacao",grade)
+    # Uma restrição só, contra 55 do Chow do sistema: a relação Brent-IPCA no mesmo mês mudou?
+    ea,ed = regimes["antes"].e,regimes["depois"].e
+    x,y,pos = np.r_[ea[:,0],ed[:,0]],np.r_[ea[:,3],ed[:,3]],np.r_[np.zeros(len(ea)),np.ones(len(ed))]
+    mm = sm.OLS(y,np.column_stack([np.ones_like(x),pos,x,x*pos])).fit(cov_type="HC1")
+    impacto = 100*np.log1p(CHOQUE_PCT/100)
+    tabela("05_teste_mesmo_mes",pd.DataFrame([{"impacto_antes":mm.params[2]*impacto,"impacto_depois":(mm.params[2]+mm.params[3])*impacto,
+           "diferenca":mm.params[3]*impacto,"p_HC1":mm.pvalues[3],"restricoes":1}]))
+    print("Mesmo mês: resíduo do IPCA sobre o do Brent, com interação pós-quebra. Uma restrição; o Chow do sistema testa 55.")
+    g = grade.loc["brent"]
+    efeito_sigma = [g.loc[a,"Sigma_depois"]-g.loc[a,"Sigma_antes"] for a in ("antes","depois")]
+    efeito_a = [g.loc["depois",s]-g.loc["antes",s] for s in ("Sigma_antes","Sigma_depois")]
+    print(f"Brent: trocar só Sigma muda {min(efeito_sigma):+.3f} a {max(efeito_sigma):+.3f} p.p.; "
+          f"trocar só A, {min(efeito_a):+.3f} a {max(efeito_a):+.3f} p.p.")
+    return {"envelope":envelope,"impacto_propagacao":grade}
 
 
 def verificar_robustez(dados, modelo, regimes, choques):
     p = modelo.p
     q = [(1-CONFIANCA)/2,(1+CONFIANCA)/2]
     fracao_instavel = choques["bootstrap_instavel"]
-    etapa("5. Todas as 120 ordenações e FEVD")
+    ordens = [list(o) for o in permutations(NOMES)]
+    etapa(f"A3. Envelope de {len(ordens)} ordens na amostra completa, correlação residual e FEVD")
     b_total,_,_,inst_total = bootstrap(modelo,SEMENTE+2)
     fracao_instavel["completa"] = inst_total
-    envoltorio = np.array([resposta(modelo,list(o)) for o in permutations(NOMES)])
+    envoltorio = np.array([resposta(modelo,o) for o in ordens])
     corr = pd.DataFrame(np.corrcoef(modelo.e.T),index=NOMES,columns=NOMES)
     tabela("05_correlacao_residuos",corr)
     fig,axes = plt.subplots(1,2,figsize=(12,4.8))
     for j,ax in enumerate(axes):
-        ax.fill_between(range(H+1),envoltorio[:,:,j].min(axis=0),envoltorio[:,:,j].max(axis=0),alpha=.2,color=CORES[j],label="120 ordens (min-max)")
+        ax.fill_between(range(H+1),envoltorio[:,:,j].min(axis=0),envoltorio[:,:,j].max(axis=0),alpha=.2,color=CORES[j],label=f"{len(ordens)} ordens (min-max)")
         lo,hi = np.quantile(b_total[:,:,j],q,axis=0)
         ax.plot(lo,color=CORES[j],ls=":",label=f"IC pontual {CONFIANCA:.0%}")
         ax.plot(hi,color=CORES[j],ls=":")
@@ -485,9 +597,6 @@ def verificar_robustez(dados, modelo, regimes, choques):
         ax.axhline(0,color="gray",lw=1); ax.set(title=NOMES[j],xlabel="Meses",ylabel="IPCA acumulado (p.p., aprox.)"); ax.legend()
     figura("05_envelope")
     print("Envelope: sensibilidade à identificação, NÃO intervalo de confiança.")
-    mudancas_ordens = np.array([resposta(regimes["depois"],list(o))[H_REPASSE]-resposta(regimes["antes"],list(o))[H_REPASSE] for o in permutations(NOMES)])
-    tabela("05_mudanca_120_ordens",pd.DataFrame({"min_delta":mudancas_ordens.min(axis=0),
-           "max_delta":mudancas_ordens.max(axis=0),"fracao_delta_positivo":(mudancas_ordens>0).mean(axis=0)},index=NOMES[:2]))
     fevds = []
     for label,ordem in [("base",ORDEM),("alternativa",ORDEM_ALT)]:
         t = irf(modelo,ordem)
@@ -496,12 +605,8 @@ def verificar_robustez(dados, modelo, regimes, choques):
             assert np.allclose(v.sum(axis=1),1,atol=TOL)
             fevds.append([label,h,*100*v[3]])
     tabela("05_fevd_ipca",pd.DataFrame(fevds,columns=["ordem","h",*NOMES]))
-    # Sigma comum separa mudança de propagação de mudança dos impactos; não identifica a Petrobras.
-    comparacao = pd.DataFrame({"A_antes_Sigma_comum":resposta(regimes["antes"],sigma=modelo.sigma)[H_REPASSE],
-                               "A_depois_Sigma_comum":resposta(regimes["depois"],sigma=modelo.sigma)[H_REPASSE]},index=NOMES[:2])
-    tabela("05_propagacao_covariancia_comum",comparacao)
-    
-    etapa("6. Chow na data conhecida, CUSUM e repasse móvel")
+
+    etapa("A4. Chow na data conhecida, CUSUM e repasse móvel")
     r = modelo
     post = (r.datas >= QUEBRA).astype(float)
     quebram = [0]+list(range(len(r.det),r.k))  # Constante/lags mudam; calendário/pulsos comuns.
@@ -513,6 +618,9 @@ def verificar_robustez(dados, modelo, regimes, choques):
         linhas.append([nome,float(ols.f_test(R).pvalue),float(ols.get_robustcov_results(cov_type="HAC",maxlags=LAG_HAC,use_correction=True).f_test(R).pvalue)])
         erros_u.append(ols.resid)
     tabela("06_chow",pd.DataFrame(linhas,columns=["equacao","Chow_F_p","Wald_HAC_p"]).set_index("equacao"))
+    tabela("06_cusum_ols",pd.DataFrame([[nome,*breaks_cusumolsresid(r.e[:,j],ddof=r.k)[:2]] for j,nome in enumerate(NOMES)],
+           columns=["equacao","estatistica","p"]).set_index("equacao"))
+    print("OLS-CUSUM de Ploberger-Krämer, padrão de vars::stability() no R. H0: coeficientes estáveis.")
     eu = np.column_stack(erros_u)
     lr = r.n*(np.linalg.slogdet(r.e.T@r.e/r.n)[1]-np.linalg.slogdet(eu.T@eu/r.n)[1])
     q_chow = len(quebram)*r.m
@@ -520,7 +628,7 @@ def verificar_robustez(dados, modelo, regimes, choques):
     print(f"{len(quebram)} restrições/equação; {q_chow} no sistema. LR supõe covariância comum; inferência exploratória em níveis.")
     # CUSUM recursivo auxiliar SEM pulsos: pulsos tardios tornam singular a amostra inicial.
     rc = ajusta(dados,p,pulsos=False)
-    fig,axs = plt.subplots(5,1,figsize=(10,10),sharex=True)
+    fig,axs = plt.subplots(len(NOMES),1,figsize=(10,2*len(NOMES)),sharex=True)
     for j,ax in enumerate(axs):
         skip = max(rc.k+1,CUSUM_INICIAL)  # Pelo menos 3 anos e posto completo antes da recursão.
         rr = recursive_olsresiduals(sm.OLS(rc.Y[:,j],rc.X).fit(),skip=skip,alpha=1-ALFA)
@@ -548,11 +656,11 @@ def verificar_robustez(dados, modelo, regimes, choques):
 
 def completar_analise(dados, modelo):
     p = modelo.p
-    etapa("7. Decomposição histórica, com conferência exata da soma")
+    etapa("A5. Decomposição histórica, com conferência exata da soma")
     r = modelo; Y = dados.to_numpy(); n = len(Y)
     P = irf(r,ORDEM,horizonte=0)[0]
     d = deterministicas(dados.index).reindex(columns=r.det,fill_value=0).to_numpy()
-    base = Y.copy(); contribuicoes = np.zeros((n,5,5))
+    base = Y.copy(); contribuicoes = np.zeros((n,r.m,r.m))
     for t in range(p,n):
         esperado = d[t]@r.b[:len(r.det)]+sum(r.A[j-1]@Y[t-j] for j in range(1,p+1))
         u = np.linalg.solve(P,Y[t]-esperado)
@@ -562,15 +670,15 @@ def completar_analise(dados, modelo):
     assert erro_hd < TOL
     hd = pd.DataFrame(contribuicoes[:,3,:],index=dados.index,columns=NOMES)
     hd["deterministica_iniciais"] = base[:,3]; hd["observado"] = Y[:,3]
-    hd.to_csv(OUT/"07_decomposicao.csv")
+    hd.to_csv(OUT/"07_decomposicao.csv",lineterminator="\n")
     ep = hd.loc[EPISODIO[0]:EPISODIO[1]]
-    ax = ep[NOMES].set_axis(ep.index.strftime("%Y-%m")).plot.bar(stacked=True,color=CORES,figsize=(12,5))
+    ax = ep[NOMES].set_axis(ep.index.strftime("%Y-%m")).plot.bar(stacked=True,color=CORES[:r.m],figsize=(12,5))
     ax.plot(range(len(ep)),ep.observado-ep.deterministica_iniciais,color="black",label="IPCA menos base")
     ax.set_xticklabels(ep.index.strftime("%Y-%m"),rotation=60); ax.set_ylabel("IPCA mensal (p.p.)"); ax.legend(ncol=3)
     figura("07_decomposicao")
     print(f"Erro máximo de reconstrução: {erro_hd:.2e}. Base: constante, calendário, pulsos e condições iniciais.")
     
-    etapa("8. Verificação com dinâmica e impactos conhecidos")
+    etapa("A6. Simulação com dinâmica e impactos conhecidos")
     rng = np.random.default_rng(SEMENTE); A = np.asarray(SIM_A); P = np.asarray(SIM_P)
     assert max(abs(np.linalg.eigvals(A))) < 1
     sim = np.zeros((SIM_N+SIM_DESCARTE,3)); shocks = rng.standard_normal(sim.shape)
@@ -592,7 +700,7 @@ def completar_analise(dados, modelo):
     print("Ordem correta mais próxima nesta simulação:", rmse_certa < rmse_errada)
     tabela("08_simulacao",pd.DataFrame({"RMSE_IRF":[rmse_certa,rmse_errada]},index=["certa","errada"]))
     
-    etapa("9. Janela expansiva: VAR contra AR e passeio aleatório")
+    etapa("A7. Previsão em janela expansiva: VAR contra AR e passeio aleatório")
     previsoes = []
     for t in range(P_MAX+24,len(dados)-min(H_PREV)):
         if dados.index[t] < pd.Timestamp(INICIO_PREV):
@@ -610,7 +718,7 @@ def completar_analise(dados, modelo):
             if t+h < len(dados):
                 previsoes.append([dados.index[t],dados.index[t+h],h,dados.ipca.iloc[t+h],fv[h-1],fa[h-1],dados.ipca.iloc[t],dados.ipca.iloc[t-11+(h-1)%12],pv,pa])
     prev = pd.DataFrame(previsoes,columns=["origem","alvo","h","real","VAR","AR","RW","Sazonal","p_VAR","p_AR"])
-    prev.to_csv(OUT/"09_previsoes.csv",index=False)
+    prev.to_csv(OUT/"09_previsoes.csv",index=False,lineterminator="\n")
     metricas = []
     for h in H_PREV:
         v = prev.loc[prev.h==h]
@@ -635,31 +743,151 @@ def completar_analise(dados, modelo):
     return {"erro_hd":erro_hd,"sim_certa":rmse_certa,"sim_errada":rmse_errada,"metricas":metricas}
 
 
-def salvar_resumo(dados, modelo, diag, choques, complemento):
+VARIANTES = [  # (grupo, rótulo, mudanças). As demais opções vêm do painel; edite ou acrescente linhas.
+    ("Referência", "Base: painel atual", {}),
+    ("Defasagens", "p = 1", {"P_FIXO": 1}),
+    ("Defasagens", "p = 4", {"P_FIXO": 4}),
+    ("Selic", "Selic em diferença", {"DIFERENCIAR_SELIC": True}),
+    ("Selic", "Sem a Selic (4 variáveis)", {"INCLUIR_SELIC": False}),
+    ("Episódios", "Sem pulsos de 2018 e 2020", {"DUMMIES": False}),
+    ("Episódios", "Excluir 2020", {"EXCLUIR_2020": True}),
+    ("Episódios", "Pulsos: corte do ICMS 07-08/2022", {"MESES_ATIPICOS": MESES_ATIPICOS+["2022-07", "2022-08"]}),
+    ("Episódios", "Pulsos: tarifaço 01-03/2015", {"MESES_ATIPICOS": MESES_ATIPICOS+["2015-01", "2015-02", "2015-03"]}),
+    ("Amostra", "Fim em 04/2023 (antes da nova estratégia)", {"FIM": "2023-04-01"}),
+    ("Amostra", "Fim em 12/2025 (sem a alta de 2026)", {"FIM": "2025-12-01"}),
+    ("Amostra", "Fim em 12/2021 (sem 2022 em diante)", {"FIM": "2021-12-01"}),
+    ("Identificação", "Câmbio antes do Brent", {"ORDEM": ["cambio", "brent", "ipa", "ipca", "selic"]}),
+    ("Identificação", "IPCA primeiro (sem repasse no mês)", {"ORDEM": ["ipca", "brent", "cambio", "ipa", "selic"]}),
+    ("Restrição", "Brent exógeno ao Brasil", {"RESTRICOES": {"brent": ["cambio", "ipa", "ipca", "selic"]}}),
+]
+
+
+def variantes(lista=None):
+    """Repete o experimento principal mudando uma escolha por vez, sem gravar etapas intermediárias.
+    Mesmas sementes da célula 4: com o painel inalterado, a linha-base reproduz a banda principal.
+    """
+    global inicio_execucao
+    lista = VARIANTES if lista is None else lista
+    etapa(f"5. Variantes: o sinal, a magnitude e a banda resistem? ({len(lista)} especificações)")
+    painel, notebook, relogio = {nome:deepcopy(globals()[nome]) for nome in PARAMETROS_PADRAO}, EM_NOTEBOOK, inicio_execucao
+    q = [(1-CONFIANCA)/2,(1+CONFIANCA)/2]
+    linhas = []
+    try:
+        for grupo,rotulo,mudancas in lista:
+            try:
+                configurar(painel | mudancas, notebook)
+                dados = preparar_dados()[1]
+                regimes = separar_regimes(dados,escolher_p(dados)[0])
+                boots = [bootstrap(r,SEMENTE+i)[0][:,H_REPASSE,:] for i,r in enumerate(regimes.values())]
+                antes,depois = (resposta(r)[H_REPASSE] for r in regimes.values())
+                lo,hi = np.quantile(boots[1]-boots[0],q,axis=0)
+                linhas.append([grupo,rotulo,regimes["antes"].p,regimes["antes"].n,regimes["depois"].n,antes[0],depois[0],
+                               depois[0]-antes[0],lo[0],hi[0],depois[1]-antes[1],lo[1],hi[1]])
+            except (ValueError, AssertionError, np.linalg.LinAlgError) as erro:
+                print(f"Variante '{rotulo}' não estimada: {erro}")
+                linhas.append([grupo,rotulo,*[np.nan]*11])
+    finally:
+        configurar(painel, notebook)  # Volta ao painel; as células seguintes não herdam a última variante.
+        inicio_execucao = relogio
+    tab = pd.DataFrame(linhas,columns=["grupo","variante","p","n_antes","n_depois","brent_antes","brent_depois",
+                                       "brent_diferenca","brent_inferior","brent_superior",
+                                       "cambio_diferenca","cambio_inferior","cambio_superior"]).set_index("variante")
+    tabela("10_variantes",tab,tela=["grupo","p","brent_diferenca","brent_inferior","brent_superior"])
+    grafico_variantes(tab)
+    especificacao = tab[tab.grupo != "Identificação"].dropna(subset=["brent_diferenca"])
+    exclui = (especificacao.brent_inferior > 0) | (especificacao.brent_superior < 0)
+    print(f"Brent, {len(especificacao)} especificações: diferença positiva em {(especificacao.brent_diferenca > 0).sum()}, "
+          f"de {especificacao.brent_diferenca.min():.2f} a {especificacao.brent_diferenca.max():.2f} p.p.; "
+          f"banda de {CONFIANCA:.0%} exclui zero em {exclui.sum()}.")
+    print("Identificação muda a pergunta: IPCA primeiro proíbe o repasse no mês e mostra o peso do impacto imediato.")
+    print("Câmbio: compare magnitude e banda entre linhas; a instabilidade impede leitura estrutural.")
+    return tab
+
+
+def grafico_variantes(tab):
+    """Uma série, uma cor. Ponto cheio: banda exclui zero; vazio: inclui. Grupos separam as perguntas."""
+    fig,ax = plt.subplots(figsize=(11,0.36*(len(tab)+tab.grupo.nunique())+1.8))
+    marcas, pos = [], 0.0
+    for i,(rotulo,row) in enumerate(tab.iterrows()):
+        if i == 0 or row.grupo != tab.grupo.iloc[i-1]:
+            pos += 0.4 if i else 0
+            if row.grupo != "Referência":
+                marcas.append((pos,row.grupo,"grupo")); pos += 1
+        marcas.append((pos,rotulo,"base" if row.grupo == "Referência" else "variante"))
+        exclui = row.brent_inferior > 0 or row.brent_superior < 0
+        ax.plot([row.brent_inferior,row.brent_superior],[pos,pos],color=CORES[0],lw=2,solid_capstyle="round")
+        ax.plot(row.brent_diferenca,pos,"o",ms=8,mew=1.5 if exclui else 2,
+                mfc=CORES[0] if exclui else "white",mec="white" if exclui else CORES[0])
+        pos += 1
+    ax.axvline(0,color="#56616b",lw=1)
+    referencia = tab.loc[tab.grupo == "Referência","brent_diferenca"]
+    if len(referencia):
+        ax.axvline(referencia.iloc[0],color=CORES[0],lw=1,alpha=.35)
+        ax.text(referencia.iloc[0],-0.75,f"base {referencia.iloc[0]:+.2f}",ha="center",va="bottom",color="#56616b")
+    ax.set_yticks([y for y,_,_ in marcas],[t for _,t,_ in marcas])
+    for (_,_,tipo),texto in zip(marcas,ax.get_yticklabels()):
+        texto.set_fontweight("normal" if tipo == "variante" else "bold")
+        texto.set_color("#56616b" if tipo == "grupo" else "black")
+    ax.set_ylim(pos-0.4,-1.3)  # Invertido: primeira variante no topo.
+    ax.tick_params(axis="y",length=0); ax.spines["left"].set_visible(False)
+    ax.grid(axis="x",color="#e3e6e8",lw=.8); ax.set_axisbelow(True)
+    ax.legend(handles=[Line2D([],[],color=CORES[0],lw=2,marker="o",ms=8,mfc=CORES[0],mec="white",mew=1.5,
+                              label=f"Banda de {CONFIANCA:.0%} exclui zero"),
+                       Line2D([],[],color=CORES[0],lw=2,marker="o",ms=8,mfc="white",mec=CORES[0],mew=2,
+                              label="Banda inclui zero")],loc="upper center",bbox_to_anchor=(0.5,-0.07),ncol=2,frameon=False)
+    ax.set_title(f"Diferença depois − antes: IPCA acumulado até h={H_REPASSE} após +{CHOQUE_PCT:g}% no Brent",loc="left")
+    ax.set_xlabel("p.p. (ponto: estimativa; linha: banda bootstrap)")
+    figura("10_variantes")
+
+
+def anexo(dados, modelo, regimes, diag, choques, ident=None, tabela_variantes=None):
+    """Demais exigências do desafio numa chamada: rode depois da apresentação ou quando pedirem."""
+    mostrar_secundarias()
+    testar_granger(dados,modelo.p)
+    verificar_robustez(dados,modelo,regimes,choques)
+    complemento = completar_analise(dados,modelo)
+    return salvar_resumo(dados,modelo,diag,choques,complemento,ident,tabela_variantes)
+
+
+def salvar_resumo(dados, modelo, diag, choques, complemento, ident=None, tabela_variantes=None):
     p = modelo.p
     resumo, dif = choques["respostas"], choques["diferenca"]
     fracao_instavel = choques["bootstrap_instavel"]
     erro_hd = complemento["erro_hd"]
     rmse_certa,rmse_errada = complemento["sim_certa"],complemento["sim_errada"]
     metricas = complemento["metricas"]
-    etapa("10. Conclusão e arquivos para a apresentação")
+    etapa("A8. Síntese e arquivos para a apresentação")
+    cautela = {"cambio":" Magnitude e banda instáveis entre especificações: não é efeito estrutural da depreciação."}
     mensagens = []
     for choque,row in dif.iterrows():
         conclusao = "aumento" if row.inferior>0 else ("redução" if row.superior<0 else "mudança inconclusiva")
-        msg = f"{choque.capitalize()}: {conclusao} na resposta acumulada do IPCA em h={H_REPASSE}."
-        mensagens.append(msg); print(msg)
+        msg = f"{choque.capitalize()}: {conclusao} na resposta acumulada do IPCA em h={H_REPASSE}, nesta especificação.{cautela.get(choque,'')}"
+        mensagens.append(msg)
+    r = resumo.set_index(["choque","amostra"]).loc["brent"]
+    mensagens.append(f"Brent no mês do choque: {r.loc['antes','impacto_h0']:+.3f} p.p. antes e {r.loc['depois','impacto_h0']:+.3f} depois; "
+                     f"correlação das surpresas Brent-IPCA {r.loc['antes','corr_residuo_ipca']:+.2f} e {r.loc['depois','corr_residuo_ipca']:+.2f}.")
+    if tabela_variantes is not None:
+        e = tabela_variantes[tabela_variantes.grupo != "Identificação"].dropna(subset=["brent_diferenca"])
+        mensagens.append(f"Brent em {len(e)} especificações: positiva em {(e.brent_diferenca > 0).sum()}, de "
+                         f"{e.brent_diferenca.min():.2f} a {e.brent_diferenca.max():.2f} p.p.; banda exclui zero em "
+                         f"{((e.brent_inferior > 0) | (e.brent_superior < 0)).sum()}.")
+    for msg in mensagens:
+        print(msg)
     print("Antes/depois é associação entre regimes. Pandemia, tributos, composição de choques e 2023 também importam.")
     resumo_json = {"inicio":str(dados.index[0].date()),"fim":str(dados.index[-1].date()),"n":len(dados),
-                  "quebra":QUEBRA,"p":p,"ordem":ORDEM,"choque_pct":CHOQUE_PCT,"confianca":CONFIANCA,
+                  "quebra":QUEBRA,"p":p,"ordem":ORDEM,"variaveis":NOMES,"choque_pct":CHOQUE_PCT,"confianca":CONFIANCA,
                   "bootstrap":BOOT,"h_repasse":H_REPASSE,"diferenciar_selic":DIFERENCIAR_SELIC,"respostas":resumo.to_dict("records"),"diferenca":dif.reset_index().to_dict("records"),
                   "narrativa":mensagens,"diagnostico":diag.reset_index().replace({np.nan:None}).to_dict("records"),
                   "bootstrap_instavel":fracao_instavel,"erro_hd":erro_hd,"sim_certa":rmse_certa,
                   "sim_errada":rmse_errada,"metricas":metricas.replace({np.nan:None}).to_dict("records"),
+                  "envelope":None if ident is None else ident["envelope"].reset_index().to_dict("records"),
+                  "impacto_propagacao":None if ident is None else ident["impacto_propagacao"].reset_index().to_dict("records"),
+                  "variantes":None if tabela_variantes is None else tabela_variantes.reset_index().replace({np.nan:None}).to_dict("records"),
                   "tempo_segundos":time.perf_counter()-inicio_execucao,
                   "parametros":{nome:globals()[nome] for nome in PARAMETROS_PADRAO},
                   "versoes":{x:version(x) for x in ["numpy","pandas","scipy","statsmodels","matplotlib"]},
-                  "sha256":{str(f.relative_to(BASE)):hashlib.sha256(f.read_bytes()).hexdigest() for f in [BASE/"analise.py",*(BASE/"dados").glob("*.json"),BASE/"dados"/"brent.csv"]}}
-    (OUT/"resumo.json").write_text(json.dumps(resumo_json,indent=2,ensure_ascii=False,allow_nan=False),encoding="utf-8")
+                  "sha256":{f.relative_to(BASE).as_posix():hashlib.sha256(f.read_bytes()).hexdigest() for f in [BASE/"analise.py",*sorted((BASE/"dados").glob("*.json")),BASE/"dados"/"brent.csv"]}}
+    (OUT/"resumo.json").write_text(json.dumps(resumo_json,indent=2,ensure_ascii=False,allow_nan=False),encoding="utf-8",newline="\n")
     print(f"Tempo total: {resumo_json['tempo_segundos']:.1f}s. Resultados em {PASTA_SAIDA}")
     return resumo_json
 
@@ -668,8 +896,7 @@ if __name__ == "__main__":
     configurar()
     dados = carregar_dados()
     modelo, regimes, diagnostico = estimar_modelos(dados)
-    testar_granger(dados,modelo.p)
     choques = comparar_choques(regimes)
-    verificar_robustez(dados,modelo,regimes,choques)
-    complemento = completar_analise(dados,modelo)
-    salvar_resumo(dados,modelo,diagnostico,choques,complemento)
+    ident = identificacao(regimes)
+    tabela_variantes = variantes()
+    anexo(dados,modelo,regimes,diagnostico,choques,ident,tabela_variantes)

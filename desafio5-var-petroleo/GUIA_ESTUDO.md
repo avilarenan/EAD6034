@@ -1,5 +1,7 @@
 # Guia de estudo - Desafio 5
 
+> **Para a apresentação de hoje, use o [guia rápido](GUIA_RAPIDO.md).** Este guia detalhado é anterior à revisão de 26/10/2026. Onde divergir, valem o guia rápido e o [README](README.md): a mudança está concentrada no mesmo mês, a autocorrelação residual vem da equação da Selic, o notebook tem quatro células de apresentação e um anexo, e as variantes estão na célula 4.
+
 Este guia acompanha `apresentacao.ipynb`, suas rotinas em `analise.py` e os cinco slides de `introducao.pdf`. Comece pela narrativa e pelas unidades. Depois estude os testes. Por último, rode as alterações sugeridas e tente explicar o que mudou sem ler o texto.
 
 As marcações **aula/desafio**, **implementação** e **esclarecimento** distinguem os métodos pedidos, as escolhas operacionais e as interpretações matemáticas. Toda–Yamamoto e a referência sazonal são acréscimos declarados de implementação.

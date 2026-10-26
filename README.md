@@ -4,13 +4,13 @@ Repositório dos trabalhos da disciplina EAD6034 da FEA-USP.
 
 ## Desafio 5 - VAR de petróleo e inflação (Palazzi)
 
-A nova tarefa multivariada está em [**desafio5-var-petroleo/**](desafio5-var-petroleo/README.md): notebook com seis células de código, parâmetros comentados, gráficos e tabelas integrados, dados públicos locais e introdução em PDF com cinco slides.
+A nova tarefa multivariada está em [**desafio5-var-petroleo/**](desafio5-var-petroleo/README.md): notebook com quatro células para apresentar e um anexo, parâmetros editáveis ao vivo, dados públicos locais e slides de cinco páginas.
 
-- [Introdução em PDF](desafio5-var-petroleo/introducao.pdf) e [gerador Python](desafio5-var-petroleo/gerar_pdf.py).
+- [Slides da apresentação](desafio5-var-petroleo/EAD6034_Brent_cambio_IPCA.pdf).
 - [Notebook para executar ao vivo](desafio5-var-petroleo/apresentacao.ipynb) e [instruções de execução](desafio5-var-petroleo/README.md).
-- [Guia de estudo](desafio5-var-petroleo/GUIA_ESTUDO.md) e [roteiro oral](desafio5-var-petroleo/ROTEIRO_APRESENTACAO.md).
+- [Guia rápido](desafio5-var-petroleo/GUIA_RAPIDO.md) e [roteiro de dez minutos](desafio5-var-petroleo/ROTEIRO_APRESENTACAO.md).
 
-A análise sugere maior resposta do IPCA ao Brent após outubro/2016 na especificação-base, com sensibilidade às defasagens e ressalva de autocorrelação residual. As atividades univariadas anteriores continuam documentadas abaixo.
+Depois de outubro/2016, o IPCA responde mais ao Brent: +0,34 p.p. na base e positivo nas 13 variantes de especificação e amostra. A mudança está no mesmo mês; o repasse do câmbio não aumentou. As respostas às três perguntas do enunciado estão no [README do desafio](desafio5-var-petroleo/README.md). As atividades univariadas anteriores continuam documentadas abaixo.
 
 ## Seminário final (28/09/2026) — versão atual
 

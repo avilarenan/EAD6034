@@ -2,6 +2,18 @@
 
 Verificação realizada em 26/10/2026, com Python 3.12.14 e as dependências fixadas em requirements.txt.
 
+## Revisão de 26/10/2026: interpretação, variantes e notebook enxuto
+
+- Reprodução independente em Linux, Python 3.12 e as versões de `requirements.txt`: todas as tabelas anteriores coincidem até 1e-10. Os hashes de dados e código conferem com `resumo.json`.
+- Mudanças numéricas: nenhuma na especificação-base. Foram acrescentadas colunas (`LB_p`, `impacto_h0`, `corr_residuo_ipca`, `origem_acumulada`, posição da base no envelope) e as tabelas `05_impacto_vs_propagacao.csv` e `10_variantes.csv`, que substituem `05_propagacao_covariancia_comum.csv` e `sensibilidades.csv`.
+- As 15 variantes usam 399 réplicas e as sementes da célula 3; a linha-base reproduz a banda principal, [+0,100; +0,576]. Os valores estão no README.
+- Novos itens alinhados ao enunciado: `RESTRICOES` para zeros nas defasagens, com reestimação da equação restrita; teste focalizado do mesmo mês com uma restrição (`05_teste_mesmo_mes.csv`, p=0,0001); OLS-CUSUM de Ploberger–Krämer, padrão de `vars::stability()` (`06_cusum_ols.csv`), sem rejeição; variantes sem pulsos (+0,353) e com Brent exógeno (+0,333). Com `RESTRICOES` vazio, todos os números anteriores ficam iguais.
+- `deterministicas()` monta a matriz de uma vez e o bootstrap a reaproveita: mesma saída, cerca de três vezes menos tempo nessa etapa.
+- Notebook executado em kernel novo, sem erros: 5 células de código, 60 s no total (célula 4: 42 s; anexo: 11 s). Também sem erros com `INCLUIR_SELIC=False` (24 ordens) e com `P_FIXO=4, BOOT=99` (31 s).
+- CSVs passam a ser gravados com fim de linha LF em qualquer sistema; `dados/mensal.csv` só é regravado se o conteúdo mudar.
+
+As seções abaixo descrevem a verificação anterior. A tabela de sensibilidades com 99 réplicas foi substituída pela de variantes com 399.
+
 ## Execução e identidades
 
 - O script completo executou sem intervenção no modo `--lote`. Tempo observado: aproximadamente 28–32 segundos, com 399 réplicas em cada um dos três bootstraps (antes, depois e amostra completa).
@@ -49,7 +61,7 @@ Cada linha muda uma escolha em relação à base, com `BOOT=99` para ensaio. O a
 | Diferenciar a Selic | 1 | +0,346 | [+0,116; +0,589] |
 | Mover a quebra para janeiro/2018 | 2 | +0,390 | [+0,110; +0,725] |
 
-Os seis cenários concluíram todas as etapas do script. Os valores completos, inclusive para câmbio, estão em [sensibilidades.csv](resultados/sensibilidades.csv). Use o painel da primeira célula do notebook para reproduzir; ele chama as mesmas rotinas de `analise.py`, sem outra implementação econométrica.
+Os seis cenários concluíram todas as etapas do script. Os valores atuais, com 399 réplicas e também para o câmbio, estão em [10_variantes.csv](resultados/10_variantes.csv). Use o painel da primeira célula do notebook para reproduzir; ele chama as mesmas rotinas de `analise.py`, sem outra implementação econométrica.
 
 As sensibilidades usam menos réplicas que a base e não são uma busca por configuração “vencedora”. A diferença pontual do Brent mantém sinal positivo nesses ensaios, mas a banda com p=4 inclui zero. Para inferência mais refinada, aumente BOOT e continue respeitando a ressalva de especificação residual.
 

@@ -11,6 +11,13 @@
     "ipca",
     "selic"
   ],
+  "variaveis": [
+    "brent",
+    "cambio",
+    "ipa",
+    "ipca",
+    "selic"
+  ],
   "choque_pct": 10.0,
   "confianca": 0.9,
   "bootstrap": 399,
@@ -20,49 +27,59 @@
     {
       "choque": "brent",
       "amostra": "antes",
-      "resposta": 0.07420709895498324,
-      "inferior": -0.07828667474040565,
-      "superior": 0.20757616687150196
+      "resposta": 0.07420709895498244,
+      "inferior": -0.07828667474041007,
+      "superior": 0.20757616687149663,
+      "impacto_h0": -0.004993062931379436,
+      "corr_residuo_ipca": -0.02265881026643925
     },
     {
       "choque": "brent",
       "amostra": "depois",
-      "resposta": 0.41201424106957635,
-      "inferior": 0.2208876473328923,
-      "superior": 0.5918207281004882
+      "resposta": 0.41201424106957846,
+      "inferior": 0.22088764733289315,
+      "superior": 0.59182072810048,
+      "impacto_h0": 0.14504406245713738,
+      "corr_residuo_ipca": 0.42040576633467214
     },
     {
       "choque": "cambio",
       "amostra": "antes",
-      "resposta": 0.25007562789183047,
-      "inferior": -0.10734818024703949,
-      "superior": 0.5550219596931594
+      "resposta": 0.25007562789183196,
+      "inferior": -0.10734818024703861,
+      "superior": 0.5550219596931596,
+      "impacto_h0": 0.055954208057930506,
+      "corr_residuo_ipca": 0.09493703785981505
     },
     {
       "choque": "cambio",
       "amostra": "depois",
-      "resposta": -0.4944238820764106,
-      "inferior": -1.0217212768641564,
-      "superior": -0.026202957887737518
+      "resposta": -0.4944238820764095,
+      "inferior": -1.0217212768641668,
+      "superior": -0.026202957887732265,
+      "impacto_h0": -0.2201062047795892,
+      "corr_residuo_ipca": -0.27950075750709685
     }
   ],
   "diferenca": [
     {
       "index": "brent",
-      "depois_menos_antes": 0.3378071421145931,
-      "inferior": 0.10031028777199584,
-      "superior": 0.5756998135643263
+      "depois_menos_antes": 0.337807142114596,
+      "inferior": 0.10031028777200483,
+      "superior": 0.5756998135643302
     },
     {
       "index": "cambio",
-      "depois_menos_antes": -0.744499509968241,
-      "inferior": -1.3329845496074855,
-      "superior": -0.1389221271660937
+      "depois_menos_antes": -0.7444995099682414,
+      "inferior": -1.332984549607491,
+      "superior": -0.13892212716608646
     }
   ],
   "narrativa": [
-    "Brent: aumento na resposta acumulada do IPCA em h=12.",
-    "Cambio: redução na resposta acumulada do IPCA em h=12."
+    "Brent: aumento na resposta acumulada do IPCA em h=12, nesta especificação.",
+    "Cambio: redução na resposta acumulada do IPCA em h=12, nesta especificação. Magnitude e banda instáveis entre especificações: não é efeito estrutural da depreciação.",
+    "Brent no mês do choque: -0.005 p.p. antes e +0.145 depois; correlação das surpresas Brent-IPCA -0.02 e +0.42.",
+    "Brent em 13 especificações: positiva em 13, de 0.20 a 0.38 p.p.; banda exclui zero em 10."
   ],
   "diagnostico": [
     {
@@ -70,27 +87,27 @@
       "n": 271,
       "k_por_eq": 28,
       "p": 2,
-      "raio": 0.9126692380043149,
-      "meia_vida": 7.585182193540093,
-      "Portmanteau_p": 6.802932255023969e-10
+      "raio": 0.9126692380043124,
+      "meia_vida": 7.585182193539871,
+      "Portmanteau_p": 6.802932255022384e-10
     },
     {
       "amostra": "antes",
       "n": 151,
       "k_por_eq": 22,
       "p": 2,
-      "raio": 0.9199325607976673,
-      "meia_vida": 8.30564838121167,
-      "Portmanteau_p": 0.001981213485080708
+      "raio": 0.9199325607976675,
+      "meia_vida": 8.305648381211693,
+      "Portmanteau_p": 0.001981213485080724
     },
     {
       "amostra": "depois",
       "n": 118,
       "k_por_eq": 28,
       "p": 2,
-      "raio": 0.9224291278131219,
-      "meia_vida": 8.584426022003207,
-      "Portmanteau_p": 4.3553472353438435e-05
+      "raio": 0.9224291278131227,
+      "meia_vida": 8.584426022003296,
+      "Portmanteau_p": 4.355347235343526e-05
     }
   ],
   "bootstrap_instavel": {
@@ -98,16 +115,16 @@
     "depois": 0.002506265664160401,
     "completa": 0.0
   },
-  "erro_hd": 4.618527782440651e-14,
-  "sim_certa": 0.011636628056556554,
-  "sim_errada": 0.1327834080726505,
+  "erro_hd": 1.1191048088221578e-13,
+  "sim_certa": 0.011636628056556684,
+  "sim_errada": 0.13278340807265046,
   "metricas": [
     {
       "h": 1,
       "modelo": "VAR",
       "n": 116,
       "RMSE": 0.3335038460386093,
-      "MAE": 0.25094390912641396,
+      "MAE": 0.250943909126414,
       "DM_VAR_vs_modelo_p": null,
       "CW_favor_VAR_p": null
     },
@@ -115,10 +132,10 @@
       "h": 1,
       "modelo": "AR",
       "n": 116,
-      "RMSE": 0.3465694180204128,
-      "MAE": 0.25704122033910193,
+      "RMSE": 0.34656941802041286,
+      "MAE": 0.257041220339102,
       "DM_VAR_vs_modelo_p": null,
-      "CW_favor_VAR_p": 0.00030643181747640213
+      "CW_favor_VAR_p": 0.00030643181747639297
     },
     {
       "h": 1,
@@ -142,8 +159,8 @@
       "h": 12,
       "modelo": "VAR",
       "n": 105,
-      "RMSE": 0.39314108483969035,
-      "MAE": 0.3042483873104236,
+      "RMSE": 0.3931410848396899,
+      "MAE": 0.3042483873104231,
       "DM_VAR_vs_modelo_p": null,
       "CW_favor_VAR_p": null
     },
@@ -151,10 +168,10 @@
       "h": 12,
       "modelo": "AR",
       "n": 105,
-      "RMSE": 0.3882337810363869,
-      "MAE": 0.2989095338668411,
+      "RMSE": 0.38823378103638695,
+      "MAE": 0.29890953386684116,
       "DM_VAR_vs_modelo_p": null,
-      "CW_favor_VAR_p": 0.6595789746903417
+      "CW_favor_VAR_p": 0.6595789746903098
     },
     {
       "h": 12,
@@ -171,11 +188,286 @@
       "n": 105,
       "RMSE": 0.5197380292489853,
       "MAE": 0.39047619047619053,
-      "DM_VAR_vs_modelo_p": 0.030132627075796895,
+      "DM_VAR_vs_modelo_p": 0.030132627075795542,
       "CW_favor_VAR_p": null
     }
   ],
-  "tempo_segundos": 30.52100749999954,
+  "envelope": [
+    {
+      "index": "brent",
+      "min_delta": 0.03377120955823809,
+      "max_delta": 0.337807142114596,
+      "fracao_delta_positivo": 1.0,
+      "base": 0.337807142114596,
+      "quantil_base": 1.0,
+      "min_IPCA_antes": 0.03377120955823809,
+      "max_IPCA_antes": 0.10012229345810453
+    },
+    {
+      "index": "cambio",
+      "min_delta": -0.8076691696746917,
+      "max_delta": -0.19132545435343923,
+      "fracao_delta_positivo": 0.0,
+      "base": -0.7444995099682414,
+      "quantil_base": 0.35,
+      "min_IPCA_antes": -0.32493330269825754,
+      "max_IPCA_antes": -0.19132545435343923
+    }
+  ],
+  "impacto_propagacao": [
+    {
+      "choque": "brent",
+      "A_defasagens": "antes",
+      "Sigma_antes": 0.07420709895498244,
+      "Sigma_depois": 0.4498256707609792
+    },
+    {
+      "choque": "brent",
+      "A_defasagens": "depois",
+      "Sigma_antes": 0.15202681633650458,
+      "Sigma_depois": 0.41201424106957846
+    },
+    {
+      "choque": "cambio",
+      "A_defasagens": "antes",
+      "Sigma_antes": 0.25007562789183196,
+      "Sigma_depois": -0.2848215338957058
+    },
+    {
+      "choque": "cambio",
+      "A_defasagens": "depois",
+      "Sigma_antes": -0.11306039239429519,
+      "Sigma_depois": -0.4944238820764095
+    }
+  ],
+  "variantes": [
+    {
+      "variante": "Base: painel atual",
+      "grupo": "Referência",
+      "p": 2,
+      "n_antes": 151,
+      "n_depois": 118,
+      "brent_antes": 0.07420709895498244,
+      "brent_depois": 0.41201424106957846,
+      "brent_diferenca": 0.337807142114596,
+      "brent_inferior": 0.10031028777200483,
+      "brent_superior": 0.5756998135643302,
+      "cambio_diferenca": -0.7444995099682414,
+      "cambio_inferior": -1.332984549607491,
+      "cambio_superior": -0.13892212716608646
+    },
+    {
+      "variante": "p = 1",
+      "grupo": "Defasagens",
+      "p": 1,
+      "n_antes": 152,
+      "n_depois": 119,
+      "brent_antes": 0.0651229549036328,
+      "brent_depois": 0.3667141635037896,
+      "brent_diferenca": 0.3015912086001568,
+      "brent_inferior": 0.11130410762692376,
+      "brent_superior": 0.4343554680114849,
+      "cambio_diferenca": -0.5233882603800738,
+      "cambio_inferior": -0.8071585261460754,
+      "cambio_superior": 0.04198817065454611
+    },
+    {
+      "variante": "p = 4",
+      "grupo": "Defasagens",
+      "p": 4,
+      "n_antes": 149,
+      "n_depois": 116,
+      "brent_antes": 0.11159513447859756,
+      "brent_depois": 0.3098386526403252,
+      "brent_diferenca": 0.1982435181617276,
+      "brent_inferior": -0.0811306275028122,
+      "brent_superior": 0.4892258296194259,
+      "cambio_diferenca": -0.8346173452403644,
+      "cambio_inferior": -1.6863311236118785,
+      "cambio_superior": -0.02747965498707732
+    },
+    {
+      "variante": "Selic em diferença",
+      "grupo": "Selic",
+      "p": 1,
+      "n_antes": 152,
+      "n_depois": 119,
+      "brent_antes": 0.11696759346825236,
+      "brent_depois": 0.46343223318410637,
+      "brent_diferenca": 0.346464639715854,
+      "brent_inferior": 0.11898475055047367,
+      "brent_superior": 0.5539792726798506,
+      "cambio_diferenca": -0.06223743606907675,
+      "cambio_inferior": -0.5558560399766541,
+      "cambio_superior": 0.6356937863132867
+    },
+    {
+      "variante": "Sem a Selic (4 variáveis)",
+      "grupo": "Selic",
+      "p": 1,
+      "n_antes": 152,
+      "n_depois": 119,
+      "brent_antes": 0.062300527051343375,
+      "brent_depois": 0.4428889139385982,
+      "brent_diferenca": 0.3805883868872548,
+      "brent_inferior": 0.1940127979592516,
+      "brent_superior": 0.5738967405535349,
+      "cambio_diferenca": -0.4278634588422353,
+      "cambio_inferior": -0.8979426453384834,
+      "cambio_superior": 0.20174540342843622
+    },
+    {
+      "variante": "Sem pulsos de 2018 e 2020",
+      "grupo": "Episódios",
+      "p": 2,
+      "n_antes": 151,
+      "n_depois": 118,
+      "brent_antes": 0.07420709895498244,
+      "brent_depois": 0.4268749572165648,
+      "brent_diferenca": 0.35266785826158237,
+      "brent_inferior": 0.12039391669596847,
+      "brent_superior": 0.5578202754049488,
+      "cambio_diferenca": -0.4685973383305899,
+      "cambio_inferior": -1.101293115917051,
+      "cambio_superior": 0.12944600232229408
+    },
+    {
+      "variante": "Excluir 2020",
+      "grupo": "Episódios",
+      "p": 2,
+      "n_antes": 151,
+      "n_depois": 104,
+      "brent_antes": 0.07420709895498244,
+      "brent_depois": 0.39508333763914005,
+      "brent_diferenca": 0.3208762386841576,
+      "brent_inferior": 0.027992057254478498,
+      "brent_superior": 0.5236805497975687,
+      "cambio_diferenca": -0.9404549754015328,
+      "cambio_inferior": -1.4888162371496474,
+      "cambio_superior": -0.2750026174810328
+    },
+    {
+      "variante": "Pulsos: corte do ICMS 07-08/2022",
+      "grupo": "Episódios",
+      "p": 2,
+      "n_antes": 151,
+      "n_depois": 118,
+      "brent_antes": 0.07420709895498244,
+      "brent_depois": 0.45571118047118386,
+      "brent_diferenca": 0.3815040815162014,
+      "brent_inferior": 0.1337488457052697,
+      "brent_superior": 0.636395624381888,
+      "cambio_diferenca": -0.4781071024570779,
+      "cambio_inferior": -1.1379477400584048,
+      "cambio_superior": 0.17916828245480748
+    },
+    {
+      "variante": "Pulsos: tarifaço 01-03/2015",
+      "grupo": "Episódios",
+      "p": 2,
+      "n_antes": 151,
+      "n_depois": 118,
+      "brent_antes": 0.13928638493621986,
+      "brent_depois": 0.41201424106957846,
+      "brent_diferenca": 0.2727278561333586,
+      "brent_inferior": 0.045046227733336865,
+      "brent_superior": 0.49149055683262444,
+      "cambio_diferenca": -0.6755053117858844,
+      "cambio_inferior": -1.2716715305813782,
+      "cambio_superior": -0.1505276074917849
+    },
+    {
+      "variante": "Fim em 04/2023 (antes da nova estratégia)",
+      "grupo": "Amostra",
+      "p": 2,
+      "n_antes": 151,
+      "n_depois": 77,
+      "brent_antes": 0.07420709895498244,
+      "brent_depois": 0.4160583185444213,
+      "brent_diferenca": 0.34185121958943887,
+      "brent_inferior": 0.021302318500763886,
+      "brent_superior": 0.6222510580017402,
+      "cambio_diferenca": -0.8138873315997386,
+      "cambio_inferior": -1.4575918180708027,
+      "cambio_superior": 0.03040300612910667
+    },
+    {
+      "variante": "Fim em 12/2025 (sem a alta de 2026)",
+      "grupo": "Amostra",
+      "p": 2,
+      "n_antes": 151,
+      "n_depois": 109,
+      "brent_antes": 0.07420709895498244,
+      "brent_depois": 0.36853714443257307,
+      "brent_diferenca": 0.2943300454775906,
+      "brent_inferior": -0.0028915128091939434,
+      "brent_superior": 0.5236771311079155,
+      "cambio_diferenca": -0.7309061093322134,
+      "cambio_inferior": -1.265938535284518,
+      "cambio_superior": -0.0867848894616783
+    },
+    {
+      "variante": "Fim em 12/2021 (sem 2022 em diante)",
+      "grupo": "Amostra",
+      "p": 2,
+      "n_antes": 151,
+      "n_depois": 61,
+      "brent_antes": 0.07420709895498244,
+      "brent_depois": 0.29422606625165987,
+      "brent_diferenca": 0.22001896729667741,
+      "brent_inferior": -0.0565153654459198,
+      "brent_superior": 0.4929562294143829,
+      "cambio_diferenca": -0.27706859838070513,
+      "cambio_inferior": -0.907319211668265,
+      "cambio_superior": 0.38578696881654245
+    },
+    {
+      "variante": "Câmbio antes do Brent",
+      "grupo": "Identificação",
+      "p": 2,
+      "n_antes": 151,
+      "n_depois": 118,
+      "brent_antes": 0.106690537114635,
+      "brent_depois": 0.3874261534267672,
+      "brent_diferenca": 0.2807356163121322,
+      "brent_inferior": 0.055178498210976486,
+      "brent_superior": 0.5054499464555117,
+      "cambio_diferenca": -0.8076691696746917,
+      "cambio_inferior": -1.431159699736155,
+      "cambio_superior": -0.16883664673935125
+    },
+    {
+      "variante": "IPCA primeiro (sem repasse no mês)",
+      "grupo": "Identificação",
+      "p": 2,
+      "n_antes": 151,
+      "n_depois": 118,
+      "brent_antes": 0.08541919504290917,
+      "brent_depois": 0.18549377095379976,
+      "brent_diferenca": 0.1000745759108906,
+      "brent_inferior": -0.12294227514540698,
+      "brent_superior": 0.33300295275313496,
+      "cambio_diferenca": -0.28580999158656656,
+      "cambio_inferior": -0.8504092345330585,
+      "cambio_superior": 0.2501287656135279
+    },
+    {
+      "variante": "Brent exógeno ao Brasil",
+      "grupo": "Restrição",
+      "p": 2,
+      "n_antes": 151,
+      "n_depois": 118,
+      "brent_antes": 0.08074249004287996,
+      "brent_depois": 0.41358818308208967,
+      "brent_diferenca": 0.3328456930392097,
+      "brent_inferior": 0.06126836338484667,
+      "brent_superior": 0.5520008326959495,
+      "cambio_diferenca": -0.8020515009869503,
+      "cambio_inferior": -1.4287941767074064,
+      "cambio_superior": -0.2703481374987612
+    }
+  ],
+  "tempo_segundos": 61.39457983197644,
   "parametros": {
     "INICIO": "2004-01-01",
     "FIM": "2026-09-01",
@@ -210,6 +502,8 @@
     ],
     "EXCLUIR_2020": false,
     "DIFERENCIAR_SELIC": false,
+    "INCLUIR_SELIC": true,
+    "RESTRICOES": {},
     "H": 24,
     "H_REPASSE": 12,
     "CHOQUE_PCT": 10.0,
@@ -283,6 +577,7 @@
     "PAUSAR": false,
     "MOSTRAR": true,
     "PASTA_SAIDA": "resultados",
+    "EXIBIR_TUDO": false,
     "DPI": 150,
     "FONT_SIZE": 11,
     "MAX_LINHAS_TELA": 24,
@@ -297,12 +592,12 @@
     "matplotlib": "3.11.2"
   },
   "sha256": {
-    "analise.py": "d69d405ffc63b612e27c0ec937adb5e58193994e13b3874b21dfb6d64c6d814c",
-    "dados\\cambio.json": "6ebeb9b8472d9e252c80e816a633438be433184793a2943878ddda9aad3006f9",
-    "dados\\fontes.json": "f2e93cfb26faf3d0e5770fc508e421b32e2760358b73e59b1fa1496e48f180b1",
-    "dados\\ipa.json": "191ae2804ad6661140c9754c89f685cc62fbab8ac1eac79ada9704c24b653e08",
-    "dados\\ipca.json": "cfaae24efcb6180a7b73c6a4a0e49eaa0b16c34432e40a08f5b9cf535788acc5",
-    "dados\\selic.json": "d68135dab6fec49830d135e08b6f6faa15c1adc5c02bb53e0373a7e03df7263a",
-    "dados\\brent.csv": "48afbf0e04bdd0db0c95990c6712ef1a350f2516aee66071aa9e5d3c38cccfc9"
+    "analise.py": "c8706c78c0ff16347a0a18a74db501a84ea111094023dc393871f5cfd38312ff",
+    "dados/cambio.json": "6ebeb9b8472d9e252c80e816a633438be433184793a2943878ddda9aad3006f9",
+    "dados/fontes.json": "f2e93cfb26faf3d0e5770fc508e421b32e2760358b73e59b1fa1496e48f180b1",
+    "dados/ipa.json": "191ae2804ad6661140c9754c89f685cc62fbab8ac1eac79ada9704c24b653e08",
+    "dados/ipca.json": "cfaae24efcb6180a7b73c6a4a0e49eaa0b16c34432e40a08f5b9cf535788acc5",
+    "dados/selic.json": "d68135dab6fec49830d135e08b6f6faa15c1adc5c02bb53e0373a7e03df7263a",
+    "dados/brent.csv": "48afbf0e04bdd0db0c95990c6712ef1a350f2516aee66071aa9e5d3c38cccfc9"
   }
 }
