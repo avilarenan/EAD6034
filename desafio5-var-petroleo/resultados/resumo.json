@@ -1,0 +1,195 @@
+{
+  "inicio": "2004-01-01",
+  "fim": "2026-09-01",
+  "n": 273,
+  "quebra": "2016-10-01",
+  "p": 2,
+  "ordem": [
+    "brent",
+    "cambio",
+    "ipa",
+    "ipca",
+    "selic"
+  ],
+  "choque_pct": 10.0,
+  "confianca": 0.9,
+  "bootstrap": 399,
+  "h_repasse": 12,
+  "diferenciar_selic": false,
+  "respostas": [
+    {
+      "choque": "brent",
+      "amostra": "antes",
+      "resposta": 0.07420709895498324,
+      "inferior": -0.07828667474040565,
+      "superior": 0.20757616687150196
+    },
+    {
+      "choque": "brent",
+      "amostra": "depois",
+      "resposta": 0.41201424106957635,
+      "inferior": 0.2208876473328923,
+      "superior": 0.5918207281004882
+    },
+    {
+      "choque": "cambio",
+      "amostra": "antes",
+      "resposta": 0.25007562789183047,
+      "inferior": -0.10734818024703949,
+      "superior": 0.5550219596931594
+    },
+    {
+      "choque": "cambio",
+      "amostra": "depois",
+      "resposta": -0.4944238820764106,
+      "inferior": -1.0217212768641564,
+      "superior": -0.026202957887737518
+    }
+  ],
+  "diferenca": [
+    {
+      "index": "brent",
+      "depois_menos_antes": 0.3378071421145931,
+      "inferior": 0.10031028777199584,
+      "superior": 0.5756998135643263
+    },
+    {
+      "index": "cambio",
+      "depois_menos_antes": -0.744499509968241,
+      "inferior": -1.3329845496074855,
+      "superior": -0.1389221271660937
+    }
+  ],
+  "narrativa": [
+    "Brent: aumento na resposta acumulada do IPCA em h=12.",
+    "Cambio: redução na resposta acumulada do IPCA em h=12."
+  ],
+  "diagnostico": [
+    {
+      "amostra": "completa",
+      "n": 271,
+      "k_por_eq": 28,
+      "p": 2,
+      "raio": 0.9126692380043149,
+      "meia_vida": 7.585182193540093,
+      "Portmanteau_p": 6.802932255023969e-10
+    },
+    {
+      "amostra": "antes",
+      "n": 151,
+      "k_por_eq": 22,
+      "p": 2,
+      "raio": 0.9199325607976673,
+      "meia_vida": 8.30564838121167,
+      "Portmanteau_p": 0.001981213485080708
+    },
+    {
+      "amostra": "depois",
+      "n": 118,
+      "k_por_eq": 28,
+      "p": 2,
+      "raio": 0.9224291278131219,
+      "meia_vida": 8.584426022003207,
+      "Portmanteau_p": 4.3553472353438435e-05
+    }
+  ],
+  "bootstrap_instavel": {
+    "antes": 0.0,
+    "depois": 0.002506265664160401,
+    "completa": 0.0
+  },
+  "erro_hd": 4.618527782440651e-14,
+  "sim_certa": 0.011636628056556554,
+  "sim_errada": 0.1327834080726505,
+  "metricas": [
+    {
+      "h": 1,
+      "modelo": "VAR",
+      "n": 116,
+      "RMSE": 0.3335038460386093,
+      "MAE": 0.25094390912641396,
+      "DM_VAR_vs_modelo_p": null,
+      "CW_favor_VAR_p": null
+    },
+    {
+      "h": 1,
+      "modelo": "AR",
+      "n": 116,
+      "RMSE": 0.3465694180204128,
+      "MAE": 0.25704122033910193,
+      "DM_VAR_vs_modelo_p": null,
+      "CW_favor_VAR_p": 0.00030643181747640213
+    },
+    {
+      "h": 1,
+      "modelo": "RW",
+      "n": 116,
+      "RMSE": 0.41119464306184567,
+      "MAE": 0.3077586206896552,
+      "DM_VAR_vs_modelo_p": null,
+      "CW_favor_VAR_p": null
+    },
+    {
+      "h": 1,
+      "modelo": "Sazonal",
+      "n": 116,
+      "RMSE": 0.5060104264974566,
+      "MAE": 0.3817241379310345,
+      "DM_VAR_vs_modelo_p": 0.004484697174311532,
+      "CW_favor_VAR_p": null
+    },
+    {
+      "h": 12,
+      "modelo": "VAR",
+      "n": 105,
+      "RMSE": 0.39314108483969035,
+      "MAE": 0.3042483873104236,
+      "DM_VAR_vs_modelo_p": null,
+      "CW_favor_VAR_p": null
+    },
+    {
+      "h": 12,
+      "modelo": "AR",
+      "n": 105,
+      "RMSE": 0.3882337810363869,
+      "MAE": 0.2989095338668411,
+      "DM_VAR_vs_modelo_p": null,
+      "CW_favor_VAR_p": 0.6595789746903417
+    },
+    {
+      "h": 12,
+      "modelo": "RW",
+      "n": 105,
+      "RMSE": 0.5197380292489853,
+      "MAE": 0.39047619047619053,
+      "DM_VAR_vs_modelo_p": null,
+      "CW_favor_VAR_p": null
+    },
+    {
+      "h": 12,
+      "modelo": "Sazonal",
+      "n": 105,
+      "RMSE": 0.5197380292489853,
+      "MAE": 0.39047619047619053,
+      "DM_VAR_vs_modelo_p": 0.030132627075796895,
+      "CW_favor_VAR_p": null
+    }
+  ],
+  "tempo_segundos": 27.82133530000283,
+  "versoes": {
+    "numpy": "2.3.5",
+    "pandas": "3.0.1",
+    "scipy": "1.18.1",
+    "statsmodels": "0.15.0",
+    "matplotlib": "3.11.2"
+  },
+  "sha256": {
+    "analise.py": "71bc5a7dc7866bb7d0a1beaccdf6ab711a7d29e37386671ffc758620edb91298",
+    "dados\\cambio.json": "6ebeb9b8472d9e252c80e816a633438be433184793a2943878ddda9aad3006f9",
+    "dados\\fontes.json": "f2e93cfb26faf3d0e5770fc508e421b32e2760358b73e59b1fa1496e48f180b1",
+    "dados\\ipa.json": "191ae2804ad6661140c9754c89f685cc62fbab8ac1eac79ada9704c24b653e08",
+    "dados\\ipca.json": "cfaae24efcb6180a7b73c6a4a0e49eaa0b16c34432e40a08f5b9cf535788acc5",
+    "dados\\selic.json": "d68135dab6fec49830d135e08b6f6faa15c1adc5c02bb53e0373a7e03df7263a",
+    "dados\\brent.csv": "48afbf0e04bdd0db0c95990c6712ef1a350f2516aee66071aa9e5d3c38cccfc9"
+  }
+}

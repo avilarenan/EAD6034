@@ -1,6 +1,16 @@
 # EAD6034 - Seminário de Econometria de Séries Temporais
 
-Repositório do seminário **Previsibilidade linear em múltiplas escalas e classes de ativos**, desenvolvido para a disciplina EAD6034 da FEA-USP.
+Repositório dos trabalhos da disciplina EAD6034 da FEA-USP.
+
+## Desafio 5 - VAR de petróleo e inflação (Palazzi)
+
+A nova tarefa multivariada está em [**desafio5-var-petroleo/**](desafio5-var-petroleo/README.md): script único em Python com parâmetros comentados, dados públicos locais, resultados reproduzíveis e introdução em PDF com cinco slides.
+
+- [Introdução em PDF](desafio5-var-petroleo/introducao.pdf) e [gerador Python](desafio5-var-petroleo/gerar_pdf.py).
+- [Análise para executar ao vivo](desafio5-var-petroleo/analise.py) e [instruções de execução](desafio5-var-petroleo/README.md).
+- [Guia de estudo](desafio5-var-petroleo/GUIA_ESTUDO.md) e [roteiro oral](desafio5-var-petroleo/ROTEIRO_APRESENTACAO.md).
+
+A análise sugere maior resposta do IPCA ao Brent após outubro/2016 na especificação-base, com sensibilidade às defasagens e ressalva de autocorrelação residual. As atividades univariadas anteriores continuam documentadas abaixo.
 
 ## Seminário final (28/09/2026) — versão atual
 

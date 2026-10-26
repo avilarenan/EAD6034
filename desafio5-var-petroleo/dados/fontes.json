@@ -1,0 +1,42 @@
+{
+  "extraido_em_utc": "2026-10-26",
+  "inicio": "2003-12-01",
+  "fim": "2026-09-01",
+  "series": [
+    {
+      "arquivo": "brent.csv",
+      "serie": "POILBREUSDM",
+      "url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=POILBREUSDM&cosd=2003-12-01&coed=2026-09-30",
+      "sha256": "48afbf0e04bdd0db0c95990c6712ef1a350f2516aee66071aa9e5d3c38cccfc9",
+      "bytes": 8031
+    },
+    {
+      "arquivo": "cambio.json",
+      "serie": "SGS 3698",
+      "url": "https://api.bcb.gov.br/dados/serie/bcdata.sgs.3698/dados?formato=json&dataInicial=01/12/2003&dataFinal=30/09/2026",
+      "sha256": "6ebeb9b8472d9e252c80e816a633438be433184793a2943878ddda9aad3006f9",
+      "bytes": 10687
+    },
+    {
+      "arquivo": "ipa.json",
+      "serie": "SGS 225",
+      "url": "https://api.bcb.gov.br/dados/serie/bcdata.sgs.225/dados?formato=json&dataInicial=01/12/2003&dataFinal=30/09/2026",
+      "sha256": "191ae2804ad6661140c9754c89f685cc62fbab8ac1eac79ada9704c24b653e08",
+      "bytes": 10218
+    },
+    {
+      "arquivo": "ipca.json",
+      "serie": "SGS 433",
+      "url": "https://api.bcb.gov.br/dados/serie/bcdata.sgs.433/dados?formato=json&dataInicial=01/12/2003&dataFinal=30/09/2026",
+      "sha256": "cfaae24efcb6180a7b73c6a4a0e49eaa0b16c34432e40a08f5b9cf535788acc5",
+      "bytes": 10154
+    },
+    {
+      "arquivo": "selic.json",
+      "serie": "SGS 4189",
+      "url": "https://api.bcb.gov.br/dados/serie/bcdata.sgs.4189/dados?formato=json&dataInicial=01/12/2003&dataFinal=30/09/2026",
+      "sha256": "d68135dab6fec49830d135e08b6f6faa15c1adc5c02bb53e0373a7e03df7263a",
+      "bytes": 10324
+    }
+  ]
+}
