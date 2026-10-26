@@ -175,7 +175,120 @@
       "CW_favor_VAR_p": null
     }
   ],
-  "tempo_segundos": 27.82133530000283,
+  "tempo_segundos": 30.52100749999954,
+  "parametros": {
+    "INICIO": "2004-01-01",
+    "FIM": "2026-09-01",
+    "QUEBRA": "2016-10-01",
+    "ORDEM": [
+      "brent",
+      "cambio",
+      "ipa",
+      "ipca",
+      "selic"
+    ],
+    "ORDEM_ALT": [
+      "cambio",
+      "brent",
+      "ipa",
+      "selic",
+      "ipca"
+    ],
+    "P_FIXO": null,
+    "P_MAX": 6,
+    "CRITERIO": "bic",
+    "AJUSTAR_P_RESIDUOS": true,
+    "SAZONAIS": true,
+    "DUMMIES": true,
+    "MESES_ATIPICOS": [
+      "2018-05",
+      "2018-06",
+      "2020-03",
+      "2020-04",
+      "2020-05",
+      "2020-06"
+    ],
+    "EXCLUIR_2020": false,
+    "DIFERENCIAR_SELIC": false,
+    "H": 24,
+    "H_REPASSE": 12,
+    "CHOQUE_PCT": 10.0,
+    "CONFIANCA": 0.9,
+    "BOOT": 399,
+    "SEMENTE": 20261025,
+    "ALFA": 0.05,
+    "LAG_DIAG": 12,
+    "LAG_ARCH": 4,
+    "LAG_HAC": 12,
+    "CUSUM_INICIAL": 36,
+    "REG_TESTES": "c",
+    "ADF_CRITERIO": "BIC",
+    "KPSS_LAGS": "auto",
+    "MIN_GRAUS_LIVRES": 10,
+    "THREADS": 1,
+    "ADF_MAX": 12,
+    "D_MAX": 1,
+    "JANELA": 96,
+    "PASSO_JANELA": 3,
+    "FEVD_H": [
+      1,
+      12,
+      24
+    ],
+    "EPISODIO": [
+      "2021-01-01",
+      "2022-12-01"
+    ],
+    "INICIO_PREV": "2017-01-01",
+    "H_PREV": [
+      1,
+      12
+    ],
+    "SIM_N": 600,
+    "SIM_DESCARTE": 200,
+    "SIM_A": [
+      [
+        0.6,
+        0,
+        -0.2
+      ],
+      [
+        0.15,
+        0.5,
+        -0.1
+      ],
+      [
+        0.1,
+        0.2,
+        0.7
+      ]
+    ],
+    "SIM_P": [
+      [
+        1,
+        0,
+        0
+      ],
+      [
+        0.3,
+        0.7,
+        0
+      ],
+      [
+        0.5,
+        0.4,
+        0.6
+      ]
+    ],
+    "PAUSAR": false,
+    "MOSTRAR": true,
+    "PASTA_SAIDA": "resultados",
+    "DPI": 150,
+    "FONT_SIZE": 11,
+    "MAX_LINHAS_TELA": 24,
+    "CASAS": 4,
+    "TOL": 1e-08
+  },
   "versoes": {
     "numpy": "2.3.5",
     "pandas": "3.0.1",
@@ -184,7 +297,7 @@
     "matplotlib": "3.11.2"
   },
   "sha256": {
-    "analise.py": "71bc5a7dc7866bb7d0a1beaccdf6ab711a7d29e37386671ffc758620edb91298",
+    "analise.py": "d69d405ffc63b612e27c0ec937adb5e58193994e13b3874b21dfb6d64c6d814c",
     "dados\\cambio.json": "6ebeb9b8472d9e252c80e816a633438be433184793a2943878ddda9aad3006f9",
     "dados\\fontes.json": "f2e93cfb26faf3d0e5770fc508e421b32e2760358b73e59b1fa1496e48f180b1",
     "dados\\ipa.json": "191ae2804ad6661140c9754c89f685cc62fbab8ac1eac79ada9704c24b653e08",

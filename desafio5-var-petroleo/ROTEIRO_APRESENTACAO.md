@@ -1,95 +1,95 @@
-# Roteiro oral - cerca de dez minutos
+# Roteiro oral - notebook e cinco slides, cerca de dez minutos
 
-## Preparação
+## Antes da apresentação
 
-Abra o PDF e o script. No terminal, use `python analise.py`. Ele ficará esperando Enter antes do primeiro bloco. Os gráficos aparecem quando o bloco roda; feche cada janela depois de comentar. `--lote` serve para regenerar arquivos sem interação.
+Abra `introducao.pdf` e `apresentacao.ipynb`. No notebook, use Shift+Enter para executar cada uma das seis células de código. As tabelas e figuras aparecem abaixo delas. Não é necessário abrir PNGs, CSVs ou o arquivo técnico enquanto apresenta.
 
-Ensaiar com 399 réplicas já levou aproximadamente meio minuto de cálculo total, sem contar fala/pausas. `BOOT=99` permite um ensaio ainda mais curto. Na apresentação, avise se reduzir o número de réplicas.
+A primeira célula concentra `PARAMETROS`; os cálculos reutilizáveis ficam em `analise.py`. Use a configuração-base antes da abertura. Para uma mudança de cenário, reinicie o kernel e execute todas as células.
 
-## 0:00-2:00 - cinco slides
+## 0:00-2:15 - introdução em PDF
 
-**Slide 1, 20 s.** “Minha pergunta é se um mesmo aumento do petróleo passa de maneira diferente aos preços brasileiros antes e depois de outubro de 2016.”
+**Slide 1, 15 s.** “Minha pergunta é se o mesmo aumento inesperado do petróleo passa de maneira diferente ao IPCA antes e depois de outubro de 2016.”
 
-**Slide 2, 25 s.** “Separo o petróleo em dólares do câmbio. O IPA representa preços ao produtor e o IPCA, ao consumidor. A Selic representa a condição monetária. Uso séries mensais públicas, com a base salva para reprodução.”
+**Slide 2, 20 s.** “O petróleo tem preço em dólares. O câmbio converte esse custo em reais. O IPA representa preços ao produtor, o IPCA ao consumidor e a Selic a condição monetária.”
 
-**Slide 3, 30 s.** “Cada variável depende dos dois meses anteriores de todas as cinco. A ordem de Cholesky define quem pode reagir no mesmo mês. Comparo uma alta de 10% nos dois períodos e acumulo a resposta do IPCA até h=12, incluindo o impacto.”
+**Slide 3, 45 s.** “O experimento é uma alta inesperada e única de 10% no Brent em dólares. Dentro de cada regime, comparo duas trajetórias com o mesmo ponto de partida: uma recebe essa surpresa; a outra não. As outras surpresas ficam zeradas, mas as variáveis podem reagir ao petróleo. Uso um modelo estimado até setembro de 2016 e outro a partir de outubro de 2016. Somo a diferença no IPCA desde o impacto até o mês 12.”
 
-**Slide 4, 30 s.** “O efeito do petróleo passa de cerca de 0,07 para 0,41 ponto percentual. A diferença é positiva na base. Mas os resíduos ainda são autocorrelacionados; a banda é exploratória. O sinal negativo do câmbio também exige cuidado.”
+**Slide 4, 40 s.** “No modelo anterior, o choque acrescenta cerca de 0,07 ponto percentual de inflação acumulada. No posterior, acrescenta 0,41. A diferença entre essas respostas é 0,34. Estamos falando de efeitos estimados em relação ao caminho sem o choque, não da inflação total observada. A banda é condicional ao modelo, e há limitações nos resíduos e nas defasagens.”
 
-**Slide 5, 15 s.** “Essa comparação não isola a Petrobras. Vou mostrar os diagnósticos e as respostas, depois alterar uma hipótese para verificar a conclusão.”
+**Slide 5, 15 s.** “Essa comparação entre períodos não isola o efeito da Petrobras. Agora vou construir o resultado no notebook e verificar sua sensibilidade.”
 
-## 2:00-3:15 - dados, modelo e diagnóstico
+## 2:15-3:00 - células 1 e 2: condições e dados
 
-**Células 2 e 3.** Aperte Enter, mostre rapidamente as séries e os testes.
+Execute o painel de parâmetros e a leitura dos dados.
 
-“Petróleo e câmbio entram como diferenças de log. IPCA e IPA já são taxas. A Selic fica em nível na base, mas os testes deixam uma dúvida sobre sua estacionariedade.”
+“Todos os controles que vou alterar estão neste dicionário. Os dados são locais. Brent e câmbio entram como variações do log; IPA e IPCA já são taxas mensais. A Selic está em nível na base.”
 
-“O BIC escolheu dois lags. As raízes estimadas estão dentro do círculo, indicando estabilidade dinâmica. Isso não resolve outro problema: o Portmanteau rejeita ausência de autocorrelação. Nenhum p da grade até seis passou. Por isso não vou tratar o modelo como definitivamente validado.”
+Mostre nomes e unidades dos eixos. Na tabela ADF/KPSS, aponte a dúvida de estacionariedade da Selic. Não leia cada número.
 
-Não leia cada p-valor. Localize `02_diagnostico`. Se perguntarem sobre um coeficiente, abra `02_coeficientes_completa.csv`.
+## 3:00-3:45 - célula 3: dinâmica e diagnósticos
 
-## 3:15-4:45 - Granger e resultado central
+“O BIC escolheu dois meses de memória. As raízes estão dentro do círculo, indicando estabilidade estimada. Porém, o Portmanteau ainda rejeita ausência de autocorrelação. São perguntas diferentes, e o diagnóstico limita a interpretação das bandas.”
 
-**Célula 4, 20 s.** “Granger mede se o passado de uma variável ajuda a prever outra, condicionado às demais. Não é causalidade estrutural. Mostro a versão usual e uma covariância robusta.”
+“Granger mede informação preditiva adicional, condicionada às demais variáveis. Não estabelece causalidade estrutural.”
 
-**Célula 5, cerca de 70 s, incluindo cálculo.** Enquanto o bootstrap roda:
+A tabela `02_diagnostico` e o gráfico das raízes bastam para a fala principal. Os outros resultados permanecem na mesma célula para perguntas.
 
-“Eu reestimo o modelo em várias amostras simuladas para medir a incerteza. O choque tem a mesma magnitude inicial antes e depois, de modo que a comparação não seja apenas diferença de volatilidade.”
+## 3:45-5:10 - célula 4: o experimento principal
 
-Mostre o gráfico `04_irf_antes_depois`.
+Enquanto o bootstrap roda:
 
-“Esta linha é a resposta acumulada. O petróleo tem resposta maior no segundo período. Para testar a mudança, olho a banda da diferença, não apenas se duas bandas individuais se sobrepõem. No câmbio, o sinal pós-período é estranho e varia com a especificação.”
+“Aplico o mesmo aumento de 10% nos dois modelos para que a comparação não seja apenas uma diferença de volatilidade dos choques.”
 
-## 4:45-6:00 - identificação e quebra
+No painel do Brent:
 
-**Célula 6, 40 s.** Mostre o envelope.
+“A linha é o efeito acumulado no IPCA em relação ao caminho sem o choque. O modelo posterior responde mais na base. Para verificar a mudança, olho a banda da diferença, não apenas a sobreposição das bandas individuais.”
 
-“Estas são todas as 120 ordens possíveis. A faixa mostra sensibilidade à identificação e não é um intervalo de confiança. A diferença pontual do petróleo é positiva em todas as ordens, mas sua magnitude varia bastante.”
+No painel do câmbio:
 
-“A FEVD reparte a variância do erro de previsão. Ela não mede a porcentagem da inflação observada causada pelo petróleo. A comparação com Sigma comum ajuda a distinguir dinâmica de mudança nos impactos.”
+“Este é um segundo experimento, separado: agora a surpresa é uma depreciação de 10% do real. Não injetei os dois choques ao mesmo tempo. O sinal negativo no pós-período é sensível à especificação e não deve virar uma afirmação estrutural de que depreciar a moeda reduz preços.”
 
-**Célula 7, 35 s.** Mostre CUSUM e janela móvel brevemente.
+## 5:10-6:25 - célula 5: identificação e quebra
 
-“Chow testa uma data conhecida; CUSUM procura deslocamentos ao longo da amostra. A curva móvel usa oito anos de observações para calcular um repasse de horizonte 12. Ela não estima um VAR com apenas doze meses.”
+“O envelope cobre as 120 ordenações. Ele mede sensibilidade à identificação, e não incerteza estatística. A diferença pontual do Brent é positiva em todas as ordens, mas sua magnitude varia.”
 
-## 6:00-7:15 - decomposição, simulação e previsão
+“A FEVD divide a variância do erro de previsão entre os choques. O Chow avalia uma data conhecida; o CUSUM acompanha desvios ao longo da amostra.”
 
-**Célula 8, 25 s.** “Reconstruo o IPCA com uma base determinística e as contribuições dos cinco choques. O código confere a soma. A linha aqui é o IPCA depois de retirar a base.”
+No gráfico móvel:
 
-**Célula 9, 20 s.** “Nestes dados artificiais, conheço a verdade. A ordem certa se aproxima mais da resposta verdadeira. Isso ilustra a importância da identificação, mas não prova a ordem do caso brasileiro.”
+“Cada ponto usa 96 meses de dados para estimar um repasse até h=12. A linha tracejada, identificada na legenda, marca outubro de 2016. Ela indica o início do segundo regime, não o início de cada janela.”
 
-**Célula 10, 30 s.** “Agora a pergunta é previsão. Cada treino usa só dados até a origem. O VAR ganha do AR em um mês nesta amostra; em doze meses não. O AR é aninhado, então a comparação usa Clark–West. O DM é reservado ao ingênuo sazonal não aninhado.”
+## 6:25-7:30 - célula 6: história, simulação e previsão
 
-## 7:15-9:30 - alteração ao vivo
+“Na decomposição histórica, a base e os choques reconstroem a série. As barras somam o IPCA depois de retirar a base.”
 
-Mude no início:
+“Nos dados artificiais, conheço a verdade: a ordenação correta recupera melhor a resposta. Isso verifica o método, mas não prova a ordenação brasileira.”
+
+“Na previsão, cada treino usa somente dados disponíveis até a origem. O VAR ganha do AR em um mês na base, mas não em doze. O alvo de doze meses é a inflação daquele mês futuro, não a inflação acumulada durante o ano.”
+
+## 7:30-9:30 - mudança ao vivo no próprio notebook
+
+Na primeira célula, mude:
 
 ```python
-P_FIXO = 4
-BOOT = 99
-PASTA_SAIDA = "resultados_teste"
+P_FIXO=4,
+BOOT=99,
+PASTA_SAIDA="resultados_teste",
 ```
 
-Salve e execute desde o começo. Para ganhar tempo, use `python analise.py --lote` e abra `resultados_teste/04_diferenca.csv` ou `04_irf_antes_depois.png` quando terminar.
+Use **Restart Kernel and Run All Cells** e volte à saída da célula 4, na mesma página. O índice de títulos do JupyterLab ajuda a navegar.
 
-“Antes de executar, espero mais flexibilidade e menos graus de liberdade. Com quatro lags, a diferença do petróleo continua positiva, mas a banda inclui zero. Isso mostra que a significância não é robusta à escolha da memória do modelo.”
+“Mais defasagens dão flexibilidade, mas gastam graus de liberdade. Com p=4, a diferença do petróleo continua positiva e a banda passa a incluir zero. A significância, portanto, depende dessa escolha.”
 
-O ensaio de referência com 99 réplicas produziu diferença de aproximadamente **0,198 p.p.**, banda **[−0,129; 0,444]**. Refaça a leitura a partir da nova saída; outro número de réplicas pode alterar os extremos.
+O ensaio de referência com 99 réplicas deu diferença aproximada de **0,198 p.p.**, banda **[−0,129; 0,444]**. Leia os resultados atuais se alterar outros parâmetros.
 
-Se o professor escolher outro parâmetro, use `EXCLUIR_2020`, `ORDEM`, `FIM` ou `DIFERENCIAR_SELIC` e explique previamente que hipótese foi modificada.
+Para outra pergunta do professor, mude `EXCLUIR_2020`, `ORDEM`, `FIM` ou `DIFERENCIAR_SELIC`, sempre antecipando que hipótese está sendo alterada.
 
 ## 9:30-10:00 - fechamento
 
-“Encontro uma resposta estimada maior do IPCA ao petróleo após 2016 em várias especificações. A magnitude depende da identificação e a significância depende das defasagens. Com autocorrelação residual e outros eventos entre os regimes, a conclusão é exploratória. O resultado principal é a comparação condicional e seus limites, não uma estimativa causal isolada da política da Petrobras.”
+“Encontro uma resposta estimada maior ao petróleo após 2016 na base e em vários ensaios. A magnitude varia com a identificação, a significância varia com as defasagens e os resíduos deixam ressalvas. A conclusão é uma comparação condicional entre regimes, sem isolar o efeito causal da Petrobras.”
 
-## Para os cinco minutos de perguntas
+## Perguntas
 
-Tenha abertas estas saídas:
+Mantenha o notebook aberto. Os diagnósticos estão na célula 3, a diferença entre regimes na 4, a sensibilidade à ordem e a quebra na 5, e a previsão na 6. O [guia de estudo](GUIA_ESTUDO.md) detalha conceitos e respostas.
 
-- `02_diagnostico.csv`: estabilidade e autocorrelação.
-- `04_diferenca.csv`: comparação correta dos regimes.
-- `05_mudanca_120_ordens.csv`: sensibilidade à identificação.
-- `09_metricas.csv`: ganho preditivo por horizonte.
-- `VALIDACAO.md`: alterações já executadas e conferências.
-
-A versão detalhada das respostas está no [guia de estudo](GUIA_ESTUDO.md). Após o ensaio, restaure `P_FIXO=None`, `BOOT=399` e `PASTA_SAIDA="resultados"` antes de regenerar os resultados de referência.
+Depois do ensaio, restaure `P_FIXO=None`, `BOOT=399` e `PASTA_SAIDA="resultados"`. Reinicie e execute tudo antes de gerar novamente o PDF.

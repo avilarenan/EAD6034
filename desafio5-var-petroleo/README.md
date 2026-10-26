@@ -9,7 +9,8 @@ A análise sugere maior resposta ao Brent na especificação-base. A magnitude e
 ## Comece por aqui
 
 - [Introdução em PDF: cinco slides](introducao.pdf)
-- [Script único da análise](analise.py), com parâmetros no início e blocos `# %%`
+- [Notebook da apresentação](apresentacao.ipynb): seis células de código, com textos, tabelas e gráficos integrados
+- [Rotinas técnicas e alternativa em terminal](analise.py), importadas pelo notebook
 - [Guia de estudo e perguntas para a apresentação](GUIA_ESTUDO.md)
 - [Roteiro oral de dez minutos](ROTEIRO_APRESENTACAO.md)
 - [Gerador dos slides em Python](gerar_pdf.py)
@@ -19,30 +20,32 @@ A análise sugere maior resposta ao Brent na especificação-base. A magnitude e
 
 Esta pasta é independente das atividades univariadas anteriores do repositório. Tem suas próprias dependências e dados. Não é necessário executar os outros projetos.
 
-## Execução simples
+## Execução no Jupyter
 
 Use **Python 3.12**. Dentro de `desafio5-var-petroleo`, no Windows:
 
 ```powershell
 py -3.12 -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -r requirements.txt
-.\.venv\Scripts\python.exe analise.py
+.\.venv\Scripts\python.exe -m jupyterlab apresentacao.ipynb
 ```
 
-No macOS/Linux, substitua o último caminho por `.venv/bin/python` e crie o ambiente com `python3.12 -m venv .venv`.
+Se o ambiente já estiver preparado, basta o último comando. No macOS/Linux, crie o ambiente com `python3.12 -m venv .venv` e use `.venv/bin/python` nos comandos seguintes.
 
-O script pede **Enter antes de cada bloco**. Depois de explicar um gráfico, feche a janela para continuar. Os arquivos também ficam em `resultados/`. Após a instalação das bibliotecas, a execução usa somente os dados locais e funciona sem internet.
+O notebook contém **seis células de código, com 34 linhas ao todo**, além dos textos explicativos. Execute com **Shift+Enter**. Gráficos e tabelas aparecem na própria página, sem janelas externas ou abertura manual de CSVs. A cópia publicada também traz as saídas executadas para consulta.
 
-Para regenerar tudo sem pausas ou janelas e reconstruir os slides:
+A primeira célula concentra o dicionário `PARAMETROS`. Os controles principais têm comentários; uma tabela recolhível antes da célula documenta todos os demais parâmetros herdados. Para mudar qualquer controle avançado, acrescente-o à chamada `PARAMETROS.update(...)`.
+
+Depois de alterar um parâmetro, use **Restart Kernel and Run All Cells**. O notebook recalcula tudo, sem cache de modelos. Na configuração-base, o cálculo leva cerca de meio minuto nesta máquina (44 segundos no teste completo, incluindo o kernel). Após instalar as bibliotecas, funciona sem internet.
+
+As rotinas de estimação estão em `analise.py` para que a apresentação não exija percorrer centenas de linhas técnicas. Importar esse arquivo não dispara a análise. O caminho em terminal continua disponível:
 
 ```powershell
 .\.venv\Scripts\python.exe analise.py --lote
 .\.venv\Scripts\python.exe gerar_pdf.py
 ```
 
-A execução de referência levou aproximadamente **32 segundos** nesta máquina com 399 réplicas por amostra. O tempo varia com o computador. Não há cache de estimações: toda execução recalcula os resultados.
-
-Os comentários `# %%` também permitem execução por células em Spyder ou VS Code com suporte a Python/Jupyter. O terminal é suficiente e evita depender desse suporte durante a apresentação.
+O gerador de PDF usa `resultados/resumo.json`. Execute a última célula do notebook antes de regenerar os slides. Os slides 3 e 4 apresentam **somente o experimento com petróleo**; o experimento cambial aparece separadamente na célula 4 do notebook.
 
 ## Dados e modelo
 
@@ -81,7 +84,7 @@ Na previsão do IPCA **do mês-alvo**, o RMSE é 0,334 p.p. para VAR e 0,347 par
 
 ## Alterações para demonstrar ao vivo
 
-Mude **uma escolha por vez** no início de `analise.py`, salve e execute novamente desde o começo:
+Mude **uma escolha por vez** em `PARAMETROS`, na primeira célula do notebook, e reinicie o kernel executando todas as células:
 
 | Parâmetro | Experimento | Pergunta que responde |
 |---|---|---|
@@ -97,20 +100,20 @@ Mude **uma escolha por vez** no início de `analise.py`, salve e execute novamen
 
 ## Cobertura do desafio
 
-| Exigência | Bloco do script / saída |
+| Exigência | Célula do notebook / saída |
 |---|---|
 | Dados, transformações, ADF e KPSS | Célula 2; arquivos `01_*` |
 | Defasagens, autocorrelação, normalidade e ARCH | Célula 3; `02_*` |
 | Estabilidade, meia-vida e períodos dos modos complexos | Célula 3; `02_raizes.png`, `02_ciclos.csv` |
-| Granger condicional por pares e bloco, usual e robusto | Célula 4; `03_granger.csv` |
-| IRFs bootstrap e comparação pré/pós | Célula 5; `04_*` |
-| Envelope de 120 ordens, correlação residual, FEVD | Célula 6; `05_*` |
-| Dinâmica versus covariância dos choques | Célula 6; `05_propagacao_covariancia_comum.csv` |
-| Chow na data conhecida, CUSUM e repasse móvel | Célula 7; `06_*` |
-| Decomposição histórica e reconstrução exata | Célula 8; `07_*` |
-| Simulação com ordem verdadeira e errada | Célula 9; `08_*` |
-| Previsão expansiva h=1 e h=12, AR/RW, DM e CW | Célula 10; `09_*` |
-| Síntese, versões e hashes dos insumos | Célula 11; `resumo.json` |
+| Granger condicional por pares e bloco, usual e robusto | Célula 3; `03_granger.csv` |
+| IRFs bootstrap e comparação pré/pós | Célula 4; `04_*` |
+| Envelope de 120 ordens, correlação residual, FEVD | Célula 5; `05_*` |
+| Dinâmica versus covariância dos choques | Célula 5; `05_propagacao_covariancia_comum.csv` |
+| Chow na data conhecida, CUSUM e repasse móvel | Célula 5; `06_*` |
+| Decomposição histórica e reconstrução exata | Célula 6; `07_*` |
+| Simulação com ordem verdadeira e errada | Célula 6; `08_*` |
+| Previsão expansiva h=1 e h=12, AR/RW, DM e CW | Célula 6; `09_*` |
+| Síntese, versões e hashes dos insumos | Célula 6; `resumo.json` |
 
 Há uma referência ingênua sazonal adicional, que repete os últimos 12 meses e não exige estimação. Ela fornece uma comparação DM não aninhada com VAR(p<12). AR usa o mesmo p e as mesmas determinísticas do VAR, tornando o aninhamento explícito; para ele, a inferência usa **Clark–West**, não DM. RW é referência descritiva.
 

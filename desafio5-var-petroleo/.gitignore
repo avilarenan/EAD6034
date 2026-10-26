@@ -7,3 +7,5 @@ tmp/
 resultados_*/
 execucao.log
 verificacao.txt
+.ipynb_checkpoints/
+.jupyter/

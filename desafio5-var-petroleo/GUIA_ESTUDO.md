@@ -1,6 +1,6 @@
 # Guia de estudo - Desafio 5
 
-Este guia acompanha `analise.py` e os cinco slides de `introducao.pdf`. Comece pela narrativa e pelas unidades. Depois estude os testes. Por último, rode as alterações sugeridas e tente explicar o que mudou sem ler o texto.
+Este guia acompanha `apresentacao.ipynb`, suas rotinas em `analise.py` e os cinco slides de `introducao.pdf`. Comece pela narrativa e pelas unidades. Depois estude os testes. Por último, rode as alterações sugeridas e tente explicar o que mudou sem ler o texto.
 
 As marcações **aula/desafio**, **implementação** e **esclarecimento** distinguem os métodos pedidos, as escolhas operacionais e as interpretações matemáticas. Toda–Yamamoto e a referência sazonal são acréscimos declarados de implementação.
 
@@ -256,7 +256,7 @@ A base encontra ganho do VAR sobre AR em h=1 (CW≈0,0003), mas não em h=12 (CW
 
 ## 13. Experimentos para estudar
 
-Faça os ensaios com `BOOT=99` e `PASTA_SAIDA="resultados_teste"`. Para resultados finais, restaure 399 ou aumente para 999. Sempre rode desde o início.
+Faça os ensaios com `BOOT=99` e `PASTA_SAIDA="resultados_teste"`. Para resultados finais, restaure 399 ou aumente para 999. Depois de editar a primeira célula, use Restart Kernel and Run All Cells.
 
 1. **p=4:** antes de rodar, antecipe maior flexibilidade e menos graus de liberdade. Observe que a banda da diferença do petróleo passa a incluir zero.
 2. **Excluir 2020:** veja se a magnitude muda e quantas observações se perdem, inclusive nas defasagens.

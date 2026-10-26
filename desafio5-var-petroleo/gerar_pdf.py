@@ -4,6 +4,7 @@ Requer apenas ReportLab além da biblioteca padrão. Não roda a análise de nov
 """
 from pathlib import Path
 import json
+from datetime import date, timedelta
 from reportlab.pdfgen import canvas
 from reportlab.lib.colors import HexColor
 from reportlab.platypus import Paragraph
@@ -80,38 +81,40 @@ texto(MARGEM, 88, f"{r['n']} meses. Brent: FMI/FRED. Demais séries: BCB/SGS.", 
 texto(MARGEM, 60, "Fontes e códigos das séries no README e em dados/README.md.", NOTA, CINZA)
 c.showPage()
 
-# 3. Explicar o mecanismo antes de mostrar os números.
-pagina(3, "Comparação com o mesmo choque")
-paragrafo(f"<b>VAR({r['p']})</b>: cada variável depende do passado de todas as cinco.",
-          MARGEM, 378, 855, 24)
-paragrafo("<b>Ordem contemporânea:</b> "+", ".join({"brent":"Brent","cambio":"câmbio","ipa":"IPA","ipca":"IPCA","selic":"Selic"}[x] for x in r["ordem"])+".",
-          MARGEM, 310, 855, 22)
-paragrafo(f"<b>Choque de +{r['choque_pct']:g}%</b> no Brent ou no câmbio, normalizado igualmente nos dois períodos.",
-          MARGEM, 237, 840, 22)
-paragrafo(f"<b>Medida:</b> resposta do IPCA somada de h=0 a h={r['h_repasse']}.<br/>Bandas pontuais de {r['confianca']:.0%}, com {r['bootstrap']} réplicas bootstrap.",
-          MARGEM, 155, 845, 22)
-texto(MARGEM, 58, "Constante, sazonalidade mensal e pulsos para greve/pandemia.", NOTA, CINZA)
+# 3. Definir intervenção, comparação, períodos e condições de forma completa.
+antes_fim = (date.fromisoformat(r["quebra"])-timedelta(days=1)).isoformat()
+pagina(3, "O experimento: uma surpresa no petróleo")
+paragrafo(f"<b>Choque inicial.</b> O Brent em US$/barril sobe {r['choque_pct']:g}% de surpresa (ex.: 100 para {100+r['choque_pct']:g}). Uma única alta no impacto.",
+          MARGEM, 389, 857, 20)
+paragrafo("<b>Comparação.</b> Mesmo ponto de partida: calculamos o IPCA com essa surpresa e sem ela, dentro de cada regime.",
+          MARGEM, 327, 857, 20)
+paragrafo(f"<b>Dois modelos.</b> VAR({r['p']}) reestimado em {data(r['inicio'])}-{data(antes_fim)} e em {data(r['quebra'])}-{data(r['fim'])}. Mesmas variáveis, controles de calendário e pulsos para greve/pandemia.",
+          MARGEM, 265, 857, 20)
+paragrafo("<b>Condições.</b> As demais surpresas são zero. Câmbio, IPA, IPCA e Selic podem reagir ao petróleo, conforme a dinâmica estimada.",
+          MARGEM, 203, 857, 20)
+paragrafo(f"<b>Medida.</b> Somamos a diferença no IPCA do impacto ao mês {r['h_repasse']}, inclusive: {r['h_repasse']+1} termos, em pontos percentuais (aprox.).",
+          MARGEM, 141, 857, 20)
+texto(MARGEM, 58, "Na ordem recursiva, anteriores podem afetar posteriores no mesmo mês: "+", ".join({"brent":"Brent","cambio":"câmbio","ipa":"IPA","ipca":"IPCA","selic":"Selic"}[x] for x in r["ordem"])+".", NOTA, CINZA)
 c.showPage()
 
-# 4. Uma única tabela concentra os resultados que orientam a demonstração.
-pagina(4, "Resposta estimada do IPCA")
-texto(MARGEM, 382, f"Acúmulo após o mesmo choque de +{r['choque_pct']:g}%", 23, DESTAQUE)
-xs = [MARGEM, 279, 414, 556]
-for x, s in zip(xs, ["Choque", "Antes", "Depois", f"Diferença [IC {r['confianca']:.0%}]"]):
-    texto(x, 321, s, 19, negrito=True)
-for i, choque in enumerate(["brent","cambio"]):
-    vals = {x["amostra"]:x["resposta"] for x in r["respostas"] if x["choque"]==choque}
-    delta = next(x for x in r["diferenca"] if x["index"]==choque)
-    linha = [choque.capitalize() if choque=="brent" else "Câmbio",
-             numero(vals["antes"]),numero(vals["depois"]),
-             f"{numero(delta['depois_menos_antes'])}  [{numero(delta['inferior'])}; {numero(delta['superior'])}]"]
-    for x, s in zip(xs, linha):
-        texto(x, 270-i*53, s, 22, DESTAQUE if i==0 else COR)
-paragrafo("O sinal negativo do câmbio no pós-período pede cautela na interpretação econômica.",
-          MARGEM, 160, 855, 20)
-paragrafo("<b>Resíduos autocorrelacionados limitam a confiança nas bandas.</b>",
-          MARGEM, 100, 855, 20)
-texto(MARGEM, 50, f"Unidade: p.p. de inflação acumulada, aprox. Soma h=0,...,{r['h_repasse']}. Fonte: analise.py.", NOTA, CINZA)
+# 4. Um único choque e uma leitura concreta, sem misturar o experimento cambial.
+valores = {x["amostra"]:x["resposta"] for x in r["respostas"] if x["choque"]=="brent"}
+delta = next(x for x in r["diferenca"] if x["index"]=="brent")
+pagina(4, "Quanto o IPCA responde ao petróleo?")
+paragrafo(f"Alta inesperada de {r['choque_pct']:g}% no Brent em US$, uma única vez. Resposta do IPCA acumulada do impacto até o mês {r['h_repasse']}.",
+          MARGEM, 392, 855, 21, DESTAQUE)
+xs = [MARGEM, 332, 629]
+for x,s in zip(xs,["Modelo anterior", "Modelo posterior", "Posterior menos anterior"]):
+    texto(x, 305, s, 19, negrito=True)
+for x,s in zip(xs,[data(r['inicio'])+" a "+data(antes_fim),data(r['quebra'])+" a "+data(r['fim']),"Diferença de resposta"]):
+    texto(x, 278, s, 16, CINZA)
+for x,v in zip(xs,[valores['antes'],valores['depois'],delta['depois_menos_antes']]):
+    texto(x, 233, numero(v)+" p.p.", 34, DESTAQUE, True)
+paragrafo(f"<b>Como ler:</b> no modelo posterior, o choque adiciona cerca de {numero(valores['depois']).lstrip('+')} p.p. à inflação acumulada, em relação à trajetória sem essa surpresa.",
+          MARGEM, 197, 853, 20)
+paragrafo(f"<b>Incerteza:</b> banda de {r['confianca']:.0%} para a diferença [{numero(delta['inferior'])}; {numero(delta['superior'])}] p.p. Autocorrelação residual e sensibilidade às defasagens limitam a conclusão.",
+          MARGEM, 125, 853, 18)
+texto(MARGEM, 54, "Comparação entre regimes, sem isolar o efeito causal da Petrobras. p.p. = pontos percentuais. Fonte: analise.py.", NOTA, CINZA)
 c.showPage()
 
 # 5. Fechar a abertura com a conclusão condicional e o roteiro ao vivo.
@@ -122,7 +125,7 @@ paragrafo("A comparação entre regimes não isola o efeito causal da política 
           MARGEM, 293, 835, 23)
 paragrafo("Previsão: o VAR supera o AR em 1 mês nesta amostra.<br/>Em 12 meses, o AR tem erro ligeiramente menor.",
           MARGEM, 216, 835, 21)
-paragrafo("<b>No código:</b> diagnósticos, respostas a choques, ordenações alternativas e decomposições. Depois, mudamos um parâmetro.",
+paragrafo("<b>No notebook:</b> diagnósticos, respostas a choques, ordenações alternativas e decomposições. Depois, mudamos um parâmetro.",
           MARGEM, 128, 840, 20)
 texto(MARGEM, 47, "A amostra inclui pandemia e mudanças posteriores a 2016. Sensibilidades no guia.", NOTA, CINZA)
 c.showPage()
