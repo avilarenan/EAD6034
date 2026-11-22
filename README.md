@@ -2,6 +2,10 @@
 
 Repositório dos trabalhos da disciplina EAD6034 da FEA-USP.
 
+## Trabalho final multivariado — Hansen (1982)
+
+[Checkpoint de 19/11 (PDF)](trabalho-final-gmm/resultados/checkpoint_19_11.pdf) · [Dados, estimador e reprodução em Python](trabalho-final-gmm/README.md). Oito linhas da Tabela I da aplicação Hansen–Singleton, comparadas com a errata de 1984.
+
 ## Desafio 5 - VAR de petróleo e inflação (Palazzi)
 
 A nova tarefa multivariada está em [**desafio5-var-petroleo/**](desafio5-var-petroleo/README.md): notebook com quatro células para apresentar e um anexo, parâmetros editáveis ao vivo, dados públicos locais e slides de cinco páginas.

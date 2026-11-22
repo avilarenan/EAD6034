@@ -1,0 +1,24 @@
+{
+  "python": "3.12.14",
+  "packages": {
+    "numpy": "2.3.5",
+    "pandas": "2.2.3",
+    "scipy": "1.17.0",
+    "reportlab": "4.4.9"
+  },
+  "sha256": {
+    "dados/gallant_nds_vwr.csv": "90c54d18c2c8e994a2869eb5881034e74ecc572d13f557c65bdc1f62d7b64bcc",
+    "dados/hansen_singleton_1982_data.csv": "3e9d4f37c31dbcab26624418f3eeb630d57cc362bd162fa5501cfd992225609b",
+    "estimate.py": "c13ee47da273dfab9df5d659c3c8f13677a1e40c3f01abf574d652b249c05db9",
+    "executar.py": "9b57191b56811f362429824585ec2eed4acc4fd9366a101e66653f04c0508125",
+    "obter_dados_gallant.py": "ac4806a99f552360afb6518906c7e59a626058c17753707af5e44263e2b61f2b",
+    "report.py": "6660e43603b48d4cb9e112ec3e0307de01d7fdabb5d4f006c5676259d11f5f49",
+    "resultados/ND/comparison.csv": "e40bde6eed5f41b36a95008a423aa14d8d747e86178db2d202708ae782611bb3",
+    "resultados/ND/sensitivity.csv": "621db5d87b106c220c9586806c37aa9c7d4d1eb0a12a991838ca50f126204533",
+    "resultados/NDS/comparison.csv": "168ebde2ae5445d8633458c406eeddf4170769b79a60e4fa6e37172c559f1fb5",
+    "resultados/NDS/sensitivity.csv": "d1f0320f9f5bbecfd939643568a1d6fbb624e22b467554aa5f24dd04b73639c4",
+    "resultados/checkpoint_19_11.pdf": "6047879449c59071ddf08eec3b0938ff69fb47b217eafb2619e729e3b41883eb",
+    "resultados/sensibilidade.csv": "cfc55ef4875fa8a74fe19fc67deb0525da1fe8cdf985c6b5cb149cf77631ad9e",
+    "resultados/tabela_I.csv": "fa9a66f6333deb3aac99382b382c6caabb17a68eeb82ec356b71c5a75eb9845b"
+  }
+}
