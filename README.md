@@ -2,6 +2,12 @@
 
 Repositório dos trabalhos da disciplina EAD6034 da FEA-USP.
 
+## Exercício de cointegração — R e Python
+
+[Resumo e reprodução](exercicio-cointegracao/README.md) · [Notebook Python executado](exercicio-cointegracao/exercicio_cointegracao.ipynb) · [Script R](exercicio-cointegracao/exercicio_cointegracao.R) · [Comparação R/Python](exercicio-cointegracao/resultados/comparacao_r_python.csv).
+
+Simulação, Engle–Granger, Johansen e VECM para juros americanos de 1 e 5 anos. As 52 métricas comparadas conferem entre as duas linguagens. Inclui dados públicos locais, respostas do exercício e configuração para executar no Codespaces.
+
 ## Trabalho final multivariado — Hansen (1982)
 
 [Checkpoint de 19/11 (PDF)](trabalho-final-gmm/resultados/checkpoint_19_11.pdf) · [Dados, estimador e reprodução em Python](trabalho-final-gmm/README.md). Oito linhas da Tabela I da aplicação Hansen–Singleton, comparadas com a errata de 1984.

@@ -1,0 +1,149 @@
+EAD6034 — Cointegracao e VECM
+
+PARTE A — relacao de longo prazo
+
+Call:
+lm(formula = y ~ x)
+
+Residuals:
+              Min                1Q            Median                3Q               Max
+-3.67404714838144 -0.96647498548465  0.04300197032941  0.92157762267158  3.53406466710502
+
+Coefficients:
+                    Estimate       Std. Error   t value Pr(>|t|)
+(Intercept) 0.59239115400270 0.22915925380872   2.58506 0.010211 *
+x           3.02509885717579 0.01264387081553 239.25417  < 2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.050000000000000003 ‘.’ 0.10000000000000001 ‘ ’ 1
+
+Residual standard error: 1.4001200154727 on 298 degrees of freedom
+Multiple R-squared:  0.99482104443708,	Adjusted R-squared:  0.99480366539157
+F-statistic: 57242.559361773 on 1 and 298 DF,  p-value: < 2.22044604925e-16
+
+
+Engle–Granger: estatistica = -7.7468618754181682 ; critico 5% = -3.3399999999999999
+
+Modelo de correcao de erros
+
+Call:
+lm(formula = dy ~ z_lag + dx)
+
+Residuals:
+              Min                1Q            Median                3Q               Max
+-2.96849830654534 -0.74095003327317 -0.10864164889499  0.76836525659971  3.59823218908588
+
+Coefficients:
+                       Estimate          Std. Error  t value   Pr(>|t|)
+(Intercept) -0.0088271775335477  0.0625039863209726 -0.14123    0.88779
+z_lag       -0.3780203213808396  0.0447048446558773 -8.45591  1.283e-15 ***
+dx           2.8224406178810777  0.0649352552812341 43.46546 < 2.22e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.050000000000000003 ‘.’ 0.10000000000000001 ‘ ’ 1
+
+Residual standard error: 1.0780899954651999 on 296 degrees of freedom
+Multiple R-squared:  0.87031164020413,	Adjusted R-squared:  0.86943536750281
+F-statistic: 993.19725342315 on 2 and 296 DF,  p-value: < 2.22044604925e-16
+
+
+PARTE B — juros mensais dos EUA: abril/1953 a setembro/1999, 558 observacoes
+
+ADF: nivel e primeira diferenca
+                            stat                 cv5 lags nobs
+media_level  -1.8922076721203218 -2.8599999999999999    6  551
+curta_level  -2.0211301570000595 -2.8599999999999999    6  551
+media_diff  -10.4326748435821735 -2.8599999999999999    5  550
+curta_diff  -11.9155456275615954 -2.8599999999999999    5  550
+
+Johansen: constante RESTRITA a relacao de cointegracao; VAR(2)
+
+######################
+# Johansen-Procedure #
+######################
+
+Test type: trace statistic , without linear trend and constant in cointegration
+
+Eigenvalues (lambda):
+[1] 5.1903220883234173e-02 9.7680824004842941e-03 1.7347234658328378e-18
+
+Values of teststatistic and critical values of test:
+
+                       test               10pct                5pct               1pct
+r <= 1 |  5.460000000000000  7.5199999999999996  9.2400000000000002 12.970000000000001
+r = 0  | 35.090000000000003 17.8500000000000014 19.9600000000000009 24.600000000000001
+
+Eigenvectors, normalised to first column:
+(These are the cointegration relations)
+
+                     media.l1             curta.l1             constant
+media.l1  1.00000000000000000  1.00000000000000000  1.00000000000000000
+curta.l1 -1.03709428762420108 -0.45461222689829817 -0.67519526829397136
+constant -0.35707555775542565 -4.01470839558271564  6.95434852127037129
+
+Weights W:
+(This is the loading matrix)
+
+                     media.l1              curta.l1                constant
+media.d 0.0037178869531816635 -0.020237966048846104  2.1830318890980829e-18
+curta.d 0.0632998498174170143 -0.024057693270723723 -1.2339105929417091e-17
+
+
+Posto selecionado a 5%: 1
+
+Beta (normalizado pelo coeficiente da taxa de 5 anos):
+                         ect1
+media.l1  1.00000000000000000
+curta.l1 -1.03709428762420108
+constant -0.35707555775542565
+
+Equacoes VECM, erros-padrao e estatisticas t:
+Response media.d :
+
+Call:
+lm(formula = media.d ~ ect1 + media.dl1 + curta.dl1 - 1, data = data.mat)
+
+Residuals:
+               Min                 1Q             Median                 3Q                Max
+-1.881454166335067 -0.137783210963450  0.010030773990005  0.155248048443636  1.732853218987956
+
+Coefficients:
+                    Estimate         Std. Error  t value   Pr(>|t|)
+ect1       0.003717886953181  0.017444099343612  0.21313    0.83130
+media.dl1  0.437388190173447  0.090626694690877  4.82626 1.8023e-06 ***
+curta.dl1 -0.061487991871942  0.066241823747215 -0.92824    0.35369
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.050000000000000003 ‘.’ 0.10000000000000001 ‘ ’ 1
+
+Residual standard error: 0.31812185455917003 on 553 degrees of freedom
+Multiple R-squared:  0.13119070785368,	Adjusted R-squared:  0.12647745672088
+F-statistic: 27.834440422809 on 3 and 553 DF,  p-value: < 2.22044604925e-16
+
+
+Response curta.d :
+
+Call:
+lm(formula = curta.d ~ ect1 + media.dl1 + curta.dl1 - 1, data = data.mat)
+
+Residuals:
+              Min                1Q            Median                3Q               Max
+-2.87609450096267 -0.15758071962197  0.00167958180428  0.18201770313143  1.86186746638529
+
+Coefficients:
+                   Estimate        Std. Error t value  Pr(>|t|)
+ect1      0.063299849817411 0.023700466538724 2.67083 0.0077892 **
+media.dl1 0.384080345405048 0.123130171568464 3.11930 0.0019072 **
+curta.dl1 0.121288647774359 0.089999609395702 1.34766 0.1783204
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.050000000000000003 ‘.’ 0.10000000000000001 ‘ ’ 1
+
+Residual standard error: 0.43221700477057001 on 553 degrees of freedom
+Multiple R-squared:  0.15013782671105,	Adjusted R-squared:  0.14552736284149
+F-statistic: 32.564581560285 on 3 and 553 DF,  p-value: < 2.22044604925e-16
+
+
+
+D1 — rho=1: Engle–Granger = -2.7575673244784884 ; critico = -3.3399999999999999
+D2 — spread simples (media - curta):
+                stat                  cv5                 lags                 nobs
+ -3.2047944781472353  -2.8599999999999999   6.0000000000000000 551.0000000000000000
+
+Resultados exportados em resultados/r_metrics.csv.
